@@ -270,6 +270,7 @@ public class AstarGUI extends javax.swing.JFrame
                 cellpanel.setPreferredSize(new Dimension(3, 3));
                 cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             
+                // This is probably insane... but whatever
                 cellpanel.addMouseListener(new MouseAdapter() 
                 {
                     @Override
@@ -289,9 +290,9 @@ public class AstarGUI extends javax.swing.JFrame
                     }
                 });
                 
-                if (cell == Board.cellstate.Ship)         
+                if (cell == Board.cellstate.Obstacle)         
                 {
-                    cellpanel.setBackground(Color.blue);
+                    cellpanel.setBackground(Color.black);
                 }
                 else if (cell == Board.cellstate.Hit)         
                 {

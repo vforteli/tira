@@ -23,7 +23,7 @@ public class Board
         /**
          *
          */
-        Ship,
+        Obstacle,
         /**
          *
          */
@@ -126,7 +126,7 @@ public class Board
         {
             for (int i = y1; i <= y2; i++)
             {
-                board[i][x1] = cellstate.Ship;
+                board[i][x1] = cellstate.Obstacle;
                 shipcellsleft++;
             } 
         }
@@ -134,7 +134,7 @@ public class Board
         {
             for (int i = x1; i <= x2; i++)
             {
-                board[y1][i] = cellstate.Ship;
+                board[y1][i] = cellstate.Obstacle;
                 shipcellsleft++;
             } 
         }        
@@ -208,7 +208,7 @@ public class Board
             throw new Exception("Invalid coordinates");
         }
         firecount++;
-        if (board[y][x] == cellstate.Ship)
+        if (board[y][x] == cellstate.Obstacle)
         {
             shipcellsleft--;
             
@@ -266,7 +266,7 @@ public class Board
         box2y = box2y >= size - 1 ? size - 1 : box2y;
         for (int i = box1x; i <= box2x; i++) {
             for (int j = box1y; j <= box2y; j++) {
-                if (board[j][i] == cellstate.Ship) {
+                if (board[j][i] == cellstate.Obstacle) {
                     return true;
                 }
             }

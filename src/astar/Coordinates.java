@@ -50,7 +50,7 @@ public class Coordinates
         
     }
     
-      /**
+    /**
      * Converts human coordinates like A14 to zero based x and y coordinates
      * 
      * @param humanform

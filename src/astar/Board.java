@@ -291,15 +291,5 @@ public class Board
         }
         return false;
     }
-    
-    
-    /**
-     * Get the score calculated by the very secret optimal algorithm....
-     * @return 
-     */
-    public int getScore()
-    {
-        return (int)((((float)this.size * (float)this.size) / (float)this.shipcells / (float)this.firecount) * (float)1000);
-    }
 }
 

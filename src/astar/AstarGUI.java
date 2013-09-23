@@ -14,7 +14,6 @@ import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableModel;
 
 
 
@@ -51,10 +50,6 @@ public class AstarGUI extends javax.swing.JFrame
         ObstaclePercentageChoice = new java.awt.Choice();
         StartGameButton = new java.awt.Button();
         BoardPanel = new javax.swing.JPanel();
-        CoordinatesBox = new javax.swing.JTextField();
-        FireButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        TurnsLabel = new javax.swing.JLabel();
         jlabel2 = new javax.swing.JLabel();
         ScoreLabel = new javax.swing.JLabel();
         MainMenuBar = new javax.swing.JMenuBar();
@@ -128,21 +123,6 @@ public class AstarGUI extends javax.swing.JFrame
             .addGap(0, 388, Short.MAX_VALUE)
         );
 
-        FireButton.setText("Fire!");
-        FireButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                FireButtonActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setText("Turns:");
-
-        TurnsLabel.setMaximumSize(new java.awt.Dimension(31, 14));
-        TurnsLabel.setMinimumSize(new java.awt.Dimension(31, 14));
-        TurnsLabel.setPreferredSize(new java.awt.Dimension(31, 14));
-
         jlabel2.setText("Score");
 
         ScoreLabel.setMaximumSize(new java.awt.Dimension(34, 14));
@@ -176,36 +156,21 @@ public class AstarGUI extends javax.swing.JFrame
                         .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TurnsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(102, 102, 102)
                         .addComponent(jlabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(CoordinatesBox, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(FireButton)
-                        .addGap(14, 14, 14))))
+                        .addGap(14, 329, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(CoordinatesBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(FireButton))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(TurnsLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jlabel2)
-                        .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jlabel2)
+                    .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -281,7 +246,7 @@ public class AstarGUI extends javax.swing.JFrame
 
                         try
                         {
-                            Fire(c);
+                            ClickBoard(c);
                         } 
                         catch (Exception ex)
                         {
@@ -321,33 +286,32 @@ public class AstarGUI extends javax.swing.JFrame
 
     
     
+    private Coordinates previousCoordinates;
     
     
     
-    private void FireButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_FireButtonActionPerformed
-    {//GEN-HEADEREND:event_FireButtonActionPerformed
-        if (CoordinatesBox.getText() != null)
-        {
-            Coordinates c = Coordinates.ParseCoordinates((CoordinatesBox.getText()));
-            Fire(c);
-        } 
-    }//GEN-LAST:event_FireButtonActionPerformed
-
     
-    
-    private void Fire(Coordinates c)
+    private void ClickBoard(Coordinates c)
     {
         if (board != null && board.getIsRunning())
         {
             try
             {
+                if (previousCoordinates != null)
+                {
+                    int distance = HeuristicDistance.CalculateOptimalDistance(previousCoordinates, c);
+                    System.out.println("Distance from previously clicked cell: " + distance);
+                }
+                previousCoordinates = c;
+                        
+                
                 board.Fire(c.x, c.y);
                
+                
+                
                 DrawBoard(board.GetBoard());
 
-                TurnsLabel.setText(Integer.toString(board.getFireCount()));
-                ScoreLabel.setText(Integer.toString(board.getScore()));
-                
+               
                 if (board.getShipcells() == 0)
                 {
                     GameCompleted();
@@ -372,7 +336,6 @@ public class AstarGUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_StartGameButtonActionPerformed
         NewGameFrame.dispose();
         
-        TurnsLabel.setText("0");
         board = new Board(Integer.parseInt(BoardSizeChoice.getSelectedItem()));
         
         try 
@@ -461,16 +424,12 @@ public class AstarGUI extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel BoardPanel;
     private java.awt.Choice BoardSizeChoice;
-    private javax.swing.JTextField CoordinatesBox;
-    private javax.swing.JButton FireButton;
     private javax.swing.JMenuBar MainMenuBar;
     private javax.swing.JMenuItem NewGameButton;
     private javax.swing.JFrame NewGameFrame;
     private java.awt.Choice ObstaclePercentageChoice;
     private javax.swing.JLabel ScoreLabel;
     private java.awt.Button StartGameButton;
-    private javax.swing.JLabel TurnsLabel;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JLabel jlabel2;
     private java.awt.Label label1;

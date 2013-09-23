@@ -337,22 +337,22 @@ public class AstarGUI extends javax.swing.JFrame
         
         try 
         {
-            board.AddRandomShip(5);
-            board.AddRandomShip(4);
-            board.AddRandomShip(3);
-            board.AddRandomShip(3);
-            board.AddRandomShip(2);
+            board.AddRandomObstacle(5);
+            board.AddRandomObstacle(4);
+            board.AddRandomObstacle(3);
+            board.AddRandomObstacle(3);
+            board.AddRandomObstacle(2);
             
             int ships = Integer.parseInt(ObstaclePercentageChoice.getSelectedItem());
             if (ships == 7 || ships == 9)
             {
-                board.AddRandomShip(2);
-                board.AddRandomShip(3);
+                board.AddRandomObstacle(2);
+                board.AddRandomObstacle(3);
             }
             if (ships == 9)
             {
-                board.AddRandomShip(5);
-                board.AddRandomShip(1); // :p         
+                board.AddRandomObstacle(5);
+                board.AddRandomObstacle(1); // :p         
             }
         } 
         catch (Exception ex) 

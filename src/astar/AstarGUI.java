@@ -271,12 +271,14 @@ public class AstarGUI extends javax.swing.JFrame
                 {
                     cellpanel.setBackground(Color.blue);
                 }  
+           
                 BoardPanel.add(cellpanel);
                 x++;
             }
             x = 0;
             y++;
         }
+        BoardPanel.revalidate();        
     }
     
     
@@ -287,10 +289,7 @@ public class AstarGUI extends javax.swing.JFrame
     
     
     private Coordinates previousCoordinates;
-    
-    
-    
-    
+       
     private void ClickBoard(Coordinates c)
     {
         if (board != null && board.getIsRunning())
@@ -304,10 +303,8 @@ public class AstarGUI extends javax.swing.JFrame
                 }
                 previousCoordinates = c;
                         
-                
                 board.Fire(c.x, c.y);
                
-                
                 
                 DrawBoard(board.GetBoard());
 

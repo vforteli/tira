@@ -97,7 +97,7 @@ public class Board
      * @return True if the ship was successfully placed, False if another ship already occupies the cells
      * @throws Exception 
      */
-    public boolean AddShip(int x1, int y1, int x2, int y2) throws Exception 
+    public boolean AddObstacle(int x1, int y1, int x2, int y2) throws Exception 
     {
         if (this.isRunning)
         {
@@ -149,7 +149,7 @@ public class Board
      * @return True if successful
      * @throws Exception
      */
-    public boolean AddRandomShip(int length) throws Exception 
+    public boolean AddRandomObstacle(int length) throws Exception 
     {
         // Loop forever until a ship has successfully been placed... :p
         while (true)
@@ -160,14 +160,14 @@ public class Board
             
             if (r.nextBoolean())    // Horizontal
             {                
-                if (this.AddShip(i, j, i + length - 1, j))
+                if (this.AddObstacle(i, j, i + length - 1, j))
                 {
                     return true;                    
                 }
             }
             else    // Vertical
             {
-                if (this.AddShip(j, i, j, i + length - 1))
+                if (this.AddObstacle(j, i, j, i + length - 1))
                 {
                     return true;
                 }

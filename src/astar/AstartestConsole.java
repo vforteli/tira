@@ -21,6 +21,8 @@ public class AstartestConsole
         h.Insert(2, new Coordinates(4,5));
         h.Insert(13, new Coordinates(4,5));
         h.Insert(18, new Coordinates(4,5));
+        h.Insert(100, new Coordinates(4,5));
+        h.Insert(18, new Coordinates(4,5));
         System.out.println();
         
         
@@ -42,6 +44,25 @@ public class AstartestConsole
             }
         }
         
+        h.DeleteMin();
+        System.out.println();
+        for (MinHeapItem item : h.heap)
+        {
+            if (item != null)
+            {
+                System.out.println(item.key);            
+            }
+        }
+        
+         h.DeleteMin();
+        System.out.println();
+        for (MinHeapItem item : h.heap)
+        {
+            if (item != null)
+            {
+                System.out.println(item.key);            
+            }
+        }
         
     }
 }

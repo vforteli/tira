@@ -56,24 +56,54 @@ public class MinHeap
     
     private void BubbleDown(int index)
     {
+        MinHeapItem node = heap[index];
         
-        
+        int smallerNodeIndex;
+        while(index < tail / 2)
+        {
+            int leftChildIndex = 2 * index + 1;
+            int rightChildIndex = leftChildIndex + 1;
+            
+            // Determine which child node is smaller
+            if (rightChildIndex < tail && heap[rightChildIndex].key < heap[leftChildIndex].key)
+            {
+                smallerNodeIndex = rightChildIndex;
+            }
+            else 
+            {
+                smallerNodeIndex = leftChildIndex;       
+            }
+            System.out.println("Smallernodeindex: " + smallerNodeIndex);
+            
+            // If the key is smaller, the heap is in order
+            if (node.key <= heap[smallerNodeIndex].key)
+            {
+                break;                
+            }
+            
+            // Swap
+            heap[index] = heap[smallerNodeIndex];
+            index = smallerNodeIndex;
+        }
+        heap[index] = node;    
     }
     
     public Coordinates DeleteMin()
     {
         if (tail > 0)
         {
-            MinHeapItem item = heap[0];
+            // Get the root item, ie the lowest key
+            MinHeapItem root = heap[0];
             
-            // put last item as first and call heapify
-            
+            // Set last as new root
             heap[0] = heap[--tail];
+            
             //System.out.println("Heap tail: " + heap[tail-1]);
             
+            // Find correct place for new root
             BubbleDown(0);
                               
-            return (Coordinates)item.item;
+            return (Coordinates)root.item;
         }
         return null;
     }

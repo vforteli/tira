@@ -10,12 +10,12 @@ package astar;
  */
 public class MinHeapItem
 {
-    public MinHeapItem(int _value, Object _item)
+    public MinHeapItem(int _key, Object _item)
     {
-        this.value = _value;
+        this.key = _key;
         this.item = _item;
     }
     
-    public int value;
+    public int key;
     public Object item;
 }

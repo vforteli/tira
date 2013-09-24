@@ -10,13 +10,13 @@ package astar;
  */
 public class MinHeap
 {
-    protected MinHeapItem[] heap;
+    protected HeapItem[] heap;
     private int tail;
     
     public MinHeap()
     {
         // Hmm, what should the initial size be, and when should it grow/shrink?
-        heap = new MinHeapItem[20];
+        heap = new HeapItem[20];
         tail = 0;
     }
     
@@ -24,7 +24,7 @@ public class MinHeap
     
     public void Insert(int value, Coordinates coordinates)
     {        
-        MinHeapItem item = new MinHeapItem(value, coordinates);
+        HeapItem item = new HeapItem(value, coordinates);
         
         // Insert the item in the last place and call bubbleup to get item in correct place
         heap[tail] = item;
@@ -41,7 +41,7 @@ public class MinHeap
     
     private void BubbleUp(int index)
     {
-        MinHeapItem last = heap[index];
+        HeapItem last = heap[index];
         int parentindex = (int)Math.floor(((double)index - 1) / 2);
         
         while (index > 0 && heap[parentindex].key >= last.key)
@@ -56,11 +56,11 @@ public class MinHeap
     
     private void BubbleDown(int index)
     {
-        MinHeapItem node = heap[index];
+        HeapItem node = heap[index];
         
-        int smallerNodeIndex;
         while(index < tail / 2)
         {
+            int smallerNodeIndex;
             int leftChildIndex = 2 * index + 1;
             int rightChildIndex = leftChildIndex + 1;
             
@@ -73,9 +73,8 @@ public class MinHeap
             {
                 smallerNodeIndex = leftChildIndex;       
             }
-            System.out.println("Smallernodeindex: " + smallerNodeIndex);
             
-            // If the key is smaller, the heap is in order
+            // If the current node key is smaller, the heap is in order
             if (node.key <= heap[smallerNodeIndex].key)
             {
                 break;                
@@ -85,6 +84,8 @@ public class MinHeap
             heap[index] = heap[smallerNodeIndex];
             index = smallerNodeIndex;
         }
+        
+        // Finally set the current node wherever it ends up...
         heap[index] = node;    
     }
     
@@ -93,7 +94,7 @@ public class MinHeap
         if (tail > 0)
         {
             // Get the root item, ie the lowest key
-            MinHeapItem root = heap[0];
+            HeapItem root = heap[0];
             
             // Set last as new root
             heap[0] = heap[--tail];

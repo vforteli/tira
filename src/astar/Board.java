@@ -274,6 +274,37 @@ public class Board
         return false;
     }
     
+    /**
+     * Gets the neighbour cells for specified coordinates. Obviously does not include out of bounds cells
+     * Do some tests and make sure this doesnt explode...
+     * @param c
+     * @return 
+     */
+    public Coordinates[] GetNeighbours(Coordinates c)
+    {
+        int topleft_x;
+        int topleft_y;
+        
+        int bottomright_x;
+        int bottomright_y;
+        
+        topleft_x = c.x <= 0 ? 0 : c.x - 1;
+        topleft_y = c.y <= 0 ? 0 : c.y - 1;
+        
+        bottomright_x = c.x >= size - 1 ? size - 1 : c.x + 1;
+        bottomright_y = c.y >= size - 1 ? size - 1 : c.y + 1;
+        
+        Coordinates[] coordinates = new Coordinates[8]; // Cant be more than 8 neighbours aye?
+        int n = 0;
+        for (int i = topleft_x; i <= bottomright_x; i++) {
+            for (int j = topleft_y; j <= bottomright_y; j++) {
+                coordinates[n++] = new Coordinates(i, j);
+            }
+        }
+        
+        return coordinates;
+    }
+    
     
     /**
      * Start the game

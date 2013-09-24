@@ -26,7 +26,7 @@ public class AstartestConsole
         System.out.println();
         
         
-        for (MinHeapItem item : h.heap)
+        for (HeapItem item : h.heap)
         {
             if (item != null)
             {
@@ -36,7 +36,7 @@ public class AstartestConsole
         
         h.DeleteMin();
         System.out.println();
-        for (MinHeapItem item : h.heap)
+        for (HeapItem item : h.heap)
         {
             if (item != null)
             {
@@ -46,7 +46,7 @@ public class AstartestConsole
         
         h.DeleteMin();
         System.out.println();
-        for (MinHeapItem item : h.heap)
+        for (HeapItem item : h.heap)
         {
             if (item != null)
             {
@@ -56,7 +56,7 @@ public class AstartestConsole
         
          h.DeleteMin();
         System.out.println();
-        for (MinHeapItem item : h.heap)
+        for (HeapItem item : h.heap)
         {
             if (item != null)
             {

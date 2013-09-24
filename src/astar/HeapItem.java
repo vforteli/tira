@@ -8,9 +8,9 @@ package astar;
  *
  * @author verne_000
  */
-public class MinHeapItem
+public class HeapItem
 {
-    public MinHeapItem(int _key, Object _item)
+    public HeapItem(int _key, Object _item)
     {
         this.key = _key;
         this.item = _item;

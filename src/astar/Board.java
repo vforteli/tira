@@ -281,18 +281,12 @@ public class Board
      * @return 
      */
     public Coordinates[] GetNeighbours(Coordinates c)
-    {
-        int topleft_x;
-        int topleft_y;
+    {      
+        int topleft_x = c.x <= 0 ? 0 : c.x - 1;
+        int topleft_y = c.y <= 0 ? 0 : c.y - 1;
         
-        int bottomright_x;
-        int bottomright_y;
-        
-        topleft_x = c.x <= 0 ? 0 : c.x - 1;
-        topleft_y = c.y <= 0 ? 0 : c.y - 1;
-        
-        bottomright_x = c.x >= size - 1 ? size - 1 : c.x + 1;
-        bottomright_y = c.y >= size - 1 ? size - 1 : c.y + 1;
+        int bottomright_x = c.x >= size - 1 ? size - 1 : c.x + 1;
+        int bottomright_y = c.y >= size - 1 ? size - 1 : c.y + 1;
         
         Coordinates[] coordinates = new Coordinates[8]; // Cant be more than 8 neighbours aye?
         int n = 0;

@@ -217,7 +217,7 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(Board.cellstate[][] cells)
+    private void DrawBoard(int[][] cells)
     { 
         BoardPanel.removeAll();
         BoardPanel.setLayout(new GridLayout(cells.length, cells.length));
@@ -225,9 +225,9 @@ public class AstarGUI extends javax.swing.JFrame
 
         int x = 0; 
         int y = 0;
-        for (Board.cellstate[] row : cells)
+        for (int[] row : cells)
         {
-            for (Board.cellstate cell : row)
+            for (int cell : row)
             {
                 JPanel cellpanel = new JPanel();
                 cellpanel.setEnabled(true);
@@ -255,22 +255,10 @@ public class AstarGUI extends javax.swing.JFrame
                     }
                 });
                 
-                if (cell == Board.cellstate.Obstacle)         
+                if (cell == -1)         
                 {
                     cellpanel.setBackground(Color.black);
-                }
-                else if (cell == Board.cellstate.Hit)         
-                {
-                    cellpanel.setBackground(Color.red);
-                }
-                else if (cell == Board.cellstate.Miss)         
-                {
-                    cellpanel.setBackground(Color.gray);
-                }
-                else if (cell == null)
-                {
-                    cellpanel.setBackground(Color.blue);
-                }  
+                } 
            
                 BoardPanel.add(cellpanel);
                 x++;
@@ -278,7 +266,8 @@ public class AstarGUI extends javax.swing.JFrame
             x = 0;
             y++;
         }
-        BoardPanel.revalidate();        
+           
+        BoardPanel.revalidate();    // Forces panel redraw    
     }
     
     

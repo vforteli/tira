@@ -15,28 +15,9 @@ import java.util.Random;
  * @author vforteli
  */
 public class Board 
-{    
-    /**
-     * Represents the states a cell on the board can be in. Note that null is also a valid state...
-     */
-    public enum cellstate {
-        /**
-         *
-         */
-        Obstacle,
-        /**
-         *
-         */
-        Hit,
-        /**
-         *
-         */
-        Miss        
-    }
-    
+{       
     // Row major, ie yx. Not xy!
-    private cellstate[][] board;
-    private int size;
+    private int[][] board;
     
     /**
      * Indicates if the game is running
@@ -50,14 +31,30 @@ public class Board
         
     
     /**
+     * Height of the board. Currently only supports square boards so width is redundant...
+     * @return 
+     */
+    public int getHeight()    
+    {
+        return this.board.length;
+    }
+    public int getWidth()
+    {
+        // There cannot be width without height.
+        // - Old Chinese saying
+        return this.board[0].length;
+    }
+            
+    
+    
+    /**
      * Create a new board with specified size
      * 
      * @param Size Integer size of one side of the board
      */
     public Board(int Size) 
     {
-        this.size = Size;
-        this.board = new cellstate[size][size];
+        this.board = new int[Size][Size];
     }
     
     /**
@@ -106,14 +103,14 @@ public class Board
         {
             for (int i = y1; i <= y2; i++)
             {
-                board[i][x1] = cellstate.Obstacle;
+                board[i][x1] = -1;
             } 
         }
         else    // Horizontal
         {
             for (int i = x1; i <= x2; i++)
             {
-                board[y1][i] = cellstate.Obstacle;
+                board[y1][i] = -1;
             } 
         }        
         return true;
@@ -133,8 +130,8 @@ public class Board
         while (true)
         {
             Random r = new Random();
-            int i = r.nextInt(this.size - length + 1);
-            int j = r.nextInt(this.size); 
+            int i = r.nextInt(this.getHeight() - length + 1);
+            int j = r.nextInt(this.getHeight()); 
             
             if (r.nextBoolean())    // Horizontal
             {                
@@ -155,11 +152,11 @@ public class Board
     
     
     /**
-     * Get the board as a cellstate array of arrays. Coordinates are yx.
+     * Get the board as a int array of arrays. Coordinates are yx.
      * 
-     * @return cellstate array of arrays
+     * @return int array of arrays
      */
-    public cellstate[][] GetBoard() 
+    public int[][] GetBoard() 
     {
         return this.board;        
     }
@@ -168,14 +165,12 @@ public class Board
     /**
      * Click at the specified coordinates.
      * 
-     * It is possible to fire at the same coordinates more than once. What does the rules say?
-     * 
      * @param x
      * @param y
-     * @return The new cellstate of the cell fire on
+     * @return The value of the cell clicked
      * @throws Exception 
      */
-    public cellstate Click(int x, int y) throws Exception 
+    public int Click(int x, int y) throws Exception 
     {
         if (!this.isRunning)
         {
@@ -186,15 +181,7 @@ public class Board
             throw new Exception("Invalid coordinates");
         }
         
-        if (board[y][x] == cellstate.Obstacle)
-        {           
-            return board[y][x] = cellstate.Hit;
-        }       
-        else if (board[y][x] == cellstate.Hit)
-        {
-            return cellstate.Hit;            
-        }
-        return board[y][x] = cellstate.Miss;       
+        return board[y][x];     
     }
     
     
@@ -218,6 +205,7 @@ public class Board
     
     /**
      * Checks a obstacles surrounding cells to make sure no other obstacle occupies any of these cells
+     * Assumes x2 > x1 and y2 > y1, otherwise cockup ensured
      * 
      * @param x1
      * @param y1
@@ -227,17 +215,15 @@ public class Board
      */
     private boolean CheckAdjecentCells(int x1, int y1, int x2, int y2) 
     {
-        int box1x = x1 - 1;
-        box1x = box1x < 0 ? 0 : box1x;
-        int box1y = y1 - 1;
-        box1y = box1y < 0 ? 0 : box1y;
-        int box2x = x2 + 1;
-        box2x = box2x >= size - 1 ? size - 1 : box2x;
-        int box2y = y2+1;
-        box2y = box2y >= size - 1 ? size - 1 : box2y;
-        for (int i = box1x; i <= box2x; i++) {
-            for (int j = box1y; j <= box2y; j++) {
-                if (board[j][i] == cellstate.Obstacle) {
+        int topleft_x = x1 <= 0 ? 0 : x1 - 1;
+        int topleft_y = y1 <= 0 ? 0 : y1 - 1;
+        
+        int bottomright_x = x2 >= this.getHeight() - 1 ? this.getHeight() - 1 : x2 + 1;
+        int bottomright_y = y2 >= this.getHeight() - 1 ? this.getHeight() - 1 : y2 + 1;
+              
+        for (int i = topleft_x; i <= bottomright_x; i++) {
+            for (int j = topleft_y; j <= bottomright_y; j++) {
+                if (board[j][i] == -1) {
                     return true;
                 }
             }
@@ -256,8 +242,8 @@ public class Board
         int topleft_x = c.x <= 0 ? 0 : c.x - 1;
         int topleft_y = c.y <= 0 ? 0 : c.y - 1;
         
-        int bottomright_x = c.x >= size - 1 ? size - 1 : c.x + 1;
-        int bottomright_y = c.y >= size - 1 ? size - 1 : c.y + 1;
+        int bottomright_x = c.x >= this.getHeight() - 1 ? this.getHeight() - 1 : c.x + 1;
+        int bottomright_y = c.y >= this.getHeight() - 1 ? this.getHeight() - 1 : c.y + 1;
         
         Coordinates[] coordinates = new Coordinates[8]; // Cant be more than 8 neighbours aye?
         int n = 0;

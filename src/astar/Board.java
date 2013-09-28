@@ -8,6 +8,7 @@ package astar;
  *
  * @author vforteli
  */
+import java.util.ArrayList;
 import java.util.Random; 
 
 /**
@@ -211,8 +212,10 @@ public class Board
     
         
     private void FindPath(Coordinates start, Coordinates end)
-    {    
+    { 
+        ArrayList<String> closedset = new ArrayList<String>();  // Replace with own implementation...
         MinHeap openset = new MinHeap();
+        
         Node startnode = new Node();
         startnode.g_score = 0;
         startnode.h_score = HeuristicDistance.CalculateOptimalDistance(start, end);
@@ -223,6 +226,7 @@ public class Board
         while (loopbreaker >= 0 && !openset.getIsEmpty())
         {
             Node currentnode = (Node)openset.DeleteMin();
+            closedset.add(currentnode.coordinates.getHumanCoordinates());
             System.out.println("Current node: " + currentnode.coordinates.x + ", " + currentnode.coordinates.y);
             
             if (currentnode.coordinates.equals(end))
@@ -234,13 +238,7 @@ public class Board
             Coordinates[] neighbours = GetNeighbours(currentnode.coordinates);
             
             for (Coordinates c : neighbours)
-            {
-                // Skip empty nodes... yeye the array could be trimmed, or a list could be used
-                if (c == null)
-                {
-                    continue;
-                }
-                
+            {                
                 // Continue if this is a wall
                 if (getCellValue(c) == -1)
                 {
@@ -252,6 +250,12 @@ public class Board
                 node.h_score = HeuristicDistance.CalculateOptimalDistance(c, end);
                 node.g_score = currentnode.g_score + 1;
                 node.coordinates = c;
+                
+                // Replace with own implementation of set
+                if (closedset.contains(c.getHumanCoordinates()))
+                {
+                    continue;
+                }
                 
                 openset.Insert(node.getF_score(), node);
                 
@@ -284,7 +288,7 @@ public class Board
      */
     private boolean isValidCoordinates(int x, int y) 
     {
-        if ((x > board[0].length | x < 0) | (y > board.length | y < 0))
+        if ((x > this.getWidth() | x < 0) | (y > this.getHeight() | y < 0))
         {
             return false;
         }
@@ -347,7 +351,14 @@ public class Board
             }
         }
         
-        return coordinates;
+        // I dont want to have to check for empty array slots all the time...
+        Coordinates[] returnarray = new Coordinates[n];
+        for (int i = 0; i < n; i++)
+        {
+            returnarray[i] = coordinates[i];        
+        }
+        
+        return returnarray;
     }
     
     

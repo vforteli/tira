@@ -212,22 +212,26 @@ public class Board
         
     private void FindPath(Coordinates start, Coordinates end)
     {    
-        System.out.println("Find path");
         MinHeap openset = new MinHeap();
-        
-        openset.Insert(HeuristicDistance.CalculateOptimalDistance(start, end), start);
-        
-        while (!openset.getIsEmpty())
+        Node startnode = new Node();
+        startnode.g_score = 0;
+        startnode.h_score = HeuristicDistance.CalculateOptimalDistance(start, end);
+        startnode.coordinates = start;
+        openset.Insert(startnode.getF_score(), startnode);
+
+        int loopbreaker = 100;
+        while (loopbreaker >= 0 && !openset.getIsEmpty())
         {
-            Coordinates current = openset.DeleteMin();
+            Node currentnode = (Node)openset.DeleteMin();
+            System.out.println("Current node: " + currentnode.coordinates.x + ", " + currentnode.coordinates.y);
             
-            if (current.equals(end))
+            if (currentnode.coordinates.equals(end))
             {
-                System.out.println("wiih");
+                System.out.println("Return path...");
                 return;     // Reconstruct and return the path
             }
             
-            Coordinates[] neighbours = GetNeighbours(current);
+            Coordinates[] neighbours = GetNeighbours(currentnode.coordinates);
             
             for (Coordinates c : neighbours)
             {
@@ -237,19 +241,30 @@ public class Board
                     continue;
                 }
                 
-                openset.Insert(HeuristicDistance.CalculateOptimalDistance(c, end), c);
+                // Continue if this is a wall
+                if (getCellValue(c) == -1)
+                {
+                    continue;
+                }
+                
+                
+                Node node = new Node();
+                node.h_score = HeuristicDistance.CalculateOptimalDistance(c, end);
+                node.g_score = currentnode.g_score + 1;
+                node.coordinates = c;
+                
+                openset.Insert(node.getF_score(), node);
                 
                 
             }
-            
             
             // Debug stuff
-            while (!openset.getIsEmpty())
-            {
-                Coordinates c = openset.DeleteMin();
-                System.out.println(c.x + "," + c.y);
-            }
-            break;
+           
+                Node node = (Node)openset.Peek();
+                System.out.println(node.coordinates.x + "," + node.coordinates.y + " fscore: " + node.getF_score() + ", gscore: " + node.g_score + ", hscore: " + node.h_score);
+            
+            
+            loopbreaker--;
         }
         
         // If we get here, no path was found...
@@ -333,6 +348,12 @@ public class Board
         }
         
         return coordinates;
+    }
+    
+    
+    public int getCellValue(Coordinates c)
+    {
+        return this.board[c.y][c.x];
     }
     
     

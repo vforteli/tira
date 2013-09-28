@@ -16,15 +16,15 @@ public class MinHeap
     public MinHeap()
     {
         // Hmm, what should the initial size be, and when should it grow/shrink?
-        heap = new HeapItem[20];
+        heap = new HeapItem[2000];
         tail = 0;
     }
     
     
     
-    public void Insert(int value, Coordinates coordinates)
+    public void Insert(int value, Object o)
     {        
-        HeapItem item = new HeapItem(value, coordinates);
+        HeapItem item = new HeapItem(value, o);
         
         heap[tail] = item;
         BubbleUp(tail);
@@ -86,7 +86,7 @@ public class MinHeap
         heap[index] = node;    
     }
     
-    public Coordinates DeleteMin()
+    public Object DeleteMin()
     {
         if (tail > 0)
         {
@@ -101,10 +101,22 @@ public class MinHeap
             // Find correct place for new root
             BubbleDown(0);
                               
-            return (Coordinates)root.item;
+            return root.item;
         }
         return null;
     }
+    
+    public Object Peek()
+    {
+        if (tail > 0)
+        {
+            // Get the root item, ie the lowest key
+            HeapItem root = heap[0];                
+            return root.item;
+        }
+        return null;
+        
+    }  
     
     public boolean getIsEmpty()
     {

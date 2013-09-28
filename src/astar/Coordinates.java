@@ -14,6 +14,7 @@ public class Coordinates
      * X
      */
     public int x;
+    
     /**
      * Y
      */

@@ -162,6 +162,8 @@ public class Board
     }
     
     
+    private Coordinates previousCellClicked;
+    
     /**
      * Click at the specified coordinates.
      * 
@@ -172,6 +174,7 @@ public class Board
      */
     public int Click(int x, int y) throws Exception 
     {
+        Coordinates c = new Coordinates(x, y);
         if (!this.isRunning)
         {
             throw new Exception("Game is not started");
@@ -181,8 +184,72 @@ public class Board
             throw new Exception("Invalid coordinates");
         }
         
+        
+        // Debug stuff
+//        Coordinates[] cs = this.GetNeighbours(new Coordinates(x, y));
+//        for (Coordinates c : cs)
+//        {
+//            if (c != null)
+//            {
+//                System.out.println("Neighbour" + c.x + ", " + c.y);
+//            }
+//        }
+        
+        if (previousCellClicked != null)
+        {
+            // Do the astar search here
+            FindPath(previousCellClicked, c);
+        }
+        
+        
+        previousCellClicked = c;
+        
         return board[y][x];     
     }
+    
+    
+    
+        
+    private void FindPath(Coordinates start, Coordinates end)
+    {    
+        System.out.println("Find path");
+        MinHeap openset = new MinHeap();
+        
+        openset.Insert(HeuristicDistance.CalculateOptimalDistance(start, end), start);
+//          closedset := the empty set    // The set of nodes already evaluated.
+//          came_from := the empty map    // The map of navigated nodes.
+        
+        while (!openset.getIsEmpty())
+        {
+            Coordinates current = openset.DeleteMin();
+            
+            if (current.equals(end))
+            {
+                System.out.println("wiih");
+                return;     // Reconstruct and return the path
+            }
+            
+            Coordinates[] neighbours = GetNeighbours(current);
+            
+            for (Coordinates c : neighbours)
+            {
+                
+            }
+            
+            // Do stuff
+            
+            
+        }
+        
+
+        
+//          g_score[start] := 0    // Cost from start along best known path.
+//          // Estimated total cost from start to goal through y.
+//          f_score[start] := g_score[start] + heuristic_cost_estimate(start, goal)
+    }
+    
+    
+    
     
     
     
@@ -249,6 +316,11 @@ public class Board
         int n = 0;
         for (int i = topleft_x; i <= bottomright_x; i++) {
             for (int j = topleft_y; j <= bottomright_y; j++) {
+                // Dont include self... daah
+                if (i == c.x && j == c.y)
+                {
+                    continue;
+                }
                 coordinates[n++] = new Coordinates(i, j);
             }
         }

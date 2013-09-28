@@ -216,8 +216,6 @@ public class Board
         MinHeap openset = new MinHeap();
         
         openset.Insert(HeuristicDistance.CalculateOptimalDistance(start, end), start);
-//          closedset := the empty set    // The set of nodes already evaluated.
-//          came_from := the empty map    // The map of navigated nodes.
         
         while (!openset.getIsEmpty())
         {
@@ -233,19 +231,28 @@ public class Board
             
             for (Coordinates c : neighbours)
             {
+                // Skip empty nodes... yeye the array could be trimmed, or a list could be used
+                if (c == null)
+                {
+                    continue;
+                }
+                
+                openset.Insert(HeuristicDistance.CalculateOptimalDistance(c, end), c);
+                
                 
             }
             
-            // Do stuff
             
-            
+            // Debug stuff
+            while (!openset.getIsEmpty())
+            {
+                Coordinates c = openset.DeleteMin();
+                System.out.println(c.x + "," + c.y);
+            }
+            break;
         }
         
-
-        
-//          g_score[start] := 0    // Cost from start along best known path.
-//          // Estimated total cost from start to goal through y.
-//          f_score[start] := g_score[start] + heuristic_cost_estimate(start, goal)
+        // If we get here, no path was found...
     }
     
     

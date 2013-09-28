@@ -26,11 +26,9 @@ public class MinHeap
     {        
         HeapItem item = new HeapItem(value, coordinates);
         
-        // Insert the item in the last place and call bubbleup to get item in correct place
         heap[tail] = item;
         BubbleUp(tail);
-        
-        
+           
         tail++;
         if (tail == heap.length)
         {
@@ -51,8 +49,7 @@ public class MinHeap
             parentindex = (int)Math.floor(((double)index - 1) / 2);
         }
         heap[index] = last;
-    }
-    
+    }   
     
     private void BubbleDown(int index)
     {

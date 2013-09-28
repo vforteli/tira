@@ -23,7 +23,8 @@ import javax.swing.JPanel;
  */
 public class AstarGUI extends javax.swing.JFrame
 {
-    private Board board = null; 
+    private Board board; 
+    private Coordinates previousCoordinates;
     
     /**
      * Creates new form AstarGUI
@@ -229,54 +230,7 @@ public class AstarGUI extends javax.swing.JFrame
         {
             for (int cell : row)
             {
-                Coordinates c = new Coordinates(x, y);
-                JPanel cellpanel = new JPanel();
-                cellpanel.setEnabled(true);
-                cellpanel.setName(c.getHumanCoordinates());
-                cellpanel.setPreferredSize(new Dimension(3, 3));
-                cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-            
-                // This is probably insane... but whatever
-                cellpanel.addMouseListener(new MouseAdapter() 
-                {
-                    @Override
-                    public void mousePressed(MouseEvent e) 
-                    {  
-                        JPanel cell =(JPanel)e.getSource();
-                        Coordinates c = Coordinates.ParseCoordinates(cell.getName());
-
-                        try
-                        {
-                            ClickBoard(c);
-                        } 
-                        catch (Exception ex)
-                        {
-                            Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                    
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        JPanel cell =(JPanel)e.getSource();
-                        Coordinates c = Coordinates.ParseCoordinates(cell.getName());
-                        ScoreLabel.setText(c.x + ", " + c.y);
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        JPanel cell =(JPanel)e.getSource();
-                        ScoreLabel.setText("");
-                    }
-                });
-                
-                if (cell == -1)         
-                {
-                    cellpanel.setBackground(Color.black);
-                } 
-                else if (previousCoordinates != null && previousCoordinates.equals(c))
-                {
-                    cellpanel.setBackground(Color.ORANGE);
-                }
+                JPanel cellpanel = DrawCell(x, y, cell);
            
                 BoardPanel.add(cellpanel);
                 x++;
@@ -289,14 +243,6 @@ public class AstarGUI extends javax.swing.JFrame
     }
     
     
-       
-
-    
-
-    
-    
-    private Coordinates previousCoordinates;
-       
     private void ClickBoard(Coordinates c)
     {
         if (board != null && board.getIsRunning())
@@ -435,4 +381,55 @@ public class AstarGUI extends javax.swing.JFrame
     private java.awt.Label label2;
     // End of variables declaration//GEN-END:variables
 
+    private JPanel DrawCell(int x, int y, int cell)
+    {
+        Coordinates c = new Coordinates(x, y);
+        JPanel cellpanel = new JPanel();
+        cellpanel.setEnabled(true);
+        cellpanel.setName(c.getHumanCoordinates());
+        cellpanel.setPreferredSize(new Dimension(3, 3));
+        cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        // This is probably insane... but whatever
+        cellpanel.addMouseListener(new MouseAdapter() 
+        {
+            @Override
+            public void mousePressed(MouseEvent e) 
+            {  
+                JPanel cell =(JPanel)e.getSource();
+                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
+
+                try
+                {
+                    ClickBoard(c);
+                } 
+                catch (Exception ex)
+                {
+                    Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                JPanel cell =(JPanel)e.getSource();
+                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
+                ScoreLabel.setText(c.x + ", " + c.y);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                JPanel cell =(JPanel)e.getSource();
+                ScoreLabel.setText("");
+            }
+        });
+        
+        if (cell == -1)         
+        {
+            cellpanel.setBackground(Color.black);
+        } 
+        else if (previousCoordinates != null && previousCoordinates.equals(c))
+        {
+            cellpanel.setBackground(Color.ORANGE);
+        }
+        return cellpanel;
+    }
 }

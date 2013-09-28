@@ -135,7 +135,7 @@
                       <Component id="jlabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="ScoreLabel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="14" pref="329" max="32767" attributes="0"/>
+                      <EmptySpace min="14" pref="316" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -174,7 +174,7 @@
     </Container>
     <Component class="javax.swing.JLabel" name="jlabel2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Score"/>
+        <Property name="text" type="java.lang.String" value="Location"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="ScoreLabel">

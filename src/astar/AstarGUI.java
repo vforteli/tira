@@ -123,7 +123,7 @@ public class AstarGUI extends javax.swing.JFrame
             .addGap(0, 388, Short.MAX_VALUE)
         );
 
-        jlabel2.setText("Score");
+        jlabel2.setText("Location");
 
         ScoreLabel.setMaximumSize(new java.awt.Dimension(34, 14));
         ScoreLabel.setMinimumSize(new java.awt.Dimension(34, 14));
@@ -160,7 +160,7 @@ public class AstarGUI extends javax.swing.JFrame
                         .addComponent(jlabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 329, Short.MAX_VALUE))))
+                        .addGap(14, 316, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,9 +229,10 @@ public class AstarGUI extends javax.swing.JFrame
         {
             for (int cell : row)
             {
+                Coordinates c = new Coordinates(x, y);
                 JPanel cellpanel = new JPanel();
                 cellpanel.setEnabled(true);
-                cellpanel.setName(new Coordinates(x, y).getHumanCoordinates());
+                cellpanel.setName(c.getHumanCoordinates());
                 cellpanel.setPreferredSize(new Dimension(3, 3));
                 cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             
@@ -253,12 +254,29 @@ public class AstarGUI extends javax.swing.JFrame
                             Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
+                    
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        JPanel cell =(JPanel)e.getSource();
+                        Coordinates c = Coordinates.ParseCoordinates(cell.getName());
+                        ScoreLabel.setText(c.x + ", " + c.y);
+                    }
+
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        JPanel cell =(JPanel)e.getSource();
+                        ScoreLabel.setText("");
+                    }
                 });
                 
                 if (cell == -1)         
                 {
                     cellpanel.setBackground(Color.black);
                 } 
+                else if (previousCoordinates != null && previousCoordinates.equals(c))
+                {
+                    cellpanel.setBackground(Color.ORANGE);
+                }
            
                 BoardPanel.add(cellpanel);
                 x++;
@@ -266,7 +284,7 @@ public class AstarGUI extends javax.swing.JFrame
             x = 0;
             y++;
         }
-           
+        
         BoardPanel.revalidate();    // Forces panel redraw    
     }
     

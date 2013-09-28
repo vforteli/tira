@@ -213,7 +213,7 @@ public class Board
         
     private void FindPath(Coordinates start, Coordinates end)
     { 
-        ArrayList<String> closedset = new ArrayList<String>();  // Replace with own implementation...
+        ArrayList<String> closedset = new ArrayList();  // Replace with own implementation...
         MinHeap openset = new MinHeap();
         
         Node startnode = new Node();
@@ -222,8 +222,7 @@ public class Board
         startnode.coordinates = start;
         openset.Insert(startnode.getF_score(), startnode);
 
-        int loopbreaker = 100;
-        while (loopbreaker >= 0 && !openset.getIsEmpty())
+        while (!openset.getIsEmpty())
         {
             Node currentnode = (Node)openset.DeleteMin();
             closedset.add(currentnode.coordinates.getHumanCoordinates());
@@ -266,9 +265,6 @@ public class Board
            
                 Node node = (Node)openset.Peek();
                 System.out.println(node.coordinates.x + "," + node.coordinates.y + " fscore: " + node.getF_score() + ", gscore: " + node.g_score + ", hscore: " + node.h_score);
-            
-            
-            loopbreaker--;
         }
         
         // If we get here, no path was found...

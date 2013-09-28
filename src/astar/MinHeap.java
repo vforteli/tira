@@ -108,4 +108,9 @@ public class MinHeap
         }
         return null;
     }
+    
+    public boolean getIsEmpty()
+    {
+        return tail == 0;
+    }
 }

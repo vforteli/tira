@@ -65,4 +65,15 @@ public class Coordinates
             return null;
         }        
     }
+    
+    
+    public boolean equals(Object other)
+    {
+        Coordinates c = (Coordinates)other;
+        if (this.x == c.x && this.y == c.y)
+        {
+            return true;
+        }
+        return false;
+    }
 }  

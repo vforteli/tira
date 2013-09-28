@@ -303,7 +303,8 @@ public class AstarGUI extends javax.swing.JFrame
                 Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }
+    }  
+    
     
     
     

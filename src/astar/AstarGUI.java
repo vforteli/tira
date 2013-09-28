@@ -303,16 +303,10 @@ public class AstarGUI extends javax.swing.JFrame
                 }
                 previousCoordinates = c;
                         
-                board.Fire(c.x, c.y);
+                board.Click(c.x, c.y);
                
                 
-                DrawBoard(board.GetBoard());
-
-               
-                if (board.getShipcells() == 0)
-                {
-                    GameCompleted();
-                }
+                DrawBoard(board.GetBoard());            
             } 
             catch (Exception ex)
             {

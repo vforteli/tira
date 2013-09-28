@@ -47,27 +47,7 @@ public class Board
         return this.isRunning;
     }
     private boolean isRunning;
-    
-    /**
-     *  Fire count, aka number of turns
-     * @return number of turns used
-     */
-    public int getFireCount() {
-        return this.firecount;
-    }
-    private int firecount;
-    
-    /**
-     * Returns the number of ship cells unsunk
-     * 
-     * @return Number of shipcellsleft unsunk
-     */
-    public int getShipcells() {
-        return this.shipcellsleft;
-    }
-    private int shipcellsleft = 0;
-    private int shipcells = 0;
-    
+        
     
     /**
      * Create a new board with specified size
@@ -81,12 +61,12 @@ public class Board
     }
     
     /**
-     * Add a ship to the board.
+     * Add a obstacle to the board.
      * 
-     * Add a ship to the board. 
-     * An exception is thrown if the ship would collide with another ship already placed.
-     * Ships cannot be placed next to each other, not even diagonally.
-     * Ships cannot be placed diagonally.
+     * Add a obstacle to the board. 
+     * An exception is thrown if the obstacle would collide with another obstacle already placed.
+     * Obstacles cannot be placed next to each other, not even diagonally.
+     * Obstacles cannot be placed diagonally.
      * x2 and y2 should be greater than x1 and y1 respectively
      * 
      * 
@@ -94,7 +74,7 @@ public class Board
      * @param y1
      * @param x2
      * @param y2
-     * @return True if the ship was successfully placed, False if another ship already occupies the cells
+     * @return True if the obstacle was successfully placed, False if another obstacle already occupies the cells
      * @throws Exception 
      */
     public boolean AddObstacle(int x1, int y1, int x2, int y2) throws Exception 
@@ -104,30 +84,29 @@ public class Board
             throw new Exception("Game is already started");
         }
         
-        // No negative 4th dimension quantum ships allowed
+        // No negative 4th dimension quantum obstacles allowed
         if (x1 > x2 || y1 > y2)
         {
             throw new Exception("x1 and y1 must be smaller than x2 and y2");
         }
         
-        // Make sure the ship isnt diagonal
+        // Make sure the obstacle isnt diagonal
         if (!(x1 == x2 | y1 == y2))
         {
-            throw new Exception("Ships cannot be diagonally placed");  
+            throw new Exception("Obstacles cannot be diagonally placed");  
         }
         
-        // Check adjecent cells, apparently ships are not allowed to touch, not even diagonally
+        // Check adjecent cells, apparently obstacles are not allowed to touch, not even diagonally
         if (CheckAdjecentCells(x1, y1, x2, y2)) {
             return false;
         }
         
-        // Place the ship
+        // Place the obstacle
         if (x1 == x2)   // Vertical
         {
             for (int i = y1; i <= y2; i++)
             {
                 board[i][x1] = cellstate.Obstacle;
-                shipcellsleft++;
             } 
         }
         else    // Horizontal
@@ -135,7 +114,6 @@ public class Board
             for (int i = x1; i <= x2; i++)
             {
                 board[y1][i] = cellstate.Obstacle;
-                shipcellsleft++;
             } 
         }        
         return true;
@@ -143,7 +121,7 @@ public class Board
       
     
     /**
-     * Add a random ship to the board with the specified length
+     * Add a random obstacle to the board with the specified length
      * 
      * @param length
      * @return True if successful
@@ -151,7 +129,7 @@ public class Board
      */
     public boolean AddRandomObstacle(int length) throws Exception 
     {
-        // Loop forever until a ship has successfully been placed... :p
+        // Loop forever until a obstacle has successfully been placed... :p
         while (true)
         {
             Random r = new Random();
@@ -188,7 +166,7 @@ public class Board
     
     
     /**
-     * Fire at the specified coordinates.
+     * Click at the specified coordinates.
      * 
      * It is possible to fire at the same coordinates more than once. What does the rules say?
      * 
@@ -197,7 +175,7 @@ public class Board
      * @return The new cellstate of the cell fire on
      * @throws Exception 
      */
-    public cellstate Fire(int x, int y) throws Exception 
+    public cellstate Click(int x, int y) throws Exception 
     {
         if (!this.isRunning)
         {
@@ -207,16 +185,9 @@ public class Board
         {
             throw new Exception("Invalid coordinates");
         }
-        firecount++;
+        
         if (board[y][x] == cellstate.Obstacle)
-        {
-            shipcellsleft--;
-            
-            if (shipcellsleft == 0)
-            {
-                this.isRunning = false;
-            }
-            
+        {           
             return board[y][x] = cellstate.Hit;
         }       
         else if (board[y][x] == cellstate.Hit)
@@ -246,7 +217,7 @@ public class Board
     
     
     /**
-     * Checks a ships surrounding cells to make sure no other ship occupies any of these cells
+     * Checks a obstacles surrounding cells to make sure no other obstacle occupies any of these cells
      * 
      * @param x1
      * @param y1
@@ -302,16 +273,14 @@ public class Board
     
     /**
      * Start the game
-     * Returns true if successful. Make sure there are ships placed on the board..
+     * Returns true if successful. Make sure there are obstacles placed on the board..
      * @return 
      */
     public boolean StartGame()
     {
-        if (this.shipcellsleft > 0 && !this.isRunning)
+        if (!this.isRunning)
         {
-            this.firecount = 0;
-            this.isRunning = true;
-            this.shipcells = this.shipcellsleft;
+            this.isRunning = true;           
             return true;
         }
         return false;

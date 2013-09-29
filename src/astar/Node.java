@@ -31,4 +31,7 @@ public class Node
     
     public Coordinates coordinates;
     public boolean visited;
+    
+    
+    public Node parent;
 }

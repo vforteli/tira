@@ -17,7 +17,14 @@ import java.util.Random;
  */
 public class Board 
 {       
-    // Row major, ie yx. Not xy!
+    /**
+     * Get the board as a int array of arrays. Coordinates are yx.
+     * @return int array of arrays
+     */
+    public int[][] GetBoard() 
+    {
+        return this.board;        
+    }
     private int[][] board;
     
     /**
@@ -152,15 +159,7 @@ public class Board
     }
     
     
-    /**
-     * Get the board as a int array of arrays. Coordinates are yx.
-     * 
-     * @return int array of arrays
-     */
-    public int[][] GetBoard() 
-    {
-        return this.board;        
-    }
+
     
     
     private Coordinates previousCellClicked;
@@ -214,6 +213,8 @@ public class Board
     private void FindPath(Coordinates start, Coordinates end)
     { 
         ArrayList<String> closedset = new ArrayList();  // Replace with own implementation...
+        ArrayList<Node> camefrom = new ArrayList<>();  // Replace with something else...
+        
         MinHeap openset = new MinHeap();
         
         Node startnode = new Node();
@@ -250,7 +251,7 @@ public class Board
                 node.g_score = currentnode.g_score + 1;
                 node.coordinates = c;
                 
-                // Replace with own implementation of set
+                // Replace with own implementation of hashmap?
                 if (closedset.contains(c.getHumanCoordinates()))
                 {
                     continue;
@@ -263,8 +264,8 @@ public class Board
             
             // Debug stuff
            
-                Node node = (Node)openset.Peek();
-                System.out.println(node.coordinates.x + "," + node.coordinates.y + " fscore: " + node.getF_score() + ", gscore: " + node.g_score + ", hscore: " + node.h_score);
+            Node node = (Node)openset.Peek();
+            System.out.println(node.coordinates.x + "," + node.coordinates.y + " fscore: " + node.getF_score() + ", gscore: " + node.g_score + ", hscore: " + node.h_score);
         }
         
         // If we get here, no path was found...

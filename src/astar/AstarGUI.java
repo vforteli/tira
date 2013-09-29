@@ -308,6 +308,17 @@ public class AstarGUI extends javax.swing.JFrame
         {
             cellpanel.setBackground(Color.ORANGE);
         }
+        else
+        {
+            float min = 1f;
+            float max = 5f;
+            
+            float outmax = 0.7f;
+            float outmin = 1f;
+            
+            float brightness = outmin + (cell - min) * (outmax - outmin) / (max - min);
+            cellpanel.setBackground(Color.getHSBColor(0, 0, brightness));
+        }
         
         return cellpanel;
     }

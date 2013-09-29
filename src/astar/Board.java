@@ -59,7 +59,8 @@ public class Board
         {
             for (int j = 0; j < Size; j++)
             {
-                board[i][j] = 1;
+                int random = new Random().nextInt(6);
+                board[i][j] = random == 0 ? 1 : random; // :p
             }
         }
     }

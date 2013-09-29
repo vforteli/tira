@@ -9,6 +9,7 @@ package astar;
  * @author vforteli
  */
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random; 
 
 /**
@@ -180,7 +181,7 @@ public class Board
         
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
-        ArrayList<String> closedset = new ArrayList();  // Replace with own implementation...
+        ArrayList<String> closedset = new ArrayList<>();  // Replace with own implementation...
         MinHeap openset = new MinHeap();
         
         Node startnode = new Node(Heuristic.GetDistance(start, end), 0, start);
@@ -194,7 +195,6 @@ public class Board
             
             if (currentnode.coordinates.equals(end))
             {
-                System.out.println("Return path...");
                 return ReconstructPath(currentnode);     // Reconstruct and return the path
             }
             
@@ -208,27 +208,28 @@ public class Board
                     continue;
                 }
                 
-                // Replace with own implementation of hashmap
                 // Skip nodes that have been checked
                 if (closedset.contains(c.getHumanCoordinates()))
                 {
+                    System.out.println("Closed set already contains: " + c.getHumanCoordinates());
                     continue;
                 }
-                
-                // hmm, maybe count the weight as current / 2 + neighbour / 2 ?
-                weight = weight / 2 + getCellValue(currentnode.coordinates) / 2;
                                
-                // Multiply diagonal weight with sqrt(2). Otherwise the path will look a bit daft...  
+                float currentweight = getCellValue(currentnode.coordinates);
                 if (currentnode.coordinates.x != c.x && currentnode.coordinates.y != c.y)
                 {
-                    weight *= (float)Math.sqrt(2);
+                    weight = (float)Math.sqrt(2 * Math.pow(weight, 2));
+                    currentweight = (float)Math.sqrt(2 * Math.pow(currentweight, 2));
                 }
+                
+                weight = weight + currentweight;
                 
                 // The nodes basically work like a linked list... This enables reconstructing the path, but makes it really inefficient to search for nodes if they need to be updated
                 Node node = new Node(Heuristic.GetDistance(c, end), currentnode.g_score + weight, c);
                 node.parent = currentnode;
                               
                 openset.Insert(node.getF_score(), node);
+                System.out.println("Insert node: " + node.coordinates.getHumanCoordinates());
             }
         }
         
@@ -239,6 +240,7 @@ public class Board
     
     private ArrayList<Coordinates> ReconstructPath(Node node)
     {
+        System.out.println("Return path...");
         ArrayList<Coordinates> nodes = new ArrayList<>();  
         nodes.add(node.coordinates);
         while (node.parent != null)

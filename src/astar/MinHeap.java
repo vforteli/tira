@@ -4,6 +4,8 @@
  */
 package astar;
 
+import java.util.HashSet;
+
 /**
  *
  * @author verne_000
@@ -12,18 +14,25 @@ public class MinHeap
 {
     protected HeapItem[] heap;
     private int tail;
+    private HashSet<Object> hash;   // Replace with own implementation
     
     public MinHeap()
     {
         // Hmm, what should the initial size be, and when should it grow/shrink?
         heap = new HeapItem[2000];
+        hash = new HashSet<>(2000);
         tail = 0;
     }
     
     
     
     public void Insert(float value, Object o)
-    {        
+    {    
+        if (!hash.add(((Node)o).coordinates.getHumanCoordinates()))
+        {
+            System.out.println("nyet");
+            return;
+        }
         HeapItem item = new HeapItem(value, o);
         
         heap[tail] = item;
@@ -35,6 +44,7 @@ public class MinHeap
             System.out.println("Increase size...");
             // increase the array size...            
         }
+        System.out.println("Insert, tail: " + tail);
     }
     
     private void BubbleUp(int index)
@@ -100,7 +110,7 @@ public class MinHeap
             
             // Find correct place for new root
             BubbleDown(0);
-                              
+            System.out.println("Delete, tail: " + tail); 
             return root.item;
         }
         return null;

@@ -68,6 +68,7 @@ public class Coordinates
     }
     
     
+    @Override
     public boolean equals(Object other)
     {
         Coordinates c = (Coordinates)other;

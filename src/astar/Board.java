@@ -8,6 +8,7 @@ package astar;
  *
  * @author vforteli
  */
+import com.sun.xml.internal.ws.api.config.management.Reconfigurable;
 import java.util.ArrayList;
 import java.util.Random; 
 
@@ -161,9 +162,6 @@ public class Board
     
 
     
-    
-    private Coordinates previousCellClicked;
-    
     /**
      * Click at the specified coordinates.
      * 
@@ -195,25 +193,15 @@ public class Board
 //            }
 //        }
         
-        if (previousCellClicked != null)
-        {
-            // Do the astar search here
-            FindPath(previousCellClicked, c);
-        }
-        
-        
-        previousCellClicked = c;
-        
         return board[y][x];     
     }
     
     
     
         
-    private void FindPath(Coordinates start, Coordinates end)
+    public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
         ArrayList<String> closedset = new ArrayList();  // Replace with own implementation...
-        ArrayList<Node> camefrom = new ArrayList<>();  // Replace with something else...
         
         MinHeap openset = new MinHeap();
         
@@ -232,7 +220,7 @@ public class Board
             if (currentnode.coordinates.equals(end))
             {
                 System.out.println("Return path...");
-                return;     // Reconstruct and return the path
+                return ReconstructPath(currentnode);     // Reconstruct and return the path
             }
             
             Coordinates[] neighbours = GetNeighbours(currentnode.coordinates);
@@ -244,12 +232,12 @@ public class Board
                 {
                     continue;
                 }
-                
-                
+                               
                 Node node = new Node();
                 node.h_score = HeuristicDistance.CalculateOptimalDistance(c, end);
-                node.g_score = currentnode.g_score + 1;
+                node.g_score = currentnode.g_score + 1;     // This can be replaced to use the weight of the cell instead...
                 node.coordinates = c;
+                node.parent = currentnode;
                 
                 // Replace with own implementation of hashmap?
                 if (closedset.contains(c.getHumanCoordinates()))
@@ -258,8 +246,6 @@ public class Board
                 }
                 
                 openset.Insert(node.getF_score(), node);
-                
-                
             }
             
             // Debug stuff
@@ -269,9 +255,28 @@ public class Board
         }
         
         // If we get here, no path was found...
+        return null;
     }
     
     
+    private ArrayList<Coordinates> ReconstructPath(Node node)
+    {
+        ArrayList<Coordinates> nodes = new ArrayList<>();  
+        int i = 0;
+        // Need to reverse this also...
+        
+        nodes.add(node.coordinates);
+        while (node.parent != null)
+        {
+            System.out.println(node.coordinates.x + "," + node.coordinates.y);   
+            node = node.parent;
+            
+            nodes.add(node.coordinates);
+        }
+          
+        System.out.println("Done...");
+        return nodes;
+    }
     
     
     
@@ -362,22 +367,6 @@ public class Board
     public int getCellValue(Coordinates c)
     {
         return this.board[c.y][c.x];
-    }
-    
-    
-    /**
-     * Start the game
-     * Returns true if successful. Make sure there are obstacles placed on the board..
-     * @return 
-     */
-    public boolean StartGame()
-    {
-        if (!this.isRunning)
-        {
-            this.isRunning = true;           
-            return true;
-        }
-        return false;
     }
 }
 

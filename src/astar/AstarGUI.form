@@ -23,7 +23,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="StartGameButton" pref="85" max="32767" attributes="0"/>
+                      <Component id="InitBoardButton" pref="85" max="32767" attributes="0"/>
                       <Component id="BoardSizeChoice" pref="85" max="32767" attributes="0"/>
                       <Component id="ObstaclePercentageChoice" max="32767" attributes="0"/>
                   </Group>
@@ -45,7 +45,7 @@
                       <Component id="ObstaclePercentageChoice" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="StartGameButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="InitBoardButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="44" max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -68,13 +68,13 @@
         </Component>
         <Component class="java.awt.Choice" name="ObstaclePercentageChoice">
         </Component>
-        <Component class="java.awt.Button" name="StartGameButton">
+        <Component class="java.awt.Button" name="InitBoardButton">
           <Properties>
             <Property name="actionCommand" type="java.lang.String" value="StartGameButton"/>
             <Property name="label" type="java.lang.String" value="Start"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StartGameButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="InitBoardButtonActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

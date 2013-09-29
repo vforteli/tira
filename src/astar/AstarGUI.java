@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -25,6 +26,7 @@ public class AstarGUI extends javax.swing.JFrame
 {
     private Board board; 
     private Coordinates previousCoordinates;
+    private Coordinates clickedCoordinates;
     
     /**
      * Creates new form AstarGUI
@@ -49,7 +51,7 @@ public class AstarGUI extends javax.swing.JFrame
         label1 = new java.awt.Label();
         label2 = new java.awt.Label();
         ObstaclePercentageChoice = new java.awt.Choice();
-        StartGameButton = new java.awt.Button();
+        InitBoardButton = new java.awt.Button();
         BoardPanel = new javax.swing.JPanel();
         jlabel2 = new javax.swing.JLabel();
         ScoreLabel = new javax.swing.JLabel();
@@ -68,13 +70,13 @@ public class AstarGUI extends javax.swing.JFrame
         label2.setAlignment(java.awt.Label.RIGHT);
         label2.setText("Obstacle %");
 
-        StartGameButton.setActionCommand("StartGameButton");
-        StartGameButton.setLabel("Start");
-        StartGameButton.addActionListener(new java.awt.event.ActionListener()
+        InitBoardButton.setActionCommand("StartGameButton");
+        InitBoardButton.setLabel("Start");
+        InitBoardButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                StartGameButtonActionPerformed(evt);
+                InitBoardButtonActionPerformed(evt);
             }
         });
 
@@ -89,7 +91,7 @@ public class AstarGUI extends javax.swing.JFrame
                     .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(StartGameButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                    .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(45, Short.MAX_VALUE))
@@ -106,7 +108,7 @@ public class AstarGUI extends javax.swing.JFrame
                     .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(StartGameButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(InitBoardButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(44, Short.MAX_VALUE))
         );
 
@@ -218,7 +220,7 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(int[][] cells)
+    private void DrawBoard(int[][] cells, ArrayList<Coordinates> path)
     { 
         BoardPanel.removeAll();
         BoardPanel.setLayout(new GridLayout(cells.length, cells.length));
@@ -230,7 +232,15 @@ public class AstarGUI extends javax.swing.JFrame
         {
             for (int cell : row)
             {
-                JPanel cellpanel = DrawCell(x, y, cell);
+                Coordinates c = new Coordinates(x, y);
+                boolean highlight = false;
+                
+                if (path != null && path.contains(c))
+                {
+                    highlight = true;
+                }
+                
+                JPanel cellpanel = DrawCell(c, cell, highlight);
            
                 BoardPanel.add(cellpanel);
                 x++;
@@ -242,24 +252,83 @@ public class AstarGUI extends javax.swing.JFrame
         BoardPanel.revalidate();    // Forces panel redraw    
     }
     
+      private JPanel DrawCell(Coordinates c, int cell, boolean highlight)
+    {      
+        JPanel cellpanel = new JPanel();
+        cellpanel.setEnabled(true);
+        cellpanel.setName(c.getHumanCoordinates());
+        cellpanel.setPreferredSize(new Dimension(3, 3));
+        cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        // This is probably insane... but whatever
+        cellpanel.addMouseListener(new MouseAdapter() 
+        {
+            @Override
+            public void mousePressed(MouseEvent e) 
+            {  
+                JPanel cell =(JPanel)e.getSource();
+                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
+
+                try
+                {
+                    ClickBoard(c);
+                } 
+                catch (Exception ex)
+                {
+                    Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                JPanel cell =(JPanel)e.getSource();
+                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
+                ScoreLabel.setText(c.x + ", " + c.y);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                JPanel cell =(JPanel)e.getSource();
+                ScoreLabel.setText("");
+            }
+        });
+        
+        if (cell == -1)         
+        {
+            cellpanel.setBackground(Color.black);
+        } 
+        else if(clickedCoordinates != null && clickedCoordinates.equals(c))
+        {
+            cellpanel.setBackground(Color.GREEN);
+        }
+        else if (previousCoordinates != null && previousCoordinates.equals(c))
+        {
+            cellpanel.setBackground(Color.RED);
+        }
+        else if (highlight == true)
+        {
+            cellpanel.setBackground(Color.ORANGE);
+        }
+        
+        return cellpanel;
+    }
+    
     
     private void ClickBoard(Coordinates c)
     {
+        clickedCoordinates = c;
         if (board != null && board.getIsRunning())
         {
             try
             {
+                ArrayList<Coordinates> path = null;
                 if (previousCoordinates != null)
                 {
-                    int distance = HeuristicDistance.CalculateOptimalDistance(previousCoordinates, c);
-                    System.out.println("Distance from previously clicked cell: " + distance);
-                }
-                previousCoordinates = c;
-                        
-                board.Click(c.x, c.y);
-               
+                    path = board.FindPath(previousCoordinates, clickedCoordinates);
+                }        
                 
-                DrawBoard(board.GetBoard());            
+                DrawBoard(board.GetBoard(), path);  
+                
+                previousCoordinates = clickedCoordinates;
             } 
             catch (Exception ex)
             {
@@ -277,8 +346,8 @@ public class AstarGUI extends javax.swing.JFrame
      * Handle start game clicks
      * @param evt 
      */
-    private void StartGameButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_StartGameButtonActionPerformed
-    {//GEN-HEADEREND:event_StartGameButtonActionPerformed
+    private void InitBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_InitBoardButtonActionPerformed
+    {//GEN-HEADEREND:event_InitBoardButtonActionPerformed
         NewGameFrame.dispose();
         
         board = new Board(Integer.parseInt(BoardSizeChoice.getSelectedItem()));
@@ -308,19 +377,9 @@ public class AstarGUI extends javax.swing.JFrame
             Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        board.StartGame();
-        DrawBoard(board.GetBoard());
-    }//GEN-LAST:event_StartGameButtonActionPerformed
+        DrawBoard(board.GetBoard(), null);
+    }//GEN-LAST:event_InitBoardButtonActionPerformed
 
-    
-    /**
-     * Called when a game is completed
-     */
-    private void GameCompleted()
-    {
-        
-    }    
-    
     
     /**
      * @param args the command line arguments
@@ -369,67 +428,16 @@ public class AstarGUI extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel BoardPanel;
     private java.awt.Choice BoardSizeChoice;
+    private java.awt.Button InitBoardButton;
     private javax.swing.JMenuBar MainMenuBar;
     private javax.swing.JMenuItem NewGameButton;
     private javax.swing.JFrame NewGameFrame;
     private java.awt.Choice ObstaclePercentageChoice;
     private javax.swing.JLabel ScoreLabel;
-    private java.awt.Button StartGameButton;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JLabel jlabel2;
     private java.awt.Label label1;
     private java.awt.Label label2;
     // End of variables declaration//GEN-END:variables
 
-    private JPanel DrawCell(int x, int y, int cell)
-    {
-        Coordinates c = new Coordinates(x, y);
-        JPanel cellpanel = new JPanel();
-        cellpanel.setEnabled(true);
-        cellpanel.setName(c.getHumanCoordinates());
-        cellpanel.setPreferredSize(new Dimension(3, 3));
-        cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        // This is probably insane... but whatever
-        cellpanel.addMouseListener(new MouseAdapter() 
-        {
-            @Override
-            public void mousePressed(MouseEvent e) 
-            {  
-                JPanel cell =(JPanel)e.getSource();
-                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
-
-                try
-                {
-                    ClickBoard(c);
-                } 
-                catch (Exception ex)
-                {
-                    Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                JPanel cell =(JPanel)e.getSource();
-                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
-                ScoreLabel.setText(c.x + ", " + c.y);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                JPanel cell =(JPanel)e.getSource();
-                ScoreLabel.setText("");
-            }
-        });
-        
-        if (cell == -1)         
-        {
-            cellpanel.setBackground(Color.black);
-        } 
-        else if (previousCoordinates != null && previousCoordinates.equals(c))
-        {
-            cellpanel.setBackground(Color.ORANGE);
-        }
-        return cellpanel;
-    }
 }

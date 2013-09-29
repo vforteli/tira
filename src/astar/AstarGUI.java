@@ -252,13 +252,15 @@ public class AstarGUI extends javax.swing.JFrame
         BoardPanel.revalidate();    // Forces panel redraw    
     }
     
-      private JPanel DrawCell(Coordinates c, int cell, boolean highlight)
+    
+    private JPanel DrawCell(Coordinates c, int cellweight, boolean highlight)
     {      
         JPanel cellpanel = new JPanel();
         cellpanel.setEnabled(true);
         cellpanel.setName(c.getHumanCoordinates());
         cellpanel.setPreferredSize(new Dimension(3, 3));
         cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        
         // This is probably insane... but whatever
         cellpanel.addMouseListener(new MouseAdapter() 
         {
@@ -279,20 +281,22 @@ public class AstarGUI extends javax.swing.JFrame
             }
             
             @Override
-            public void mouseEntered(MouseEvent e) {
+            public void mouseEntered(MouseEvent e) 
+            {
                 JPanel cell =(JPanel)e.getSource();
                 Coordinates c = Coordinates.ParseCoordinates(cell.getName());
                 ScoreLabel.setText(c.x + ", " + c.y);
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
-                JPanel cell =(JPanel)e.getSource();
+            public void mouseExited(MouseEvent e)
+            {
                 ScoreLabel.setText("");
             }
         });
         
-        if (cell == -1)         
+        
+        if (cellweight == -1)         
         {
             cellpanel.setBackground(Color.black);
         } 
@@ -309,14 +313,8 @@ public class AstarGUI extends javax.swing.JFrame
             cellpanel.setBackground(Color.ORANGE);
         }
         else
-        {
-            float min = 1f;
-            float max = 5f;
-            
-            float outmax = 0.7f;
-            float outmin = 1f;
-            
-            float brightness = outmin + (cell - min) * (outmax - outmin) / (max - min);
+        {      
+            float brightness = CalculateBrightness(cellweight);
             cellpanel.setBackground(Color.getHSBColor(0, 0, brightness));
         }
         
@@ -452,5 +450,15 @@ public class AstarGUI extends javax.swing.JFrame
     private java.awt.Label label1;
     private java.awt.Label label2;
     // End of variables declaration//GEN-END:variables
+
+    private float CalculateBrightness(int cell)
+    {
+        float min = 1f;
+        float max = 5f;
+        float outmax = 0.7f;
+        float outmin = 1f;
+        float brightness = outmin + (cell - min) * (outmax - outmin) / (max - min);
+        return brightness;
+    }
 
 }

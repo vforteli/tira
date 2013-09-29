@@ -20,6 +20,14 @@ public class Node
      */
     public float h_score;
     
+    
+    public Node(float h_score, float g_score, Coordinates c)
+    {
+        this.h_score = h_score;
+        this.g_score = g_score;
+        this.coordinates = c;
+    }
+    
     /**
      * Estimated total distance through this node
      * @return 

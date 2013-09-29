@@ -60,7 +60,7 @@ public class Board
             for (int j = 0; j < Size; j++)
             {
                 int random = new Random().nextInt(6);
-                board[i][j] = random == 0 ? 1 : random; // :p
+                board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
             }
         }
     }
@@ -167,7 +167,7 @@ public class Board
     public int Click(int x, int y) throws Exception 
     {
         Coordinates c = new Coordinates(x, y);
-        if (!this.isValidCoordinates(x, y))
+        if (!this.isValidCoordinates(c))
         {
             throw new Exception("Invalid coordinates");
         }
@@ -181,13 +181,9 @@ public class Board
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
         ArrayList<String> closedset = new ArrayList();  // Replace with own implementation...
-        
         MinHeap openset = new MinHeap();
         
-        Node startnode = new Node();
-        startnode.g_score = 0;
-        startnode.h_score = HeuristicDistance.CalculateOptimalDistance(start, end);
-        startnode.coordinates = start;
+        Node startnode = new Node(Heuristic.GetDistance(start, end), 0, start);
         openset.Insert(startnode.getF_score(), startnode);
 
         while (!openset.getIsEmpty())
@@ -202,36 +198,36 @@ public class Board
                 return ReconstructPath(currentnode);     // Reconstruct and return the path
             }
             
-            Coordinates[] neighbours = GetNeighbours(currentnode.coordinates);
-            
-            for (Coordinates c : neighbours)
+            for (Coordinates c : GetNeighbours(currentnode.coordinates))
             {                
-                float cellweight = getCellValue(c);
+                float weight = getCellValue(c);     
                 
                 // Continue if this is a wall
-                if (cellweight == -1)
+                if (weight == -1)
                 {
                     continue;
                 }
-                               
-                // Multiply diagonal weight with sqrt(2). Otherwise the path will look a bit daft...  
-                if (currentnode.coordinates.x != c.x && currentnode.coordinates.y != c.y)
-                {
-                    cellweight *= (float)Math.sqrt(2);
-                }
                 
-                Node node = new Node();
-                node.h_score = HeuristicDistance.CalculateOptimalDistance(c, end);
-                node.g_score = currentnode.g_score + cellweight;     // This can be replaced to use the weight of the cell instead...
-                node.coordinates = c;
-                node.parent = currentnode;
-                
-                // Replace with own implementation of hashmap?
+                // Replace with own implementation of hashmap
+                // Skip nodes that have been checked
                 if (closedset.contains(c.getHumanCoordinates()))
                 {
                     continue;
                 }
                 
+                // hmm, maybe count the weight as current / 2 + neighbour / 2 ?
+                weight = weight / 2 + getCellValue(currentnode.coordinates) / 2;
+                               
+                // Multiply diagonal weight with sqrt(2). Otherwise the path will look a bit daft...  
+                if (currentnode.coordinates.x != c.x && currentnode.coordinates.y != c.y)
+                {
+                    weight *= (float)Math.sqrt(2);
+                }
+                
+                // The nodes basically work like a linked list... This enables reconstructing the path, but makes it really inefficient to search for nodes if they need to be updated
+                Node node = new Node(Heuristic.GetDistance(c, end), currentnode.g_score + weight, c);
+                node.parent = currentnode;
+                              
                 openset.Insert(node.getF_score(), node);
             }
         }
@@ -244,19 +240,14 @@ public class Board
     private ArrayList<Coordinates> ReconstructPath(Node node)
     {
         ArrayList<Coordinates> nodes = new ArrayList<>();  
-        int i = 0;
-        // Need to reverse this also...
-        
         nodes.add(node.coordinates);
         while (node.parent != null)
         {
-            System.out.println(node.coordinates.x + "," + node.coordinates.y);   
-            node = node.parent;
-            
+            node = node.parent;          
             nodes.add(node.coordinates);
         }
-          
-        System.out.println("Done...");
+        
+        // Need to reverse this also... maybe..
         return nodes;
     }
     
@@ -270,9 +261,9 @@ public class Board
      * @param y
      * @return True if valid coordinates
      */
-    private boolean isValidCoordinates(int x, int y) 
+    private boolean isValidCoordinates(Coordinates c) 
     {
-        if ((x > this.getWidth() | x < 0) | (y > this.getHeight() | y < 0))
+        if ((c.x > this.getWidth() | c.x < 0) | (c.y > this.getHeight() | c.y < 0))
         {
             return false;
         }

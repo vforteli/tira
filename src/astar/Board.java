@@ -8,7 +8,6 @@ package astar;
  *
  * @author vforteli
  */
-import com.sun.xml.internal.ws.api.config.management.Reconfigurable;
 import java.util.ArrayList;
 import java.util.Random; 
 
@@ -28,16 +27,6 @@ public class Board
     }
     private int[][] board;
     
-    /**
-     * Indicates if the game is running
-     * @return
-     */
-    public boolean getIsRunning()
-    {
-        return this.isRunning;
-    }
-    private boolean isRunning;
-        
     
     /**
      * Height of the board. Currently only supports square boards so width is redundant...
@@ -84,12 +73,7 @@ public class Board
      * @throws Exception 
      */
     public boolean AddObstacle(int x1, int y1, int x2, int y2) throws Exception 
-    {
-        if (this.isRunning)
-        {
-            throw new Exception("Game is already started");
-        }
-        
+    {        
         // No negative 4th dimension quantum obstacles allowed
         if (x1 > x2 || y1 > y2)
         {
@@ -173,10 +157,6 @@ public class Board
     public int Click(int x, int y) throws Exception 
     {
         Coordinates c = new Coordinates(x, y);
-        if (!this.isRunning)
-        {
-            throw new Exception("Game is not started");
-        }
         if (!this.isValidCoordinates(x, y))
         {
             throw new Exception("Invalid coordinates");

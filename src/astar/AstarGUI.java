@@ -187,7 +187,7 @@ public class AstarGUI extends javax.swing.JFrame
     private void NewGameButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_NewGameButtonActionPerformed
     {//GEN-HEADEREND:event_NewGameButtonActionPerformed
         // If a game is already running prompt the user for confirmation
-        if (board != null && board.getIsRunning())
+        if (board != null)
         {
             int selection = JOptionPane.showConfirmDialog(
                         null
@@ -316,7 +316,7 @@ public class AstarGUI extends javax.swing.JFrame
     private void ClickBoard(Coordinates c)
     {
         clickedCoordinates = c;
-        if (board != null && board.getIsRunning())
+        if (board != null)
         {
             try
             {

@@ -361,13 +361,15 @@ public class AstarGUI extends javax.swing.JFrame
             board.AddRandomObstacle(2);
             
             int ships = Integer.parseInt(ObstaclePercentageChoice.getSelectedItem());
-            if (ships == 7 || ships == 9)
+            if (ships == 20 || ships == 30)
             {
                 board.AddRandomObstacle(2);
                 board.AddRandomObstacle(3);
             }
-            if (ships == 9)
+            if (ships == 30)
             {
+                board.AddRandomObstacle(8);
+                board.AddRandomObstacle(5);
                 board.AddRandomObstacle(5);
                 board.AddRandomObstacle(1); // :p         
             }

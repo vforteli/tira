@@ -52,7 +52,16 @@ public class Board
      */
     public Board(int Size) 
     {
-        this.board = new int[Size][Size];
+        board = new int[Size][Size];
+        
+        // Init all cells to 1, default weight
+        for (int i = 0; i < Size; i++)
+        {
+            for (int j = 0; j < Size; j++)
+            {
+                board[i][j] = 1;
+            }
+        }
     }
     
     /**
@@ -87,7 +96,7 @@ public class Board
         }
         
         // Check adjecent cells, apparently obstacles are not allowed to touch, not even diagonally
-        if (CheckAdjecentCells(x1, y1, x2, y2)) {
+        if (ValidObstacleLocation(x1, y1, x2, y2)) {
             return false;
         }
         
@@ -196,22 +205,23 @@ public class Board
             
             for (Coordinates c : neighbours)
             {                
+                float cellweight = getCellValue(c);
+                
                 // Continue if this is a wall
-                if (getCellValue(c) == -1)
+                if (cellweight == -1)
                 {
                     continue;
                 }
                                
-                // Hmm.. diagonal score?
-                float score = 1;
+                // Multiply diagonal weight with sqrt(2). Otherwise the path will look a bit daft...  
                 if (currentnode.coordinates.x != c.x && currentnode.coordinates.y != c.y)
                 {
-                    score = (float)Math.sqrt(2);
+                    cellweight *= (float)Math.sqrt(2);
                 }
                 
                 Node node = new Node();
                 node.h_score = HeuristicDistance.CalculateOptimalDistance(c, end);
-                node.g_score = currentnode.g_score + score;     // This can be replaced to use the weight of the cell instead...
+                node.g_score = currentnode.g_score + cellweight;     // This can be replaced to use the weight of the cell instead...
                 node.coordinates = c;
                 node.parent = currentnode;
                 
@@ -223,11 +233,6 @@ public class Board
                 
                 openset.Insert(node.getF_score(), node);
             }
-            
-            // Debug stuff
-           
-            Node node = (Node)openset.Peek();
-            System.out.println(node.coordinates.x + "," + node.coordinates.y + " fscore: " + node.getF_score() + ", gscore: " + node.g_score + ", hscore: " + node.h_score);
         }
         
         // If we get here, no path was found...
@@ -284,13 +289,20 @@ public class Board
      * @param y2
      * @return 
      */
-    private boolean CheckAdjecentCells(int x1, int y1, int x2, int y2) 
+    private boolean ValidObstacleLocation(int x1, int y1, int x2, int y2) 
     {
-        int topleft_x = x1 <= 0 ? 0 : x1 - 1;
-        int topleft_y = y1 <= 0 ? 0 : y1 - 1;
+        int topleft_x = x1;
+        int topleft_y = y1;
         
-        int bottomright_x = x2 >= this.getHeight() - 1 ? this.getHeight() - 1 : x2 + 1;
-        int bottomright_y = y2 >= this.getHeight() - 1 ? this.getHeight() - 1 : y2 + 1;
+        int bottomright_x = x2;
+        int bottomright_y = y2;
+        
+        // Modified to allow obstacles to be placed next to each other
+//        int topleft_x = x1 <= 0 ? 0 : x1 - 1;
+//        int topleft_y = y1 <= 0 ? 0 : y1 - 1;
+//        
+//        int bottomright_x = x2 >= this.getHeight() - 1 ? this.getHeight() - 1 : x2 + 1;
+//        int bottomright_y = y2 >= this.getHeight() - 1 ? this.getHeight() - 1 : y2 + 1;
               
         for (int i = topleft_x; i <= bottomright_x; i++) {
             for (int j = topleft_y; j <= bottomright_y; j++) {
@@ -301,6 +313,7 @@ public class Board
         }
         return false;
     }
+    
     
     /**
      * Gets the neighbour cells for specified coordinates. Obviously does not include out of bounds cells

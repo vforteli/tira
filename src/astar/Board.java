@@ -162,17 +162,6 @@ public class Board
             throw new Exception("Invalid coordinates");
         }
         
-        
-        // Debug stuff
-//        Coordinates[] cs = this.GetNeighbours(new Coordinates(x, y));
-//        for (Coordinates c : cs)
-//        {
-//            if (c != null)
-//            {
-//                System.out.println("Neighbour" + c.x + ", " + c.y);
-//            }
-//        }
-        
         return board[y][x];     
     }
     
@@ -213,9 +202,16 @@ public class Board
                     continue;
                 }
                                
+                // Hmm.. diagonal score?
+                float score = 1;
+                if (currentnode.coordinates.x != c.x && currentnode.coordinates.y != c.y)
+                {
+                    score = (float)Math.sqrt(2);
+                }
+                
                 Node node = new Node();
                 node.h_score = HeuristicDistance.CalculateOptimalDistance(c, end);
-                node.g_score = currentnode.g_score + 1;     // This can be replaced to use the weight of the cell instead...
+                node.g_score = currentnode.g_score + score;     // This can be replaced to use the weight of the cell instead...
                 node.coordinates = c;
                 node.parent = currentnode;
                 

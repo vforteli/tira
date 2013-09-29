@@ -13,18 +13,18 @@ public class Node
     /**
      * Distance from start
      */
-    public int g_score; 
+    public float g_score; 
     
     /**
      * Heuristic distance to end
      */
-    public int h_score;
+    public float h_score;
     
     /**
      * Estimated total distance through this node
      * @return 
      */
-    public int getF_score()
+    public float getF_score()
     {
         return g_score + h_score;    
     }

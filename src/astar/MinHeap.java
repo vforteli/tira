@@ -22,7 +22,7 @@ public class MinHeap
     
     
     
-    public void Insert(int value, Object o)
+    public void Insert(float value, Object o)
     {        
         HeapItem item = new HeapItem(value, o);
         

@@ -10,12 +10,12 @@ package astar;
  */
 public class HeapItem
 {
-    public HeapItem(int _key, Object _item)
+    public HeapItem(float _key, Object _item)
     {
         this.key = _key;
         this.item = _item;
     }
     
-    public int key;
+    public float key;
     public Object item;
 }

@@ -52,6 +52,8 @@ public class AstarGUI extends javax.swing.JFrame
         label2 = new java.awt.Label();
         ObstaclePercentageChoice = new java.awt.Choice();
         InitBoardButton = new java.awt.Button();
+        label3 = new java.awt.Label();
+        TerrainVariationChoice = new java.awt.Choice();
         BoardPanel = new javax.swing.JPanel();
         jlabel2 = new javax.swing.JLabel();
         ScoreLabel = new javax.swing.JLabel();
@@ -61,7 +63,7 @@ public class AstarGUI extends javax.swing.JFrame
 
         NewGameFrame.setTitle("Start game");
         NewGameFrame.setAlwaysOnTop(true);
-        NewGameFrame.setMinimumSize(new java.awt.Dimension(250, 144));
+        NewGameFrame.setMinimumSize(new java.awt.Dimension(250, 200));
         NewGameFrame.setResizable(false);
 
         label1.setAlignment(java.awt.Label.RIGHT);
@@ -80,21 +82,26 @@ public class AstarGUI extends javax.swing.JFrame
             }
         });
 
+        label3.setText("Terrain variation");
+
         javax.swing.GroupLayout NewGameFrameLayout = new javax.swing.GroupLayout(NewGameFrame.getContentPane());
         NewGameFrame.getContentPane().setLayout(NewGameFrameLayout);
         NewGameFrameLayout.setHorizontalGroup(
             NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NewGameFrameLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(label2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(label2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                    .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(45, Short.MAX_VALUE))
+                    .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(117, Short.MAX_VALUE))
         );
         NewGameFrameLayout.setVerticalGroup(
             NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,8 +115,12 @@ public class AstarGUI extends javax.swing.JFrame
                     .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(InitBoardButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -211,6 +222,11 @@ public class AstarGUI extends javax.swing.JFrame
         ObstaclePercentageChoice.add("10");
         ObstaclePercentageChoice.add("20");
         ObstaclePercentageChoice.add("30");
+        
+        TerrainVariationChoice.removeAll();
+        TerrainVariationChoice.add("1");
+        TerrainVariationChoice.add("5");
+        TerrainVariationChoice.add("10");
         
         NewGameFrame.setVisible(true);
     }//GEN-LAST:event_NewGameButtonActionPerformed
@@ -359,7 +375,7 @@ public class AstarGUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_InitBoardButtonActionPerformed
         NewGameFrame.dispose();
         
-        board = new Board(Integer.parseInt(BoardSizeChoice.getSelectedItem()));
+        board = new Board(Integer.parseInt(BoardSizeChoice.getSelectedItem()), Integer.parseInt(TerrainVariationChoice.getSelectedItem()));
         
         try 
         {
@@ -445,10 +461,12 @@ public class AstarGUI extends javax.swing.JFrame
     private javax.swing.JFrame NewGameFrame;
     private java.awt.Choice ObstaclePercentageChoice;
     private javax.swing.JLabel ScoreLabel;
+    private java.awt.Choice TerrainVariationChoice;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JLabel jlabel2;
     private java.awt.Label label1;
     private java.awt.Label label2;
+    private java.awt.Label label3;
     // End of variables declaration//GEN-END:variables
 
     private float CalculateBrightness(int cell)

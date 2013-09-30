@@ -52,7 +52,7 @@ public class Board
      * 
      * @param Size Integer size of one side of the board
      */
-    public Board(int Size) 
+    public Board(int Size, int terrainvariation) 
     {
         board = new int[Size][Size];
         
@@ -61,8 +61,8 @@ public class Board
         {
             for (int j = 0; j < Size; j++)
             {
-                int random = new Random().nextInt(6);
-                board[i][j] = 1; //random == 0 ? 1 : random; // yeye a bit biased...
+                int random = new Random().nextInt(terrainvariation);
+                board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
             }
         }
     }

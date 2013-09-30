@@ -51,11 +51,9 @@ public class HybridHeap
     
     public Boolean IncreaseKey(float value, Coordinates key)
     {
-        System.out.println("Increase key");
-        if (hashmap.containsKey(key))
+        Integer index = hashmap.get(key);
+        if (index != null)
         {
-            System.out.println("Found key to increase");
-            int index = hashmap.get(key);
             HeapItem item = heap[index];
             if (value > item.key)
             {

@@ -9,6 +9,7 @@ package astar;
  * @author vforteli
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random; 
 
@@ -61,7 +62,7 @@ public class Board
             for (int j = 0; j < Size; j++)
             {
                 int random = new Random().nextInt(6);
-                board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
+                board[i][j] = 1;//random == 0 ? 1 : random; // yeye a bit biased...
             }
         }
     }
@@ -181,8 +182,15 @@ public class Board
         
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
-        ArrayList<String> closedset = new ArrayList<>();  // Replace with own implementation...
+        HashMap<String, Node> closedset = new HashMap();
         MinHeap openset = new MinHeap();
+        
+        HashMap<String, Float> g_score = new HashMap();
+        HashMap<String, Float> f_score = new HashMap();
+        
+        g_score.put(start.toString(), 0f);
+        f_score.put(start.toString(), Heuristic.GetDistance(start, end));
+        
         
         Node startnode = new Node(Heuristic.GetDistance(start, end), 0, start);
         openset.Insert(startnode.getF_score(), startnode);
@@ -190,8 +198,7 @@ public class Board
         while (!openset.getIsEmpty())
         {
             Node currentnode = (Node)openset.DeleteMin();
-            closedset.add(currentnode.coordinates.getHumanCoordinates());
-            System.out.println("Current node: " + currentnode.coordinates.x + ", " + currentnode.coordinates.y);
+            closedset.put(currentnode.coordinates.getHumanCoordinates(), currentnode);
             
             if (currentnode.coordinates.equals(end))
             {
@@ -200,36 +207,30 @@ public class Board
             
             for (Coordinates c : GetNeighbours(currentnode.coordinates))
             {                
-                float weight = getCellValue(c);     
+                float weight = CalculateWeight(currentnode.coordinates, c);
                 
-                // Continue if this is a wall
-                if (weight == -1)
-                {
+                if (weight == -1)    // Wall...
                     continue;
-                }
                 
-                // Skip nodes that have been checked
-                if (closedset.contains(c.getHumanCoordinates()))
+                
+                     
+                float tentative_gscore = currentnode.g_score + weight;
+                
+                System.out.println("Weight from " + currentnode.coordinates.toString()+ " to " + c.toString()+ " = " + weight + ", tentative score: " + tentative_gscore);
+                
+                // Skip nodes that have been checked 
+                if (closedset.containsKey(c.toString()) && tentative_gscore >= closedset.get(c.toString()).g_score)
                 {
-                    System.out.println("Closed set already contains: " + c.getHumanCoordinates());
                     continue;
                 }
                                
-                float currentweight = getCellValue(currentnode.coordinates);
-                if (currentnode.coordinates.x != c.x && currentnode.coordinates.y != c.y)
+                if (!openset.Contains(c) | tentative_gscore < currentnode.g_score)
                 {
-                    weight = (float)Math.sqrt(2 * Math.pow(weight, 2));
-                    currentweight = (float)Math.sqrt(2 * Math.pow(currentweight, 2));
-                }
-                
-                weight = weight + currentweight;
-                
-                // The nodes basically work like a linked list... This enables reconstructing the path, but makes it really inefficient to search for nodes if they need to be updated
-                Node node = new Node(Heuristic.GetDistance(c, end), currentnode.g_score + weight, c);
-                node.parent = currentnode;
-                              
-                openset.Insert(node.getF_score(), node);
-                System.out.println("Insert node: " + node.coordinates.getHumanCoordinates());
+                    
+                    Node node = new Node(Heuristic.GetDistance(c, end), tentative_gscore, c);
+                    node.parent = currentnode;
+                    openset.Insert(node.getF_score(), node);
+                }   
             }
         }
         
@@ -240,7 +241,6 @@ public class Board
     
     private ArrayList<Coordinates> ReconstructPath(Node node)
     {
-        System.out.println("Return path...");
         ArrayList<Coordinates> nodes = new ArrayList<>();  
         nodes.add(node.coordinates);
         while (node.parent != null)
@@ -350,6 +350,23 @@ public class Board
     public int getCellValue(Coordinates c)
     {
         return this.board[c.y][c.x];
+    }
+
+    private float CalculateWeight(Coordinates from, Coordinates to)
+    {
+        float currentweight = getCellValue(from);
+        float weight = getCellValue(to);
+        
+        if (weight == -1)
+            return weight;
+        
+        if (from.x != to.x && from.y != to.y)
+        {
+            weight = (float)Math.sqrt(2 * Math.pow(weight, 2));
+            currentweight = (float)Math.sqrt(2 * Math.pow(currentweight, 2));
+        }
+        weight = weight / 2 + currentweight / 2;
+        return weight;
     }
 }
 

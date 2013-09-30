@@ -25,12 +25,18 @@ public class MinHeap
     }
     
     
+    public boolean Contains (Coordinates c)
+    {
+        return hash.contains(c.getHumanCoordinates());
+    }
+    
+    
     
     public void Insert(float value, Object o)
     {    
         if (!hash.add(((Node)o).coordinates.getHumanCoordinates()))
         {
-            System.out.println("nyet");
+            //System.out.println("nyet");
             return;
         }
         HeapItem item = new HeapItem(value, o);
@@ -44,7 +50,7 @@ public class MinHeap
             System.out.println("Increase size...");
             // increase the array size...            
         }
-        System.out.println("Insert, tail: " + tail);
+        //System.out.println("Insert, tail: " + tail);
     }
     
     private void BubbleUp(int index)
@@ -110,7 +116,7 @@ public class MinHeap
             
             // Find correct place for new root
             BubbleDown(0);
-            System.out.println("Delete, tail: " + tail); 
+            //System.out.println("Delete, tail: " + tail); 
             return root.item;
         }
         return null;

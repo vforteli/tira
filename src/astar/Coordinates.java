@@ -27,7 +27,7 @@ public class Coordinates
      */
     public String getHumanCoordinates()
     {
-        return (char)(this.x + 97) + Integer.toString(this.y + 1);
+        return this.x + "," + this.y;
     }
     
     
@@ -54,9 +54,12 @@ public class Coordinates
         try
         {
             humanform = humanform.toLowerCase();    // Lowercase means not having to check two ascii values...
+            String[] foo = humanform.split(",");
+            //int x = ((int)humanform.charAt(0)) - 97;  // ASCII a is 97
+            //int y = Integer.parseInt(humanform.substring(1)) - 1; // Humans are stupid and count coordinates from 1
             
-            int x = ((int)humanform.charAt(0)) - 97;  // ASCII a is 97
-            int y = Integer.parseInt(humanform.substring(1)) - 1; // Humans are stupid and count coordinates from 1
+            int x = Integer.parseInt(foo[0]);
+            int y = Integer.parseInt(foo[1]);
             
             return new Coordinates(x, y);
         }
@@ -78,4 +81,11 @@ public class Coordinates
         }
         return false;
     }
+    
+    @Override
+    public String toString()
+    {
+        return this.getHumanCoordinates();
+    }
+    
 }  

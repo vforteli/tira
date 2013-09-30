@@ -257,7 +257,7 @@ public class AstarGUI extends javax.swing.JFrame
     {      
         JPanel cellpanel = new JPanel();
         cellpanel.setEnabled(true);
-        cellpanel.setName(c.getHumanCoordinates());
+        cellpanel.setName(c.toString());
         cellpanel.setPreferredSize(new Dimension(3, 3));
         cellpanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         

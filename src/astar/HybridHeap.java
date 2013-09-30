@@ -5,19 +5,19 @@
 package astar;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  *
  * @author verne_000
  */
-public class MinHeapOnSteroids
+public class HybridHeap
 {
-    protected HeapItem[] heap;
+    private HeapItem[] heap;
     private int tail;
-    private HashMap<String, Integer> hashmap;
+    private HashMap<Coordinates, Integer> hashmap;
     
-    public MinHeapOnSteroids()
+    
+    public HybridHeap()
     {
         // Hmm, what should the initial size be, and when should it grow/shrink?
         heap = new HeapItem[2000];
@@ -26,21 +26,20 @@ public class MinHeapOnSteroids
     }
     
     
-    public boolean Contains (String key)
+    public boolean Contains (Coordinates key)
     {
         return hashmap.containsKey(key);
     }
     
    
-    public Boolean DecreaseKey(float value, String key)
+    public Boolean DecreaseKey(float value, Coordinates key)
     {
-        if (hashmap.containsKey(key))
+        Integer index = hashmap.get(key);
+        if (index != null)
         {
-            int index = hashmap.get(key);
             HeapItem item = heap[index];
             if (value < item.key)
             {
-                System.out.println("Key " + key + " decreased to " + value);
                 item.key = value;
                 BubbleUp(index);
                 return true;
@@ -48,8 +47,9 @@ public class MinHeapOnSteroids
         }
         return false;
     }
+  
     
-    public Boolean IncreaseKey(float value, String key)
+    public Boolean IncreaseKey(float value, Coordinates key)
     {
         System.out.println("Increase key");
         if (hashmap.containsKey(key))
@@ -67,29 +67,28 @@ public class MinHeapOnSteroids
         return false;
     }
     
-    
-    
-    
-    public void Insert(float value, Node node)
+      
+    public void Insert(float value, Coordinates coordinates)
     {    
-        if (hashmap.containsKey(node.coordinates.toString()))
+        if (hashmap.containsKey(coordinates))
         {
             // Got the index to the old entry with the same key
             //old = heap[hashmap.get(node.coordinates.toString())];       
         }
         
-        HeapItem item = new HeapItem(value, node);
+        HeapItem item = new HeapItem(value, coordinates);
         
         heap[tail] = item;
         int index = BubbleUp(tail);
-        hashmap.put(node.coordinates.toString(), index);
+        hashmap.put(coordinates, index);
         tail++;
         if (tail == heap.length)
         {
-            System.out.println("Increase size...");
+            System.out.println("Kabooom! Increase size maybe...");
             // increase the array size...            
         }
     }
+ 
     
     private int BubbleUp(int index)
     {
@@ -105,6 +104,7 @@ public class MinHeapOnSteroids
         heap[index] = last;
         return index;
     }   
+  
     
     private int BubbleDown(int index)
     {
@@ -142,7 +142,8 @@ public class MinHeapOnSteroids
         return index;
     }
     
-    public Object DeleteMin()
+    
+    public Coordinates DeleteMin()
     {
         if (tail > 0)
         {            
@@ -151,9 +152,9 @@ public class MinHeapOnSteroids
             BubbleDown(0);
             
             // Dont forget to remove it from the hashmap as well, or cockup ensured
-            hashmap.remove(((Node)root.item).coordinates.toString());   
+            hashmap.remove(((Coordinates)root.item));   
             
-            return root.item;
+            return (Coordinates)root.item;
         }
         return null;
     }

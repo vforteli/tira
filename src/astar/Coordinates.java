@@ -22,16 +22,6 @@ public class Coordinates
     
     
     /**
-     * Get the coordinates in human form, eg A2
-     * @return 
-     */
-    public String getHumanCoordinates()
-    {
-        return this.x + "," + this.y;
-    }
-    
-    
-    /**
      * Create a new coordinate object with specified coordinates
      * @param x
      * @param y 
@@ -44,7 +34,7 @@ public class Coordinates
     
     
     /**
-     * Converts human coordinates like A14 to zero based x and y coordinates
+     * Converts human coordinates like x,y to zero based x and y coordinates
      * 
      * @param humanform
      * @return zero based x and y coordinates
@@ -53,11 +43,8 @@ public class Coordinates
     {
         try
         {
-            humanform = humanform.toLowerCase();    // Lowercase means not having to check two ascii values...
             String[] foo = humanform.split(",");
-            //int x = ((int)humanform.charAt(0)) - 97;  // ASCII a is 97
-            //int y = Integer.parseInt(humanform.substring(1)) - 1; // Humans are stupid and count coordinates from 1
-            
+          
             int x = Integer.parseInt(foo[0]);
             int y = Integer.parseInt(foo[1]);
             
@@ -71,21 +58,36 @@ public class Coordinates
     }
     
     
+
+    
+    
     @Override
     public boolean equals(Object other)
     {
-        Coordinates c = (Coordinates)other;
-        if (this.x == c.x && this.y == c.y)
+        if (other instanceof Coordinates)
         {
-            return true;
+            Coordinates c = (Coordinates)other;
+            if (this.x == c.x && this.y == c.y)
+            {
+                return true;
+            }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        // Umm...
+        int hash = 7;
+        hash = 37 * hash + this.x;
+        hash = 37 * hash + this.y;
+        return hash;
     }
     
     @Override
     public String toString()
     {
-        return this.getHumanCoordinates();
+        return this.x + "," + this.y;
     }
-    
 }  

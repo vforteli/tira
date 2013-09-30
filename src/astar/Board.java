@@ -62,7 +62,7 @@ public class Board
             for (int j = 0; j < Size; j++)
             {
                 int random = new Random().nextInt(6);
-                board[i][j] = 1;//random == 0 ? 1 : random; // yeye a bit biased...
+                board[i][j] = 1; //random == 0 ? 1 : random; // yeye a bit biased...
             }
         }
     }
@@ -178,62 +178,55 @@ public class Board
     }
     
     
-    
-        
+         
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
-        HashMap<String, Node> closedset = new HashMap();
-        MinHeapOnSteroids openset = new MinHeapOnSteroids();
+        HybridHeap openset = new HybridHeap();
+        HashMap<Coordinates, Coordinates> closedset = new HashMap();
+        HashMap<Coordinates, Coordinates> camefrom = new HashMap();
+        HashMap<Coordinates, Float> g_score = new HashMap();
+        HashMap<Coordinates, Float> f_score = new HashMap();
         
-        HashMap<String, Float> g_score = new HashMap();
-        HashMap<String, Float> f_score = new HashMap();
-        
-        g_score.put(start.toString(), 0f);
-        f_score.put(start.toString(), Heuristic.GetDistance(start, end));
-        
-        
-        Node startnode = new Node(Heuristic.GetDistance(start, end), 0, start);
-        openset.Insert(startnode.getF_score(), startnode);
+        g_score.put(start, 0f);
+        f_score.put(start, Heuristic.GetDistance(start, end));
+             
+        openset.Insert(f_score.get(start), start);
 
         while (!openset.getIsEmpty())
         {
-            Node currentnode = (Node)openset.DeleteMin();
-            System.out.println("Current node: " + currentnode.coordinates);
-            closedset.put(currentnode.coordinates.getHumanCoordinates(), currentnode);
+            Coordinates current = openset.DeleteMin();
+            //System.out.println("Current node: " + currentnode.coordinates);
+            closedset.put(current, current);
             
-            if (currentnode.coordinates.equals(end))
-            {
-                return ReconstructPath(currentnode);     // Reconstruct and return the path
-            }
+            if (current.equals(end))
+                return ReconstructPath(current, camefrom);     // Reconstruct and return the path
             
-            for (Coordinates c : GetNeighbours(currentnode.coordinates))
+            
+            for (Coordinates neighbour : GetNeighbours(current))
             {                
-                float weight = CalculateWeight(currentnode.coordinates, c);
+                float weight = CalculateWeight(current, neighbour);
                 
                 if (weight == -1)    // Wall...
                     continue;
                 
-                
-                float tentative_gscore = currentnode.g_score + weight;
-                float tentative_fscore = Heuristic.GetDistance(c, end) + tentative_gscore;
-                
-                System.out.println("Weight from " + currentnode.coordinates + " to " + c + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
-                
-                // Skip nodes that have been checked 
-                if (closedset.containsKey(c.toString()) && tentative_gscore >= closedset.get(c.toString()).g_score)
-                {
-                    System.out.println(c + " already in closed set with score: " + closedset.get(c.toString()).g_score);
+                float hscore = Heuristic.GetDistance(neighbour, end);
+                float tentative_gscore = g_score.get(current) + weight;
+                float fscore = hscore + tentative_gscore;
+                //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + fscore);
+                           
+                if (closedset.containsKey(neighbour) && (g_score.containsKey(neighbour) && tentative_gscore >= g_score.get(neighbour)))
                     continue;
-                }
-                               
-                if (!openset.Contains(c.toString()) | tentative_gscore < currentnode.g_score)
+                
+                if (!g_score.containsKey(neighbour) || tentative_gscore < g_score.get(neighbour))
                 {
-                    
-                    Node node = new Node(Heuristic.GetDistance(c, end), tentative_gscore, c);
-                    node.parent = currentnode;
-                    openset.Insert(node.getF_score(), node);
-                }   
-                openset.DecreaseKey(tentative_fscore, c.toString());
+                    g_score.put(neighbour, tentative_gscore);
+                    camefrom.put(neighbour, current);
+                }
+                
+                if (!openset.Contains(neighbour) && !closedset.containsKey(neighbour))
+                    openset.Insert(fscore, neighbour);             
+                else
+                    openset.DecreaseKey(fscore, neighbour);  // We can safely try to decrease the key, if the value is higher it wont change        
             }
         }
         
@@ -242,17 +235,14 @@ public class Board
     }
     
     
-    private ArrayList<Coordinates> ReconstructPath(Node node)
+    private ArrayList<Coordinates> ReconstructPath(Coordinates coordinates, HashMap<Coordinates, Coordinates> camefrom)
     {
-        ArrayList<Coordinates> nodes = new ArrayList<>();  
-        nodes.add(node.coordinates);
-        while (node.parent != null)
+        ArrayList<Coordinates> nodes = new ArrayList<>();      
+        while (camefrom.containsKey(coordinates))
         {
-            node = node.parent;          
-            nodes.add(node.coordinates);
+            nodes.add(coordinates);
+            coordinates = camefrom.get(coordinates);
         }
-        
-        // Need to reverse this also... maybe..
         return nodes;
     }
     
@@ -313,9 +303,9 @@ public class Board
     
     
     /**
-     * Gets the neighbour cells for specified coordinates. Obviously does not include out of bounds cells
+     * Gets the neighbournode cells for specified coordinates. Obviously does not include out of bounds cells
      * Do some tests and make sure this doesnt explode...
-     * @param c
+     * @param neighbour
      * @return 
      */
     public Coordinates[] GetNeighbours(Coordinates c)
@@ -341,11 +331,7 @@ public class Board
         
         // I dont want to have to check for empty array slots all the time...
         Coordinates[] returnarray = new Coordinates[n];
-        for (int i = 0; i < n; i++)
-        {
-            returnarray[i] = coordinates[i];        
-        }
-        
+        System.arraycopy(coordinates, 0, returnarray, 0, n);
         return returnarray;
     }
     

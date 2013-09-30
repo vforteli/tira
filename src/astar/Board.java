@@ -183,7 +183,7 @@ public class Board
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
         HashMap<String, Node> closedset = new HashMap();
-        MinHeap openset = new MinHeap();
+        MinHeapOnSteroids openset = new MinHeapOnSteroids();
         
         HashMap<String, Float> g_score = new HashMap();
         HashMap<String, Float> f_score = new HashMap();
@@ -198,6 +198,7 @@ public class Board
         while (!openset.getIsEmpty())
         {
             Node currentnode = (Node)openset.DeleteMin();
+            System.out.println("Current node: " + currentnode.coordinates);
             closedset.put(currentnode.coordinates.getHumanCoordinates(), currentnode);
             
             if (currentnode.coordinates.equals(end))
@@ -213,24 +214,26 @@ public class Board
                     continue;
                 
                 
-                     
                 float tentative_gscore = currentnode.g_score + weight;
+                float tentative_fscore = Heuristic.GetDistance(c, end) + tentative_gscore;
                 
-                System.out.println("Weight from " + currentnode.coordinates.toString()+ " to " + c.toString()+ " = " + weight + ", tentative score: " + tentative_gscore);
+                System.out.println("Weight from " + currentnode.coordinates + " to " + c + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
                 
                 // Skip nodes that have been checked 
                 if (closedset.containsKey(c.toString()) && tentative_gscore >= closedset.get(c.toString()).g_score)
                 {
+                    System.out.println(c + " already in closed set with score: " + closedset.get(c.toString()).g_score);
                     continue;
                 }
                                
-                if (!openset.Contains(c) | tentative_gscore < currentnode.g_score)
+                if (!openset.Contains(c.toString()) | tentative_gscore < currentnode.g_score)
                 {
                     
                     Node node = new Node(Heuristic.GetDistance(c, end), tentative_gscore, c);
                     node.parent = currentnode;
                     openset.Insert(node.getF_score(), node);
                 }   
+                openset.DecreaseKey(tentative_fscore, c.toString());
             }
         }
         

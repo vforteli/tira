@@ -4,56 +4,94 @@
  */
 package astar;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
  *
  * @author verne_000
  */
-public class MinHeap
+public class MinHeapOnSteroids
 {
     protected HeapItem[] heap;
     private int tail;
-    private HashSet<Object> hash;   // Replace with own implementation
+    private HashMap<String, Integer> hashmap;
     
-    public MinHeap()
+    public MinHeapOnSteroids()
     {
         // Hmm, what should the initial size be, and when should it grow/shrink?
         heap = new HeapItem[2000];
-        hash = new HashSet<>(2000);
+        hashmap = new HashMap<>(2000);
         tail = 0;
     }
     
     
-    public boolean Contains (Coordinates c)
+    public boolean Contains (String key)
     {
-        return hash.contains(c.getHumanCoordinates());
+        return hashmap.containsKey(key);
+    }
+    
+   
+    public Boolean DecreaseKey(float value, String key)
+    {
+        if (hashmap.containsKey(key))
+        {
+            int index = hashmap.get(key);
+            HeapItem item = heap[index];
+            if (value < item.key)
+            {
+                System.out.println("Key " + key + " decreased to " + value);
+                item.key = value;
+                BubbleUp(index);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public Boolean IncreaseKey(float value, String key)
+    {
+        System.out.println("Increase key");
+        if (hashmap.containsKey(key))
+        {
+            System.out.println("Found key to increase");
+            int index = hashmap.get(key);
+            HeapItem item = heap[index];
+            if (value > item.key)
+            {
+                item.key = value;
+                BubbleDown(index);
+                return true;
+            }
+        }
+        return false;
     }
     
     
     
-    public void Insert(float value, Object o)
+    
+    public void Insert(float value, Node node)
     {    
-        if (!hash.add(((Node)o).coordinates.getHumanCoordinates()))
+        if (hashmap.containsKey(node.coordinates.toString()))
         {
-            //System.out.println("nyet");
-            return;
+            // Got the index to the old entry with the same key
+            //old = heap[hashmap.get(node.coordinates.toString())];       
         }
-        HeapItem item = new HeapItem(value, o);
+        
+        HeapItem item = new HeapItem(value, node);
         
         heap[tail] = item;
-        BubbleUp(tail);
-           
+        int index = BubbleUp(tail);
+        hashmap.put(node.coordinates.toString(), index);
         tail++;
         if (tail == heap.length)
         {
             System.out.println("Increase size...");
             // increase the array size...            
         }
-        //System.out.println("Insert, tail: " + tail);
     }
     
-    private void BubbleUp(int index)
+    private int BubbleUp(int index)
     {
         HeapItem last = heap[index];
         int parentindex = (int)Math.floor(((double)index - 1) / 2);
@@ -65,9 +103,10 @@ public class MinHeap
             parentindex = (int)Math.floor(((double)index - 1) / 2);
         }
         heap[index] = last;
+        return index;
     }   
     
-    private void BubbleDown(int index)
+    private int BubbleDown(int index)
     {
         HeapItem node = heap[index];
         
@@ -99,24 +138,21 @@ public class MinHeap
         }
         
         // Finally set the current node wherever it ends up...
-        heap[index] = node;    
+        heap[index] = node; 
+        return index;
     }
     
     public Object DeleteMin()
     {
         if (tail > 0)
-        {
-            // Get the root item, ie the lowest key
+        {            
             HeapItem root = heap[0];
-            
-            // Set last as new root
             heap[0] = heap[--tail];
-            
-            //System.out.println("Heap tail: " + heap[tail-1]);
-            
-            // Find correct place for new root
             BubbleDown(0);
-            //System.out.println("Delete, tail: " + tail); 
+            
+            // Dont forget to remove it from the hashmap as well, or cockup ensured
+            hashmap.remove(((Node)root.item).coordinates.toString());   
+            
             return root.item;
         }
         return null;

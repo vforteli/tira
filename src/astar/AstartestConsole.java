@@ -12,19 +12,19 @@ public class AstartestConsole
 {
     public static void main(String[] args) 
     {
-        MinHeap h = new MinHeap();
-        h.Insert(34, new Coordinates(4,5));
-        h.Insert(54, new Coordinates(4,5));
-        h.Insert(4, new Coordinates(4,5));
-        h.Insert(7, new Coordinates(4,5));
-        h.Insert(9, new Coordinates(4,5));
-        h.Insert(2, new Coordinates(4,5));
-        h.Insert(13, new Coordinates(4,5));
-        h.Insert(18, new Coordinates(4,5));
-        h.Insert(100, new Coordinates(4,5));
-        h.Insert(18, new Coordinates(4,5));
+        MinHeapOnSteroids h = new MinHeapOnSteroids();
+        h.Insert(35, new Node(1, 1, new Coordinates(4,5)));
+        h.Insert(39, new Node(1, 1, new Coordinates(5,5)));
+        h.Insert(2, new Node(1, 1, new Coordinates(1,5)));
+        h.Insert(60, new Node(1, 1, new Coordinates(3,5)));
+        h.Insert(4, new Node(1, 1, new Coordinates(7,5)));
+        h.Insert(100, new Node(1, 1, new Coordinates(8,5)));
+        h.Insert(17, new Node(1, 1, new Coordinates(9,5)));
         System.out.println();
         
+        h.DecreaseKey(10, new Coordinates(8,5).toString());
+        h.IncreaseKey(1000, new Coordinates(8,5).toString());
+        h.IncreaseKey(1000, new Coordinates(3,5).toString());
         
         for (HeapItem item : h.heap)
         {
@@ -43,6 +43,8 @@ public class AstartestConsole
                 System.out.println(item.key);            
             }
         }
+        
+        
         
         h.DeleteMin();
         System.out.println();

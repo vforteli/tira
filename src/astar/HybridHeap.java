@@ -12,9 +12,9 @@ import java.util.HashMap;
  */
 public class HybridHeap
 {
-    private HeapItem[] heap;
-    private int tail;
-    private HashMap<Coordinates, Integer> hashmap;
+    protected HeapItem[] heap;
+    protected int tail;
+    protected HashMap<Coordinates, Integer> hashmap;
     
     
     public HybridHeap()
@@ -70,6 +70,7 @@ public class HybridHeap
     {    
         if (hashmap.containsKey(coordinates))
         {
+            return;
             // Got the index to the old entry with the same key
             //old = heap[hashmap.get(node.coordinates.toString())];       
         }
@@ -89,23 +90,27 @@ public class HybridHeap
  
     
     private int BubbleUp(int index)
-    {
+    {  
         HeapItem last = heap[index];
         int parentindex = (int)Math.floor(((double)index - 1) / 2);
         
         while (index > 0 && heap[parentindex].key >= last.key)
         {
+            hashmap.put((Coordinates)heap[parentindex].item, index);
             heap[index] = heap[parentindex];
-            index = parentindex;        
+            index = parentindex;           
             parentindex = (int)Math.floor(((double)index - 1) / 2);
         }
+        
         heap[index] = last;
+        hashmap.put((Coordinates)last.item, index);
         return index;
     }   
   
     
     private int BubbleDown(int index)
     {
+        // To do, add code to maintain the hashmap...
         HeapItem node = heap[index];
         
         while(index < tail / 2)
@@ -114,7 +119,6 @@ public class HybridHeap
             int leftChildIndex = 2 * index + 1;
             int rightChildIndex = leftChildIndex + 1;
             
-            // Determine which child node is smaller
             if (rightChildIndex < tail && heap[rightChildIndex].key < heap[leftChildIndex].key)
             {
                 smallerNodeIndex = rightChildIndex;
@@ -124,19 +128,20 @@ public class HybridHeap
                 smallerNodeIndex = leftChildIndex;       
             }
             
-            // If the current node key is smaller, the heap is in order
             if (node.key <= heap[smallerNodeIndex].key)
             {
                 break;                
             }
             
             // Swap
+            hashmap.put((Coordinates)heap[smallerNodeIndex].item, index);
             heap[index] = heap[smallerNodeIndex];
             index = smallerNodeIndex;
         }
         
         // Finally set the current node wherever it ends up...
         heap[index] = node; 
+        hashmap.put((Coordinates)node.item, index);
         return index;
     }
     
@@ -157,6 +162,7 @@ public class HybridHeap
         return null;
     }
     
+    
     public Object Peek()
     {
         if (tail > 0)
@@ -168,6 +174,7 @@ public class HybridHeap
         return null;
         
     }  
+    
     
     public boolean getIsEmpty()
     {

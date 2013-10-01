@@ -20,8 +20,8 @@ public class HybridHeap
     public HybridHeap()
     {
         // Hmm, what should the initial size be, and when should it grow/shrink?
-        heap = new HeapItem[2000];
-        hashmap = new HashMap<>(2000);
+        heap = new HeapItem[1000];
+        hashmap = new HashMap<>(1000);
         tail = 0;
     }
     
@@ -32,7 +32,7 @@ public class HybridHeap
     }
     
    
-    public Boolean DecreaseKey(float value, Coordinates key)
+    public boolean DecreaseKey(float value, Coordinates key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
@@ -49,7 +49,7 @@ public class HybridHeap
     }
   
     
-    public Boolean IncreaseKey(float value, Coordinates key)
+    public boolean IncreaseKey(float value, Coordinates key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
@@ -92,14 +92,14 @@ public class HybridHeap
     private int BubbleUp(int index)
     {  
         HeapItem last = heap[index];
-        int parentindex = (int)Math.floor(((double)index - 1) / 2);
+        int parentindex = (index - 1) / 2;
         
         while (index > 0 && heap[parentindex].key >= last.key)
         {
             hashmap.put((Coordinates)heap[parentindex].item, index);
             heap[index] = heap[parentindex];
             index = parentindex;           
-            parentindex = (int)Math.floor(((double)index - 1) / 2);
+            parentindex = (index - 1) / 2;
         }
         
         heap[index] = last;

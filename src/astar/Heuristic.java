@@ -16,9 +16,9 @@ public class Heuristic
      */
     public static float GetDistance(Coordinates from, Coordinates to)
     {
-        int x = Math.abs(from.x - to.x);
-        int y = Math.abs(from.y - to.y);
-        
-        return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        int x = from.x - to.x;
+        int y = from.y - to.y;
+        // return x + y;    // Manhattan.. remember the absolut stuff then..
+        return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));   // Euclidean
     }
 }

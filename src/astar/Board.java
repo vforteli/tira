@@ -182,7 +182,7 @@ public class Board
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
         HybridHeap openset = new HybridHeap();
-        HashMap<Coordinates, Coordinates> closedset = new HashMap();
+        HashSet<Coordinates> closedset = new HashSet<>();
         HashMap<Coordinates, Coordinates> camefrom = new HashMap();
         HashMap<Coordinates, Float> g_score = new HashMap();
         HashMap<Coordinates, Float> f_score = new HashMap();
@@ -196,7 +196,7 @@ public class Board
         {
             Coordinates current = openset.DeleteMin();
             //System.out.println("Current node: " + currentnode.coordinates);
-            closedset.put(current, current);
+            closedset.add(current);
             
             if (current.equals(end))
                 return ReconstructPath(current, camefrom);     // Reconstruct and return the path
@@ -214,7 +214,7 @@ public class Board
                 float fscore = hscore + tentative_gscore;
                 //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + fscore);
                            
-                if (closedset.containsKey(neighbour) && (g_score.containsKey(neighbour) && tentative_gscore >= g_score.get(neighbour)))
+                if (closedset.contains(neighbour) && (g_score.containsKey(neighbour) && tentative_gscore >= g_score.get(neighbour)))
                     continue;
                 
                 if (!g_score.containsKey(neighbour) || tentative_gscore < g_score.get(neighbour))
@@ -223,7 +223,7 @@ public class Board
                     camefrom.put(neighbour, current);
                 }
                 
-                if (!openset.Contains(neighbour) && !closedset.containsKey(neighbour))
+                if (!openset.Contains(neighbour) && !closedset.contains(neighbour))
                     openset.Insert(fscore, neighbour);             
                 else
                     openset.DecreaseKey(fscore, neighbour);  // We can safely try to decrease the key, if the value is higher it wont change        

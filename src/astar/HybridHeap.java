@@ -31,6 +31,18 @@ public class HybridHeap
         return hashmap.containsKey(key);
     }
     
+    
+    public Float getValue (Coordinates key)
+    {
+        Integer position = hashmap.get(key);
+        if (position != null)
+        {
+            return heap[hashmap.get(key)].key;
+        }
+        else 
+            return null;
+    }
+    
    
     public boolean DecreaseKey(float value, Coordinates key)
     {

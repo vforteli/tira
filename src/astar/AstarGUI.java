@@ -239,7 +239,7 @@ public class AstarGUI extends javax.swing.JFrame
     private void DrawBoard(int[][] cells, ArrayList<Coordinates> path)
     { 
         BoardPanel.removeAll();
-        BoardPanel.setLayout(new GridLayout(cells.length, cells.length));
+        BoardPanel.setLayout(new GridLayout(cells.length, cells.length, -1, -1));
         BoardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         int x = 0; 
@@ -275,7 +275,7 @@ public class AstarGUI extends javax.swing.JFrame
         cellpanel.setEnabled(true);
         cellpanel.setName(c.toString());
         cellpanel.setPreferredSize(new Dimension(1, 1));
-        cellpanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
+        cellpanel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
         
         // This is probably insane... but whatever
         cellpanel.addMouseListener(new MouseAdapter() 
@@ -329,9 +329,16 @@ public class AstarGUI extends javax.swing.JFrame
             cellpanel.setBackground(Color.ORANGE);
         }
         else
-        {      
+        {   
+            float saturation = 0;
             float brightness = CalculateBrightness(cellweight);
-            cellpanel.setBackground(Color.getHSBColor(0, 0, brightness));
+            if (board.closedset != null && board.closedset.contains(c))
+            {
+                //cellpanel.setBackground(Color.YELLOW);
+                saturation = 0.5f;
+                brightness -= 0.1f;
+            }
+            cellpanel.setBackground(Color.getHSBColor(0.125f, saturation, brightness));
         }
         
         return cellpanel;

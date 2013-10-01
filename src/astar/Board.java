@@ -55,8 +55,6 @@ public class Board
     public Board(int Size, int terrainvariation) 
     {
         board = new int[Size][Size];
-        
-        // Init all cells to 1, default weight
         for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)
@@ -178,30 +176,26 @@ public class Board
     }
     
     
-         
+    public HashSet<Coordinates> closedset;  // Moved here for diagnostics..
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     { 
         HybridHeap openset = new HybridHeap();
-        HashSet<Coordinates> closedset = new HashSet<>();
+        closedset = new HashSet<>();
         HashMap<Coordinates, Coordinates> camefrom = new HashMap();
         HashMap<Coordinates, Float> g_score = new HashMap();
-        HashMap<Coordinates, Float> f_score = new HashMap();
         
         g_score.put(start, 0f);
-        f_score.put(start, Heuristic.GetDistance(start, end));
              
-        openset.Insert(f_score.get(start), start);
+        openset.Insert(Heuristic.GetDistance(start, end), start);
 
         while (!openset.getIsEmpty())
         {
             Coordinates current = openset.DeleteMin();
-            //System.out.println("Current node: " + currentnode.coordinates);
             closedset.add(current);
             
             if (current.equals(end))
-                return ReconstructPath(current, camefrom);     // Reconstruct and return the path
-            
-            
+                return ReconstructPath(current, camefrom);
+                     
             for (Coordinates neighbour : GetNeighbours(current))
             {                
                 float weight = CalculateWeight(current, neighbour);
@@ -209,24 +203,24 @@ public class Board
                 if (weight == -1)    // Wall...
                     continue;
                 
-                float hscore = Heuristic.GetDistance(neighbour, end);
                 float tentative_gscore = g_score.get(current) + weight;
-                float fscore = hscore + tentative_gscore;
-                //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + fscore);
+                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end);
+                Float g_scoreneighbour = g_score.get(neighbour);    // Float is nullable, float is not...
+                //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
                            
-                if (closedset.contains(neighbour) && (g_score.containsKey(neighbour) && tentative_gscore >= g_score.get(neighbour)))
+                if (closedset.contains(neighbour) && (g_scoreneighbour != null && g_scoreneighbour <= tentative_gscore))
                     continue;
                 
-                if (!g_score.containsKey(neighbour) || tentative_gscore < g_score.get(neighbour))
+                if (g_scoreneighbour == null || tentative_gscore < g_scoreneighbour)
                 {
                     g_score.put(neighbour, tentative_gscore);
                     camefrom.put(neighbour, current);
                 }
                 
                 if (!openset.Contains(neighbour) && !closedset.contains(neighbour))
-                    openset.Insert(fscore, neighbour);             
+                    openset.Insert(tentative_fscore, neighbour);             
                 else
-                    openset.DecreaseKey(fscore, neighbour);  // We can safely try to decrease the key, if the value is higher it wont change        
+                    openset.DecreaseKey(tentative_fscore, neighbour);  // We can safely try to decrease the key, if the value is higher it wont change        
             }
         }
         

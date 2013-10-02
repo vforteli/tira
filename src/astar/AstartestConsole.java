@@ -64,7 +64,7 @@ public class AstartestConsole
 
     private static void PrintInOrder(HybridHeap h)
     {
-        while (!h.getIsEmpty())
+        while (!h.IsEmpty())
         {
             System.out.print(h.DeleteMin() + ", ");
         }

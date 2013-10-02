@@ -10,11 +10,11 @@ import java.util.HashMap;
  *
  * @author verne_000
  */
-public class HybridHeap
+public class HybridHeap<T>
 {
     protected HeapItem[] heap;
     protected int tail;
-    protected HashMap<Coordinates, Integer> hashmap;
+    protected HashMap<T, Integer> hashmap;
     
     
     public HybridHeap()
@@ -26,13 +26,13 @@ public class HybridHeap
     }
     
     
-    public boolean Contains (Coordinates key)
+    public boolean Contains (T key)
     {
         return hashmap.containsKey(key);
     }
     
     
-    public Float getValue (Coordinates key)
+    public Float getValue (T key)
     {
         Integer position = hashmap.get(key);
         if (position != null)
@@ -44,7 +44,7 @@ public class HybridHeap
     }
     
    
-    public boolean DecreaseKey(float value, Coordinates key)
+    public boolean DecreaseKey(float value, T key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
@@ -61,7 +61,7 @@ public class HybridHeap
     }
   
     
-    public boolean IncreaseKey(float value, Coordinates key)
+    public boolean IncreaseKey(float value, T key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
@@ -78,7 +78,7 @@ public class HybridHeap
     }
     
       
-    public void Insert(float value, Coordinates coordinates)
+    public void Insert(float value, T coordinates)
     {    
         if (hashmap.containsKey(coordinates))
         {
@@ -108,14 +108,14 @@ public class HybridHeap
         
         while (index > 0 && heap[parentindex].key >= last.key)
         {
-            hashmap.put((Coordinates)heap[parentindex].item, index);
+            hashmap.put((T)heap[parentindex].item, index);
             heap[index] = heap[parentindex];
             index = parentindex;           
             parentindex = (index - 1) / 2;
         }
         
         heap[index] = last;
-        hashmap.put((Coordinates)last.item, index);
+        hashmap.put((T)last.item, index);
         return index;
     }   
   
@@ -146,19 +146,19 @@ public class HybridHeap
             }
             
             // Swap
-            hashmap.put((Coordinates)heap[smallerNodeIndex].item, index);
+            hashmap.put((T)heap[smallerNodeIndex].item, index);
             heap[index] = heap[smallerNodeIndex];
             index = smallerNodeIndex;
         }
         
         // Finally set the current node wherever it ends up...
         heap[index] = node; 
-        hashmap.put((Coordinates)node.item, index);
+        hashmap.put((T)node.item, index);
         return index;
     }
     
     
-    public Coordinates DeleteMin()
+    public T DeleteMin()
     {
         if (tail > 0)
         {            
@@ -167,28 +167,28 @@ public class HybridHeap
             BubbleDown(0);
             
             // Dont forget to remove it from the hashmap as well, or cockup ensured
-            hashmap.remove(((Coordinates)root.item));   
+            hashmap.remove(((T)root.item));   
             
-            return (Coordinates)root.item;
+            return (T)root.item;
         }
         return null;
     }
     
     
-    public Object Peek()
+    public T Peek()
     {
         if (tail > 0)
         {
             // Get the root item, ie the lowest key
             HeapItem root = heap[0];                
-            return root.item;
+            return (T)root.item;
         }
         return null;
         
     }  
     
     
-    public boolean getIsEmpty()
+    public boolean IsEmpty()
     {
         return tail == 0;
     }

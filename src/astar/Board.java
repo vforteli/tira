@@ -178,8 +178,8 @@ public class Board
     
     public HashSet<Coordinates> closedset;  // Moved here for diagnostics..
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
-    { 
-        HybridHeap openset = new HybridHeap();
+    {          
+        HybridHeap<Coordinates> openset = new HybridHeap();
         closedset = new HashSet<>();
         HashMap<Coordinates, Coordinates> camefrom = new HashMap();
         HashMap<Coordinates, Float> g_score = new HashMap();
@@ -188,7 +188,7 @@ public class Board
              
         openset.Insert(Heuristic.GetDistance(start, end), start);
 
-        while (!openset.getIsEmpty())
+        while (!openset.IsEmpty())
         {
             Coordinates current = openset.DeleteMin();
             closedset.add(current);

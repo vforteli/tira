@@ -44,11 +44,10 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         if (item == null)   // This is an empty slot, so the item can be added directly in the array
         {
             targetarray[index] = new Item(key, value);
-            items++;
         }
         else 
         {
-            while (item.getNext() != null)
+            while (item != null)
             {
                 if (item._key.equals(key))
                 {
@@ -56,13 +55,15 @@ public class MapHache<K, V> extends AbstractMap<K, V>
                     item._value = value;
                     return previous;
                 }
+                if (item.getNext() == null) // If we get here, the item has been put last in the linked list
+                {
+                    item.setNext(new Item(key, value));
+                    break;
+                }
                 item = item.getNext();
-            }
-            
-            // If we get here, the item has been put last in the linked list
-            item.setNext(new Item(key, value));
-            items++;
+            }    
         }
+        items++;
         return null;
     }
     
@@ -107,29 +108,11 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         return null;
     }
     
-    
-   
+     
     @Override
     public V get(Object key)
     {
         return getKeyValue((K)key);
-    }
-    
-    
-    private V getKeyValue(K key)
-    {
-        int index = key.hashCode() % array.length;
-        Item item = array[index];
-               
-        while (item != null)
-        {
-            if (item._key.equals(key))
-            {
-                return (V)item._value; 
-            }
-            item = item.getNext();
-        }
-        return null;
     }
     
     
@@ -149,6 +132,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    
     private void IncreaseSize()
     {
         // Increase size! (thats what she said...)
@@ -169,5 +153,22 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         }
         System.out.println("New size: " + newarray.length + ", fill factor: " + (double)items / (double)newarray.length);
         array = newarray;
+    }
+    
+    
+    private V getKeyValue(K key)
+    {
+        int index = key.hashCode() % array.length;
+        Item item = array[index];
+               
+        while (item != null)
+        {
+            if (item._key.equals(key))
+            {
+                return (V)item._value; 
+            }
+            item = item.getNext();
+        }
+        return null;
     }
 }

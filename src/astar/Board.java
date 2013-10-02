@@ -10,6 +10,7 @@ package astar;
  */
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random; 
 
 /**
@@ -180,8 +181,8 @@ public class Board
     {          
         HybridHeap<Coordinates> openset = new HybridHeap();
         closedset = new MapHache(701);
-        AbstractMap<Coordinates, Coordinates> camefrom = new MapHache(701);
-        AbstractMap<Coordinates, Float> g_score = new MapHache(701);
+        AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
+        AbstractMap<Coordinates, Float> g_score = new MapHache<>(701);
         
         g_score.put(start, 0f);
              
@@ -204,7 +205,7 @@ public class Board
                 
                 float tentative_gscore = g_score.get(current) + weight;
                 float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end);
-                Float g_scoreneighbour = g_score.get(neighbour);    // Float is nullable, float is not...
+                Float g_scoreneighbour = g_score.get(neighbour);
                 //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
                            
                 if (closedset.containsKey(neighbour) && (g_scoreneighbour != null && g_scoreneighbour <= tentative_gscore))

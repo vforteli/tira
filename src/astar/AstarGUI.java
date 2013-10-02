@@ -403,6 +403,9 @@ public class AstarGUI extends javax.swing.JFrame
                 board.AddRandomObstacle(8);
                 board.AddRandomObstacle(5);
                 board.AddRandomObstacle(5);
+                board.AddRandomObstacle(15);
+                board.AddRandomObstacle(15);
+                board.AddRandomObstacle(5);
                 board.AddRandomObstacle(1); // :p         
             }
         } 

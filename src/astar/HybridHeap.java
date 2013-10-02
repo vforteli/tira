@@ -5,7 +5,6 @@
 package astar;
 
 import java.util.AbstractMap;
-import java.util.HashMap;
 
 /**
  *
@@ -23,7 +22,7 @@ public class HybridHeap<T>
         int initialSize = 1000;
         // Hmm, what should the initial size be, and when should it grow/shrink?
         heap = new HeapItem[initialSize];
-        hashmap = new HashMap<>(); //MapHache<>(1701);
+        hashmap = new MapHache<>(1701);
         tail = 0;
     }
     

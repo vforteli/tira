@@ -44,7 +44,6 @@ public class Coordinates
         try
         {
             String[] foo = humanform.split(",");
-          
             int x = Integer.parseInt(foo[0]);
             int y = Integer.parseInt(foo[1]);
             
@@ -56,10 +55,7 @@ public class Coordinates
             return null;
         }        
     }
-    
-    
-
-    
+     
     
     @Override
     public boolean equals(Object other)
@@ -75,6 +71,7 @@ public class Coordinates
         return false;
     }
 
+    
     @Override
     public int hashCode()
     {
@@ -84,6 +81,7 @@ public class Coordinates
         hash = 37 * hash + this.y;
         return hash;
     }
+    
     
     @Override
     public String toString()

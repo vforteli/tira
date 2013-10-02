@@ -9,8 +9,6 @@ package astar;
  * @author vforteli
  */
 import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Random; 
 
 /**
@@ -177,7 +175,7 @@ public class Board
     
     
     public AbstractMap<Coordinates, Integer> closedset;  // Moved here for diagnostics..
-    public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
+    public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end)
     {          
         HybridHeap<Coordinates> openset = new HybridHeap();
         closedset = new MapHache(701);
@@ -229,12 +227,12 @@ public class Board
     }
     
     
-    private ArrayList<Coordinates> ReconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
+    private AbstractMap<Coordinates, Coordinates> ReconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
     {
-        ArrayList<Coordinates> nodes = new ArrayList<>();      
+        MapHache<Coordinates, Coordinates> nodes = new MapHache(701);      
         while (camefrom.containsKey(coordinates))
         {
-            nodes.add(coordinates);
+            nodes.put(coordinates, coordinates);
             coordinates = camefrom.get(coordinates);
         }
         return nodes;
@@ -335,6 +333,7 @@ public class Board
         return this.board[c.y][c.x];
     }
 
+    
     private float CalculateWeight(Coordinates from, Coordinates to)
     {
         float currentweight = getCellValue(from);

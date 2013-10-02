@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -236,7 +237,7 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(int[][] cells, ArrayList<Coordinates> path)
+    private void DrawBoard(int[][] cells, AbstractMap<Coordinates, Coordinates> path)
     { 
         BoardPanel.removeAll();
         BoardPanel.setLayout(new GridLayout(cells.length, cells.length, -1, -1));
@@ -251,7 +252,7 @@ public class AstarGUI extends javax.swing.JFrame
                 Coordinates c = new Coordinates(x, y);
                 boolean highlight = false;
                 
-                if (path != null && path.contains(c))
+                if (path != null && path.containsKey(c))
                 {
                     highlight = true;
                 }
@@ -352,7 +353,7 @@ public class AstarGUI extends javax.swing.JFrame
         {
             try
             {
-                ArrayList<Coordinates> path = null;
+                AbstractMap<Coordinates, Coordinates> path = null;
                 if (previousCoordinates != null)
                 {
                     path = board.FindPath(previousCoordinates, clickedCoordinates);

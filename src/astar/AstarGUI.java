@@ -332,7 +332,7 @@ public class AstarGUI extends javax.swing.JFrame
         {   
             float saturation = 0;
             float brightness = CalculateBrightness(cellweight);
-            if (board.closedset != null && board.closedset.contains(c))
+            if (board.closedset != null && board.closedset.containsKey(c))
             {
                 //cellpanel.setBackground(Color.YELLOW);
                 saturation = 0.5f;

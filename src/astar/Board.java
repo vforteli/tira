@@ -8,9 +8,8 @@ package astar;
  *
  * @author vforteli
  */
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random; 
 
 /**
@@ -176,13 +175,13 @@ public class Board
     }
     
     
-    public HashSet<Coordinates> closedset;  // Moved here for diagnostics..
+    public AbstractMap<Coordinates, Integer> closedset;  // Moved here for diagnostics..
     public ArrayList<Coordinates> FindPath(Coordinates start, Coordinates end)
     {          
         HybridHeap<Coordinates> openset = new HybridHeap();
-        closedset = new HashSet<>();
-        HashMap<Coordinates, Coordinates> camefrom = new HashMap();
-        HashMap<Coordinates, Float> g_score = new HashMap();
+        closedset = new MapHache(701);
+        AbstractMap<Coordinates, Coordinates> camefrom = new MapHache(701);
+        AbstractMap<Coordinates, Float> g_score = new MapHache(701);
         
         g_score.put(start, 0f);
              
@@ -191,7 +190,7 @@ public class Board
         while (!openset.IsEmpty())
         {
             Coordinates current = openset.DeleteMin();
-            closedset.add(current);
+            closedset.put(current, 0);
             
             if (current.equals(end))
                 return ReconstructPath(current, camefrom);
@@ -208,7 +207,7 @@ public class Board
                 Float g_scoreneighbour = g_score.get(neighbour);    // Float is nullable, float is not...
                 //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
                            
-                if (closedset.contains(neighbour) && (g_scoreneighbour != null && g_scoreneighbour <= tentative_gscore))
+                if (closedset.containsKey(neighbour) && (g_scoreneighbour != null && g_scoreneighbour <= tentative_gscore))
                     continue;
                 
                 if (g_scoreneighbour == null || tentative_gscore < g_scoreneighbour)
@@ -217,7 +216,7 @@ public class Board
                     camefrom.put(neighbour, current);
                 }
                 
-                if (!openset.Contains(neighbour) && !closedset.contains(neighbour))
+                if (!openset.Contains(neighbour) && !closedset.containsKey(neighbour))
                     openset.Insert(tentative_fscore, neighbour);             
                 else
                     openset.DecreaseKey(tentative_fscore, neighbour);  // We can safely try to decrease the key, if the value is higher it wont change        
@@ -229,7 +228,7 @@ public class Board
     }
     
     
-    private ArrayList<Coordinates> ReconstructPath(Coordinates coordinates, HashMap<Coordinates, Coordinates> camefrom)
+    private ArrayList<Coordinates> ReconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
     {
         ArrayList<Coordinates> nodes = new ArrayList<>();      
         while (camefrom.containsKey(coordinates))

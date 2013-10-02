@@ -78,7 +78,7 @@ public class Coordinates
     @Override
     public int hashCode()
     {
-        // Umm...
+        // Umm... probably insanely crappy...
         int hash = 7;
         hash = 37 * hash + this.x;
         hash = 37 * hash + this.y;

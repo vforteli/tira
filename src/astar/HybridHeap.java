@@ -4,6 +4,7 @@
  */
 package astar;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 
 /**
@@ -14,14 +15,15 @@ public class HybridHeap<T>
 {
     protected HeapItem[] heap;
     protected int tail;
-    protected HashMap<T, Integer> hashmap;
+    protected AbstractMap<T, Integer> hashmap;
     
     
     public HybridHeap()
     {
+        int initialSize = 1000;
         // Hmm, what should the initial size be, and when should it grow/shrink?
-        heap = new HeapItem[1000];
-        hashmap = new HashMap<>(1000);
+        heap = new HeapItem[initialSize];
+        hashmap = new MapHache<>(1701);
         tail = 0;
     }
     

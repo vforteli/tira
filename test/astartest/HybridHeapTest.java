@@ -1,9 +1,13 @@
+package astartest;
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
 import astar.Coordinates;
+import astar.Coordinates;
+import astar.HybridHeap;
 import astar.HybridHeap;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -118,7 +122,7 @@ public class HybridHeapTest
     }
     
     
-     @Test
+    @Test
     public void TestIncreaseKeyInsertIncrease()
     {
         h.IncreaseKey(200, new Coordinates(1,2));

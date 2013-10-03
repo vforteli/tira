@@ -36,38 +36,6 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     }
     
     
-    private V insert(K key, V value, Item<K, V>[] targetarray)
-    {
-        int index = key.hashCode() % targetarray.length;
-        Item item = targetarray[index];
-        
-        if (item == null)   // This is an empty slot, so the item can be added directly in the array
-        {
-            targetarray[index] = new Item(key, value);
-        }
-        else 
-        {
-            while (item != null)
-            {
-                if (item._key.equals(key))
-                {
-                    V previous = (V)item._value;
-                    item._value = value;
-                    return previous;
-                }
-                if (item.getNext() == null) // If we get here, the item has been put last in the linked list
-                {
-                    item.setNext(new Item(key, value));
-                    break;
-                }
-                item = item.getNext();
-            }    
-        }
-        items++;
-        return null;
-    }
-    
-    
     @Override
     public V remove(Object key)
     {
@@ -126,6 +94,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         return false;
     } 
 
+    
     @Override
     public Set<Entry<K, V>> entrySet()
     {
@@ -169,6 +138,38 @@ public class MapHache<K, V> extends AbstractMap<K, V>
             }
             item = item.getNext();
         }
+        return null;
+    }
+    
+    
+    private V insert(K key, V value, Item<K, V>[] targetarray)
+    {
+        int index = key.hashCode() % targetarray.length;
+        Item item = targetarray[index];
+        
+        if (item == null)   // This is an empty slot, so the item can be added directly in the array
+        {
+            targetarray[index] = new Item(key, value);
+        }
+        else 
+        {
+            while (item != null)
+            {
+                if (item._key.equals(key))
+                {
+                    V previous = (V)item._value;
+                    item._value = value;
+                    return previous;
+                }
+                if (item.getNext() == null) // If we get here, the item has been put last in the linked list
+                {
+                    item.setNext(new Item(key, value));
+                    break;
+                }
+                item = item.getNext();
+            }    
+        }
+        items++;
         return null;
     }
 }

@@ -23,15 +23,17 @@
                           <Component id="label2" max="32767" attributes="0"/>
                           <Component id="label1" pref="100" max="32767" attributes="0"/>
                       </Group>
+                      <Component id="label4" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="textField1" max="32767" attributes="0"/>
                       <Component id="InitBoardButton" pref="85" max="32767" attributes="0"/>
                       <Component id="BoardSizeChoice" pref="85" max="32767" attributes="0"/>
                       <Component id="ObstaclePercentageChoice" max="32767" attributes="0"/>
                       <Component id="TerrainVariationChoice" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="117" max="32767" attributes="0"/>
+                  <EmptySpace pref="56" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -54,8 +56,13 @@
                       <Component id="TerrainVariationChoice" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="textField1" min="-2" max="-2" attributes="0"/>
+                      <Component id="label4" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="InitBoardButton" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="62" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -92,6 +99,16 @@
           </Properties>
         </Component>
         <Component class="java.awt.Choice" name="TerrainVariationChoice">
+        </Component>
+        <Component class="java.awt.TextField" name="textField1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="1"/>
+          </Properties>
+        </Component>
+        <Component class="java.awt.Label" name="label4">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Heuristic tolerance"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

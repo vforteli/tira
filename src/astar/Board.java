@@ -175,7 +175,7 @@ public class Board
     
     
     public AbstractMap<Coordinates, Integer> closedset;  // Moved here for diagnostics..
-    public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end)
+    public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end, int tolerance)
     {          
         HybridHeap<Coordinates> openset = new HybridHeap();
         closedset = new MapHache(701);
@@ -184,7 +184,7 @@ public class Board
         
         g_score.put(start, 0f);
              
-        openset.Insert(Heuristic.GetDistance(start, end), start);
+        openset.Insert(Heuristic.GetDistance(start, end, tolerance), start);
 
         while (!openset.IsEmpty())
         {
@@ -202,7 +202,7 @@ public class Board
                     continue;
                 
                 float tentative_gscore = g_score.get(current) + weight;
-                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end);
+                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end, tolerance);
                 Float g_scoreneighbour = g_score.get(neighbour);
                 //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
                            

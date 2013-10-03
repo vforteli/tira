@@ -42,6 +42,17 @@ public class MapHacheTest
     
     
     @Test
+    public void ContainsString()
+    {
+        MapHache<String, Integer> hashmap = new MapHache(701);
+        hashmap.put("first", 8);
+        hashmap.put("second", 5);
+        boolean result = hashmap.containsKey("first");
+        assertTrue(result);
+    }
+    
+    
+    @Test
     public void Get()
     {
         MapHache<Integer, Integer> hashmap = new MapHache(701);

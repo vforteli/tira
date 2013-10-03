@@ -6,8 +6,6 @@ package astartest;
  */
 
 import astar.Coordinates;
-import astar.Coordinates;
-import astar.HybridHeap;
 import astar.HybridHeap;
 import org.junit.After;
 import org.junit.AfterClass;

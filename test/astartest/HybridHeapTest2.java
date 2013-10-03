@@ -4,12 +4,8 @@
  */
 package astartest;
 
+import astar.Coordinates;
 import astar.HybridHeap;
-import astar.HybridHeap;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -19,31 +15,11 @@ import static org.junit.Assert.*;
  */
 public class HybridHeapTest2
 {
-    private static HybridHeap<String> heap;
     public HybridHeapTest2()
     {
     }
     
-    @BeforeClass
-    public static void setUpClass()
-    {
-        heap = new HybridHeap();
-    }
     
-    @AfterClass
-    public static void tearDownClass()
-    {
-    }
-    
-    @Before
-    public void setUp()
-    {
-    }
-    
-    @After
-    public void tearDown()
-    {
-    }
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
@@ -53,6 +29,7 @@ public class HybridHeapTest2
     @Test
     public void TestInsert()
     {
+        HybridHeap<String> heap = new HybridHeap<>();
         heap.Insert(10, "first");
         
         String result = heap.Peek();
@@ -61,22 +38,60 @@ public class HybridHeapTest2
     }
     
     @Test
-    public void TestInsertDeleteMin()
+    public void TestDeleteMin()
     {
+        HybridHeap<String> heap = new HybridHeap<>();
+        heap.Insert(10, "first");
         heap.Insert(5, "second");
         heap.Insert(15, "third");
-        
         String result = heap.DeleteMin();
         String expected = "second";
         assertEquals(expected, result);
     }
     
-//    @Test
-//    public void TestInsertDeleteMin2()
-//    {        
-//        heap.DeleteMin();
-//        String result = heap.DeleteMin();
-//        String expected = "third";
-//        assertEquals(expected, result);
-//    }
+    @Test
+    public void TestDeleteMin2()
+    {        
+        HybridHeap<String> heap = new HybridHeap<>();
+        heap.Insert(10, "first");
+        heap.Insert(5, "second");
+        heap.Insert(15, "third");
+        heap.DeleteMin();
+        heap.DeleteMin();
+        String result = heap.DeleteMin();
+        String expected = "third";
+        assertEquals(expected, result);
+    }
+    
+    
+    @Test
+    public void TestDeleteMinEmpty()
+    {        
+        HybridHeap<String> heap = new HybridHeap<>();
+        String result = heap.DeleteMin();  
+        assertNull(result);
+    }
+    
+    @Test
+    public void TestGetValue()
+    {        
+        HybridHeap<String> heap = new HybridHeap<>();
+        heap.Insert(10, "first");
+        heap.Insert(5, "second");
+        heap.Insert(15, "third");
+        Float result = heap.getValue("second");
+        Float expected = 5f;
+        assertEquals(expected, result);
+    }
+    
+    @Test
+    public void TestGetValueFail()
+    {        
+        HybridHeap<String> heap = new HybridHeap<>();
+        heap.Insert(10, "first");
+        heap.Insert(5, "second");
+        heap.Insert(15, "third");
+        Float result = heap.getValue("sechhond");
+        assertNull(result);
+    }
 }

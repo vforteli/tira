@@ -39,7 +39,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     @Override
     public V remove(Object key)
     {
-        int index = key.hashCode() % array.length;
+        int index = GetIndex(key, array.length);
         Item item = array[index];
         
         if (item != null)
@@ -127,7 +127,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     
     private V getKeyValue(K key)
     {
-        int index = key.hashCode() % array.length;
+        int index = GetIndex(key, array.length);
         Item item = array[index];
                
         while (item != null)
@@ -141,10 +141,15 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         return null;
     }
     
+    private int GetIndex(Object key, int modulo)
+    {
+        return Math.abs(key.hashCode() % modulo);
+    }
+    
     
     private V insert(K key, V value, Item<K, V>[] targetarray)
     {
-        int index = key.hashCode() % targetarray.length;
+        int index = GetIndex(key, targetarray.length);
         Item item = targetarray[index];
         
         if (item == null)   // This is an empty slot, so the item can be added directly in the array

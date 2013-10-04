@@ -34,6 +34,18 @@ public class AstarGUI extends javax.swing.JFrame
     public AstarGUI()
     {
         initComponents();
+        
+        BoardSizeChoice.add("20");
+        BoardSizeChoice.add("50");
+        BoardSizeChoice.add("100");
+        
+        ObstaclePercentageChoice.add("10");
+        ObstaclePercentageChoice.add("20");
+        ObstaclePercentageChoice.add("30");
+        
+        TerrainVariationChoice.add("1");
+        TerrainVariationChoice.add("5");
+        TerrainVariationChoice.add("10");
     }
 
     /**
@@ -54,14 +66,13 @@ public class AstarGUI extends javax.swing.JFrame
         InitBoardButton = new java.awt.Button();
         label3 = new java.awt.Label();
         TerrainVariationChoice = new java.awt.Choice();
-        textField1 = new java.awt.TextField();
-        label4 = new java.awt.Label();
         BoardPanel = new javax.swing.JPanel();
-        jlabel2 = new javax.swing.JLabel();
         ScoreLabel = new javax.swing.JLabel();
+        HeuristicMultipliertextField = new java.awt.TextField();
+        label5 = new java.awt.Label();
         MainMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        NewGameButton = new javax.swing.JMenuItem();
+        NewBoardButton = new javax.swing.JMenuItem();
 
         NewGameFrame.setTitle("Start game");
         NewGameFrame.setAlwaysOnTop(true);
@@ -86,25 +97,19 @@ public class AstarGUI extends javax.swing.JFrame
 
         label3.setText("Terrain variation");
 
-        textField1.setText("1");
-
-        label4.setText("Heuristic tolerance");
-
         javax.swing.GroupLayout NewGameFrameLayout = new javax.swing.GroupLayout(NewGameFrame.getContentPane());
         NewGameFrame.getContentPane().setLayout(NewGameFrameLayout);
         NewGameFrameLayout.setHorizontalGroup(
             NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NewGameFrameLayout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(17, 17, 17)
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(label2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
-                    .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(textField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                     .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -126,11 +131,7 @@ public class AstarGUI extends javax.swing.JFrame
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                 .addComponent(InitBoardButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
         );
@@ -142,30 +143,33 @@ public class AstarGUI extends javax.swing.JFrame
         BoardPanel.setLayout(BoardPanelLayout);
         BoardPanelLayout.setHorizontalGroup(
             BoardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 488, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         BoardPanelLayout.setVerticalGroup(
             BoardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 388, Short.MAX_VALUE)
+            .addGap(0, 425, Short.MAX_VALUE)
         );
-
-        jlabel2.setText("Location");
 
         ScoreLabel.setMaximumSize(new java.awt.Dimension(34, 14));
         ScoreLabel.setMinimumSize(new java.awt.Dimension(34, 14));
         ScoreLabel.setPreferredSize(new java.awt.Dimension(34, 14));
 
+        HeuristicMultipliertextField.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        HeuristicMultipliertextField.setText("1");
+
+        label5.setText("Heuristic multiplier");
+
         jMenu1.setText("File");
 
-        NewGameButton.setText("New game");
-        NewGameButton.addActionListener(new java.awt.event.ActionListener()
+        NewBoardButton.setText("New board");
+        NewBoardButton.addActionListener(new java.awt.event.ActionListener()
         {
             public void actionPerformed(java.awt.event.ActionEvent evt)
             {
-                NewGameButtonActionPerformed(evt);
+                NewBoardButtonActionPerformed(evt);
             }
         });
-        jMenu1.add(NewGameButton);
+        jMenu1.add(NewBoardButton);
 
         MainMenuBar.add(jMenu1);
 
@@ -177,27 +181,23 @@ public class AstarGUI extends javax.swing.JFrame
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addComponent(jlabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 316, Short.MAX_VALUE))))
+                .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(39, 39, 39)
+                .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(1, 1, 1)
+                .addComponent(HeuristicMultipliertextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(300, Short.MAX_VALUE))
+            .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlabel2)
-                    .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(HeuristicMultipliertextField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ScoreLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
@@ -207,14 +207,14 @@ public class AstarGUI extends javax.swing.JFrame
     /**
      * Start a new game
      */
-    private void NewGameButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_NewGameButtonActionPerformed
-    {//GEN-HEADEREND:event_NewGameButtonActionPerformed
+    private void NewBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_NewBoardButtonActionPerformed
+    {//GEN-HEADEREND:event_NewBoardButtonActionPerformed
         // If a game is already running prompt the user for confirmation
         if (board != null)
         {
             int selection = JOptionPane.showConfirmDialog(
                         null
-                        , "Do you want to discard the current game?"
+                        , "Do you want to discard the current board?"
                         , "New game"
                         , JOptionPane.OK_CANCEL_OPTION
                         , JOptionPane.WARNING_MESSAGE);
@@ -225,23 +225,8 @@ public class AstarGUI extends javax.swing.JFrame
             }    
         }
              
-        BoardSizeChoice.removeAll();
-        BoardSizeChoice.add("20");
-        BoardSizeChoice.add("50");
-        BoardSizeChoice.add("100");
-        
-        ObstaclePercentageChoice.removeAll();
-        ObstaclePercentageChoice.add("10");
-        ObstaclePercentageChoice.add("20");
-        ObstaclePercentageChoice.add("30");
-        
-        TerrainVariationChoice.removeAll();
-        TerrainVariationChoice.add("1");
-        TerrainVariationChoice.add("5");
-        TerrainVariationChoice.add("10");
-        
         NewGameFrame.setVisible(true);
-    }//GEN-LAST:event_NewGameButtonActionPerformed
+    }//GEN-LAST:event_NewBoardButtonActionPerformed
 
     
     /**
@@ -286,7 +271,7 @@ public class AstarGUI extends javax.swing.JFrame
         JPanel cellpanel = new JPanel();
         cellpanel.setEnabled(true);
         cellpanel.setName(c.toString());
-        cellpanel.setPreferredSize(new Dimension(1, 1));
+        cellpanel.setMinimumSize(new Dimension(1,1));
         cellpanel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
         
         // This is probably insane... but whatever
@@ -346,7 +331,6 @@ public class AstarGUI extends javax.swing.JFrame
             float brightness = CalculateBrightness(cellweight);
             if (board.closedset != null && board.closedset.containsKey(c))
             {
-                //cellpanel.setBackground(Color.YELLOW);
                 saturation = 0.5f;
                 brightness -= 0.1f;
             }
@@ -367,7 +351,7 @@ public class AstarGUI extends javax.swing.JFrame
                 AbstractMap<Coordinates, Coordinates> path = null;
                 if (previousCoordinates != null)
                 {
-                    path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(textField1.getText()));
+                    path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
                 }        
                 
                 DrawBoard(board.GetBoard(), path);  
@@ -376,7 +360,6 @@ public class AstarGUI extends javax.swing.JFrame
             } 
             catch (Exception ex)
             {
-                // Notify the user? although, with a clickable GUI this should not be an issue anyway...
                 Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -404,13 +387,13 @@ public class AstarGUI extends javax.swing.JFrame
             board.AddRandomObstacle(3);
             board.AddRandomObstacle(2);
             
-            int ships = Integer.parseInt(ObstaclePercentageChoice.getSelectedItem());
-            if (ships == 20 || ships == 30)
+            int obstacles = Integer.parseInt(ObstaclePercentageChoice.getSelectedItem());
+            if (obstacles == 20 || obstacles == 30)
             {
                 board.AddRandomObstacle(2);
                 board.AddRandomObstacle(3);
             }
-            if (ships == 30)
+            if (obstacles == 30)
             {
                 board.AddRandomObstacle(8);
                 board.AddRandomObstacle(5);
@@ -477,30 +460,28 @@ public class AstarGUI extends javax.swing.JFrame
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel BoardPanel;
     private java.awt.Choice BoardSizeChoice;
+    private java.awt.TextField HeuristicMultipliertextField;
     private java.awt.Button InitBoardButton;
     private javax.swing.JMenuBar MainMenuBar;
-    private javax.swing.JMenuItem NewGameButton;
+    private javax.swing.JMenuItem NewBoardButton;
     private javax.swing.JFrame NewGameFrame;
     private java.awt.Choice ObstaclePercentageChoice;
     private javax.swing.JLabel ScoreLabel;
     private java.awt.Choice TerrainVariationChoice;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JLabel jlabel2;
     private java.awt.Label label1;
     private java.awt.Label label2;
     private java.awt.Label label3;
-    private java.awt.Label label4;
-    private java.awt.TextField textField1;
+    private java.awt.Label label5;
     // End of variables declaration//GEN-END:variables
 
     private float CalculateBrightness(int cell)
     {
-        float min = 1f;
-        float max = 5f;
+        float min = 1;
+        float max = 5;
         float outmax = 0.7f;
-        float outmin = 1f;
+        float outmin = 1;
         float brightness = outmin + (cell - min) * (outmax - outmin) / (max - min);
         return brightness;
     }
-
 }

@@ -8,8 +8,13 @@ package astar;
  *
  * @author vforteli
  */
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.net.URL;
 import java.util.AbstractMap;
 import java.util.Random; 
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -52,16 +57,57 @@ public class Board
      */
     public Board(int Size, int terrainvariation) 
     {
-        board = new int[Size][Size];
-        for (int i = 0; i < Size; i++)
+        BufferedImage image = null;
+        try 
+        { 
+            image = ImageIO.read(new File("C:\\Users\\verne_000\\Desktop\\Untitled.bmp"));
+        }
+        catch (Exception ex)
         {
-            for (int j = 0; j < Size; j++)
+            // ...
+        }
+        
+        board = new int[Size][Size];
+        
+        if (image != null)
+        {
+            for (int i = 0; i < Size; i++)
             {
-                int random = new Random().nextInt(terrainvariation);
-                board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
+                for (int j = 0; j < Size; j++)
+                {
+                    float[] hsb = new float[3];
+                    int p = image.getRGB(j, i);
+                    Color.RGBtoHSB((p>>16)&0xff, (p>>8)&0xff, p&0xff, hsb);
+                    float brightness = hsb[2];
+                    
+                    float min = 0;
+                    float max = 1;
+                    float outmax = 5;
+                    float outmin = 1;
+                    
+                    // Reverse brightness... brighter in this case means lower weight
+                    brightness = (brightness - max) * -1;
+                    int weight = Math.round(outmin + (brightness - min) * (outmax - outmin) / (max - min));
+                    board[i][j] = weight;
+                }
+            }   
+        }
+        else
+        {
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    int random = new Random().nextInt(terrainvariation);
+                    board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
+                }
             }
         }
     }
+    
+    
+    
+    
     
     /**
      * Add a obstacle to the board.
@@ -174,7 +220,7 @@ public class Board
     }
     
     
-    public AbstractMap<Coordinates, Integer> closedset;  // Moved here for diagnostics..
+    public AbstractMap<Coordinates, Integer> closedset;  // Moved here for diagnostics...
     public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end, int tolerance)
     {          
         HybridHeap<Coordinates> openset = new HybridHeap();
@@ -215,7 +261,7 @@ public class Board
                     camefrom.put(neighbour, current);
                 }
                 
-                if (!openset.Contains(neighbour) && !closedset.containsKey(neighbour))
+                if (!openset.containsKey(neighbour) && !closedset.containsKey(neighbour))
                     openset.Insert(tentative_fscore, neighbour);             
                 else
                     openset.DecreaseKey(tentative_fscore, neighbour);  // We can safely try to decrease the key, if the value is higher it wont change        
@@ -296,7 +342,6 @@ public class Board
     
     /**
      * Gets the neighbournode cells for specified coordinates. Obviously does not include out of bounds cells
-     * Do some tests and make sure this doesnt explode...
      * @param neighbour
      * @return 
      */

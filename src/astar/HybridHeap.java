@@ -27,13 +27,13 @@ public class HybridHeap<T>
     }
     
     
-    public boolean Contains (T key)
+    public boolean containsKey(T key)
     {
         return hashmap.containsKey(key);
     }
     
     
-    public Float getValue (T key)
+    public Float getValue(T key)
     {
         Integer position = hashmap.get(key);
         if (position != null)

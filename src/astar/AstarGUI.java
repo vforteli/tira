@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
 
@@ -45,11 +44,6 @@ public class AstarGUI extends javax.swing.JFrame
         BoardSizeChoice.add("50");
         BoardSizeChoice.add("100");
         BoardSizeChoice.select("100");
-        
-        TerrainVariationChoice.add("1");
-        TerrainVariationChoice.add("5");
-        TerrainVariationChoice.add("10");
-        TerrainVariationChoice.select("10");
     }
 
     /**
@@ -62,32 +56,30 @@ public class AstarGUI extends javax.swing.JFrame
     private void initComponents()
     {
 
-        NewGameFrame = new javax.swing.JFrame();
+        NewBoardFrame = new javax.swing.JFrame();
         BoardSizeChoice = new java.awt.Choice();
-        label1 = new java.awt.Label();
         InitBoardButton = new java.awt.Button();
         label3 = new java.awt.Label();
-        TerrainVariationChoice = new java.awt.Choice();
         chooseFileButton = new java.awt.Button();
         filenamelabel = new java.awt.Label();
+        terrainMaxWeight = new java.awt.TextField();
+        terrainMinWeight = new java.awt.TextField();
+        label4 = new java.awt.Label();
+        label6 = new java.awt.Label();
         BoardPanel = new javax.swing.JPanel();
-        ScoreLabel = new javax.swing.JLabel();
-        HeuristicMultipliertextField = new java.awt.TextField();
+        jToolBar1 = new javax.swing.JToolBar();
+        NewBoard = new java.awt.Button();
         label5 = new java.awt.Label();
+        HeuristicMultipliertextField = new java.awt.TextField();
         recalculatebutton = new java.awt.Button();
         label2 = new java.awt.Label();
         pathlengthlabel = new java.awt.Label();
-        MainMenuBar = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        NewBoardButton = new javax.swing.JMenuItem();
+        coordinatesLabel = new java.awt.Label();
 
-        NewGameFrame.setTitle("Start game");
-        NewGameFrame.setAlwaysOnTop(true);
-        NewGameFrame.setMinimumSize(new java.awt.Dimension(300, 250));
-        NewGameFrame.setResizable(false);
-
-        label1.setAlignment(java.awt.Label.RIGHT);
-        label1.setText("Size");
+        NewBoardFrame.setTitle("Start game");
+        NewBoardFrame.setAlwaysOnTop(true);
+        NewBoardFrame.setMinimumSize(null);
+        NewBoardFrame.setResizable(false);
 
         InitBoardButton.setActionCommand("StartGameButton");
         InitBoardButton.setLabel("Start");
@@ -99,7 +91,8 @@ public class AstarGUI extends javax.swing.JFrame
             }
         });
 
-        label3.setText("Terrain variation");
+        label3.setAlignment(java.awt.Label.RIGHT);
+        label3.setText("Terrain minimum weight");
 
         chooseFileButton.setLabel("Choose bitmap");
         chooseFileButton.addActionListener(new java.awt.event.ActionListener()
@@ -110,42 +103,62 @@ public class AstarGUI extends javax.swing.JFrame
             }
         });
 
-        javax.swing.GroupLayout NewGameFrameLayout = new javax.swing.GroupLayout(NewGameFrame.getContentPane());
-        NewGameFrame.getContentPane().setLayout(NewGameFrameLayout);
-        NewGameFrameLayout.setHorizontalGroup(
-            NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NewGameFrameLayout.createSequentialGroup()
+        terrainMaxWeight.setText("10");
+
+        terrainMinWeight.setText("1");
+
+        label4.setAlignment(java.awt.Label.RIGHT);
+        label4.setText("Terrain maximum weight");
+
+        label6.setAlignment(java.awt.Label.RIGHT);
+        label6.setText("Size");
+
+        javax.swing.GroupLayout NewBoardFrameLayout = new javax.swing.GroupLayout(NewBoardFrame.getContentPane());
+        NewBoardFrame.getContentPane().setLayout(NewBoardFrameLayout);
+        NewBoardFrameLayout.setHorizontalGroup(
+            NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(NewBoardFrameLayout.createSequentialGroup()
                 .addGap(17, 17, 17)
-                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(label6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(label3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(chooseFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(filenamelabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(filenamelabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(chooseFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE))
+                    .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(terrainMaxWeight, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE)
+                        .addComponent(terrainMinWeight, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        NewGameFrameLayout.setVerticalGroup(
-            NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(NewGameFrameLayout.createSequentialGroup()
+        NewBoardFrameLayout.setVerticalGroup(
+            NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(NewBoardFrameLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(BoardSizeChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(BoardSizeChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(label6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NewBoardFrameLayout.createSequentialGroup()
+                        .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(terrainMinWeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(terrainMaxWeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(label4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chooseFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(filenamelabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(InitBoardButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -159,17 +172,31 @@ public class AstarGUI extends javax.swing.JFrame
         );
         BoardPanelLayout.setVerticalGroup(
             BoardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 419, Short.MAX_VALUE)
+            .addGap(0, 458, Short.MAX_VALUE)
         );
 
-        ScoreLabel.setMaximumSize(new java.awt.Dimension(34, 14));
-        ScoreLabel.setMinimumSize(new java.awt.Dimension(34, 14));
-        ScoreLabel.setPreferredSize(new java.awt.Dimension(34, 14));
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+
+        NewBoard.setLabel("New board");
+        NewBoard.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                NewBoardActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(NewBoard);
+
+        label5.setAlignment(java.awt.Label.RIGHT);
+        label5.setText("Heuristic multiplier");
+        jToolBar1.add(label5);
 
         HeuristicMultipliertextField.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        HeuristicMultipliertextField.setMaximumSize(new java.awt.Dimension(14, 18));
+        HeuristicMultipliertextField.setPreferredSize(new java.awt.Dimension(40, 20));
         HeuristicMultipliertextField.setText("1");
-
-        label5.setText("Heuristic multiplier");
+        jToolBar1.add(HeuristicMultipliertextField);
 
         recalculatebutton.setLabel("Redraw");
         recalculatebutton.addActionListener(new java.awt.event.ActionListener()
@@ -179,92 +206,35 @@ public class AstarGUI extends javax.swing.JFrame
                 recalculatebuttonActionPerformed(evt);
             }
         });
+        jToolBar1.add(recalculatebutton);
 
+        label2.setAlignment(java.awt.Label.RIGHT);
         label2.setText("Path length");
+        jToolBar1.add(label2);
+        jToolBar1.add(pathlengthlabel);
 
-        jMenu1.setText("File");
-
-        NewBoardButton.setText("New board");
-        NewBoardButton.addActionListener(new java.awt.event.ActionListener()
-        {
-            public void actionPerformed(java.awt.event.ActionEvent evt)
-            {
-                NewBoardButtonActionPerformed(evt);
-            }
-        });
-        jMenu1.add(NewBoardButton);
-
-        MainMenuBar.add(jMenu1);
-
-        setJMenuBar(MainMenuBar);
+        coordinatesLabel.setPreferredSize(new java.awt.Dimension(70, 20));
+        jToolBar1.add(coordinatesLabel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ScoreLabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
-                .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(HeuristicMultipliertextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(recalculatebutton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pathlengthlabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(120, Short.MAX_VALUE))
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
             .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(HeuristicMultipliertextField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(ScoreLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(recalculatebutton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pathlengthlabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(3, 3, 3))))
+                .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     
-    /**
-     * Start a new game
-     */
-    private void NewBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_NewBoardButtonActionPerformed
-    {//GEN-HEADEREND:event_NewBoardButtonActionPerformed
-        // If a game is already running prompt the user for confirmation
-        if (board != null)
-        {
-            int selection = JOptionPane.showConfirmDialog(
-                        null
-                        , "Do you want to discard the current board?"
-                        , "New game"
-                        , JOptionPane.OK_CANCEL_OPTION
-                        , JOptionPane.WARNING_MESSAGE);
-            
-            if (selection != 0)
-            {
-                return;
-            }    
-        }
-        bitmapfile = null;
-        filenamelabel.setText("");
-        NewGameFrame.setVisible(true);
-    }//GEN-LAST:event_NewBoardButtonActionPerformed
-
     
     /**
      * Draw the board to screen
@@ -330,7 +300,7 @@ public class AstarGUI extends javax.swing.JFrame
         else
         {   
             float saturation = 0;
-            float brightness = CalculateBrightness(cellweight, board.getTerrainMaxValue());
+            float brightness = CalculateBrightness(cellweight,board.getTerrainMinWeight(), board.getTerrainMaxWeight());
             if (board.closedset != null && board.closedset.containsKey(c))
             {
                 saturation = 0.5f;
@@ -395,27 +365,31 @@ public class AstarGUI extends javax.swing.JFrame
             {
                 JPanel cell =(JPanel)e.getSource();
                 Coordinates c = Coordinates.ParseCoordinates(cell.getName());
-                ScoreLabel.setText(c.x + ", " + c.y);
+                String weight = "";
+                if (board != null)
+                {
+                    weight = String.valueOf(board.getCellValue(c));
+                }
+                coordinatesLabel.setText(c.x + ", " + c.y + " w: " + weight);
             }
 
             @Override
             public void mouseExited(MouseEvent e)
             {
-                ScoreLabel.setText("");
+                coordinatesLabel.setText("");
             }
         });
         
         return cellpanel;
     }
     
-    private float CalculateBrightness(int value, int max)
+    private float CalculateBrightness(int value, int min, int max)
     {
-        float min = 1;
         if (max == min)
         {
             return 1;
         }
-        float outmax = 0.5f;
+        float outmax = 0.3f;
         float outmin = 1;
         float brightness = outmin + (value - min) * (outmax - outmin) / (max - min);
         return brightness;
@@ -427,25 +401,27 @@ public class AstarGUI extends javax.swing.JFrame
         clickedCoordinates = c;
         if (board != null)
         {
-            if (e.getButton() == 3 && board.start != null)
+            if (e.getButton() == 3)
             {
-                previousCoordinates = board.start;
+                previousCoordinates = clickedCoordinates;
+                DrawBoard(board.GetBoard(), null);   
             }
-           
-            try
+            else
             {
-                if (previousCoordinates != null)
+                try
                 {
-                    path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
-                }        
+                    if (previousCoordinates != null)
+                    {
+                        path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+                    }        
 
-                DrawBoard(board.GetBoard(), path);                  
-            } 
-            catch (Exception ex)
-            {
-                Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
+                    DrawBoard(board.GetBoard(), path);                  
+                } 
+                catch (Exception ex)
+                {
+                    Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
+                }        
             }
-            previousCoordinates = clickedCoordinates;
         }
     }  
     
@@ -455,7 +431,7 @@ public class AstarGUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_recalculatebuttonActionPerformed
         if (board != null && board.start != null && board.end != null)
         {
-            AbstractMap<Coordinates, Coordinates> path = board.FindPath(board.start, board.end, Integer.parseInt(HeuristicMultipliertextField.getText()));
+            path = board.FindPath(board.start, board.end, Integer.parseInt(HeuristicMultipliertextField.getText()));
             DrawBoard(board.GetBoard(), path); 
         }
     }//GEN-LAST:event_recalculatebuttonActionPerformed
@@ -479,7 +455,7 @@ public class AstarGUI extends javax.swing.JFrame
                 }
             });
 
-        int returnVal = fc.showOpenDialog(NewGameFrame);
+        int returnVal = fc.showOpenDialog(NewBoardFrame);
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
             bitmapfile = fc.getSelectedFile();
@@ -495,12 +471,25 @@ public class AstarGUI extends javax.swing.JFrame
      */
     private void InitBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_InitBoardButtonActionPerformed
     {//GEN-HEADEREND:event_InitBoardButtonActionPerformed
-        NewGameFrame.dispose();
-        board = new Board(Integer.parseInt(BoardSizeChoice.getSelectedItem()), Integer.parseInt(TerrainVariationChoice.getSelectedItem()), bitmapfile);
+        NewBoardFrame.dispose();
+        int size = Integer.parseInt(BoardSizeChoice.getSelectedItem());
+        int terrainMaxValue = Integer.parseInt(terrainMaxWeight.getText());
+        int terrainMinValue = Integer.parseInt(terrainMinWeight.getText());
+        
+        board = new Board(size, terrainMinValue, terrainMaxValue, bitmapfile);
 
         CreateBoard(board.getHeight(), board.getWidth());
         DrawBoard(board.GetBoard(), null);
     }//GEN-LAST:event_InitBoardButtonActionPerformed
+
+    private void NewBoardActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_NewBoardActionPerformed
+    {//GEN-HEADEREND:event_NewBoardActionPerformed
+        bitmapfile = null;
+        filenamelabel.setText("");
+        NewBoardFrame.pack();
+        NewBoardFrame.setLocationRelativeTo(this);
+        NewBoardFrame.setVisible(true);
+    }//GEN-LAST:event_NewBoardActionPerformed
 
     
     /**
@@ -544,19 +533,20 @@ public class AstarGUI extends javax.swing.JFrame
     private java.awt.Choice BoardSizeChoice;
     private java.awt.TextField HeuristicMultipliertextField;
     private java.awt.Button InitBoardButton;
-    private javax.swing.JMenuBar MainMenuBar;
-    private javax.swing.JMenuItem NewBoardButton;
-    private javax.swing.JFrame NewGameFrame;
-    private javax.swing.JLabel ScoreLabel;
-    private java.awt.Choice TerrainVariationChoice;
+    private java.awt.Button NewBoard;
+    private javax.swing.JFrame NewBoardFrame;
     private java.awt.Button chooseFileButton;
+    private java.awt.Label coordinatesLabel;
     private java.awt.Label filenamelabel;
-    private javax.swing.JMenu jMenu1;
-    private java.awt.Label label1;
+    private javax.swing.JToolBar jToolBar1;
     private java.awt.Label label2;
     private java.awt.Label label3;
+    private java.awt.Label label4;
     private java.awt.Label label5;
+    private java.awt.Label label6;
     private java.awt.Label pathlengthlabel;
     private java.awt.Button recalculatebutton;
+    private java.awt.TextField terrainMaxWeight;
+    private java.awt.TextField terrainMinWeight;
     // End of variables declaration//GEN-END:variables
 }

@@ -20,11 +20,11 @@ public class Heuristic
     }
     
     
-    public static float GetDistance(Coordinates from, Coordinates to, int tolerance)
+    public static float GetDistance(Coordinates from, Coordinates to, int multiplier)
     {
         int x = from.x - to.x;
         int y = from.y - to.y;
         // return x + y;    // Manhattan.. remember the absolut stuff then..
-        return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) * tolerance;   // Euclidean 
+        return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) * multiplier;   // Euclidean 
     }
 }

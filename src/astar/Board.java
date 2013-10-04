@@ -53,9 +53,15 @@ public class Board
     public Float pathweight;
     
     private int terrainMaxValue;
-    public int getTerrainMaxValue()
+    public int getTerrainMaxWeight()
     {
         return terrainMaxValue;
+    }
+    
+    private int terrainMinWeight;
+    public int getTerrainMinWeight()
+    {
+        return terrainMinWeight;
     }
     
     
@@ -64,9 +70,10 @@ public class Board
      * 
      * @param Size Integer size of one side of the board
      */
-    public Board(int Size, int terrainvariation, File bitmap) 
+    public Board(int Size, int terrainMinWeight, int terrainMaxWeight, File bitmap) 
     {
-        this.terrainMaxValue = terrainvariation;
+        this.terrainMaxValue = terrainMaxWeight;
+        this.terrainMinWeight = terrainMinWeight;
         this.board = new int[Size][Size];
         
         if (bitmap != null)
@@ -75,8 +82,8 @@ public class Board
             { 
                 float inputmin = 0;
                 float inputmax = 1;
-                float outputmax = terrainMaxValue;
-                float outputmin = 1;
+                float outputmin = this.terrainMinWeight;
+                float outputmax = this.terrainMaxValue;
                             
                 BufferedImage image = ImageIO.read(bitmap);
                 
@@ -114,7 +121,7 @@ public class Board
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    int random = new Random().nextInt(terrainMaxValue);
+                    int random = new Random().nextInt(terrainMaxValue + 1);
                     board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
                 }
             }
@@ -155,7 +162,7 @@ public class Board
         
         g_score.put(start, 0f);
              
-        openset.Insert(Heuristic.GetDistance(start, end, tolerance), start);
+        openset.Insert(Heuristic.GetDistance(start, end, tolerance) * this.terrainMinWeight, start);
 
         while (!openset.IsEmpty())
         {
@@ -173,7 +180,7 @@ public class Board
                     continue;
                 
                 float tentative_gscore = g_score.get(current) + weight;
-                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end, tolerance);
+                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end, tolerance) * this.terrainMinWeight;
                 Float g_scoreneighbour = g_score.get(neighbour);
                 //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
                            

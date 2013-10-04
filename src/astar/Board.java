@@ -66,42 +66,41 @@ public class Board
      */
     public Board(int Size, int terrainvariation, File bitmap) 
     {
-        terrainMaxValue = terrainvariation;
-        board = new int[Size][Size];
+        this.terrainMaxValue = terrainvariation;
+        this.board = new int[Size][Size];
+        
         if (bitmap != null)
         {
             try 
             { 
+                float inputmin = 0;
+                float inputmax = 1;
+                float outputmax = terrainMaxValue;
+                float outputmin = 1;
+                            
                 BufferedImage image = ImageIO.read(bitmap);
-                if (image != null)
+                
+                for (int i = 0; i < Size; i++)
                 {
-                    for (int i = 0; i < Size; i++)
+                    for (int j = 0; j < Size; j++)
                     {
-                        for (int j = 0; j < Size; j++)
+                        int weight;
+                        float[] hsb = new float[3];
+                        int pixel = image.getRGB(j, i);
+                        Color.RGBtoHSB((pixel>>16)&0xff, (pixel>>8)&0xff, pixel&0xff, hsb);
+                        float brightness = hsb[2];
+                        if (brightness < 0.05f) // Pretty close to black...
                         {
-                            int weight;
-                            float[] hsb = new float[3];
-                            int p = image.getRGB(j, i);
-                            Color.RGBtoHSB((p>>16)&0xff, (p>>8)&0xff, p&0xff, hsb);
-                            float brightness = hsb[2];
-                            if (brightness < 0.05f)
-                            {
-                                weight = -1;
-                            }
-                            else 
-                            {
-                                float min = 0;
-                                float max = 1;
-                                float outmax = terrainMaxValue;
-                                float outmin = 1;
-
-                                // Reverse brightness... brighter in this case means lower weight
-                                brightness = (brightness - max) * -1;
-                                weight = Math.round(outmin + (brightness - min) * (outmax - outmin) / (max - min));
-                            }
-                            board[i][j] = weight;
+                            weight = -1;    // -1 denotes a wall that cannot be traversed at all
                         }
-                    }   
+                        else 
+                        {
+                            // Reverse brightness... brighter in this case means lower weight
+                            brightness = Math.abs(brightness - inputmax);
+                            weight = Math.round(outputmin + (brightness - inputmin) * (outputmax - outputmin) / (inputmax - inputmin));
+                        }
+                        board[i][j] = weight;
+                    }
                 }
             }
             catch (Exception ex)
@@ -234,7 +233,7 @@ public class Board
       
     
     /**
-     * Gets the neighbournode cells for specified coordinates. Obviously does not include out of bounds cells
+     * Gets the neighbour cells for specified coordinates. Obviously does not include out of bounds cells
      * @param neighbour
      * @return 
      */

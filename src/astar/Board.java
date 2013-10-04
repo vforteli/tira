@@ -11,7 +11,6 @@ package astar;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.net.URL;
 import java.util.AbstractMap;
 import java.util.Random; 
 import javax.imageio.ImageIO;
@@ -49,154 +48,75 @@ public class Board
     }
             
     
+    private int terrainMaxValue;
+    public int getTerrainMaxValue()
+    {
+        return terrainMaxValue;
+    }
+    
     
     /**
      * Create a new board with specified size
      * 
      * @param Size Integer size of one side of the board
      */
-    public Board(int Size, int terrainvariation) 
+    public Board(int Size, int terrainvariation, File bitmap) 
     {
-        BufferedImage image = null;
-        try 
-        { 
-            image = ImageIO.read(new File("C:\\Users\\verne_000\\Desktop\\Untitled.bmp"));
-        }
-        catch (Exception ex)
-        {
-            // ...
-        }
-        
+        terrainMaxValue = terrainvariation;
         board = new int[Size][Size];
-        
-        if (image != null)
+        if (bitmap != null)
         {
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
+            try 
+            { 
+                BufferedImage image = ImageIO.read(bitmap);
+                if (image != null)
                 {
-                    float[] hsb = new float[3];
-                    int p = image.getRGB(j, i);
-                    Color.RGBtoHSB((p>>16)&0xff, (p>>8)&0xff, p&0xff, hsb);
-                    float brightness = hsb[2];
-                    
-                    float min = 0;
-                    float max = 1;
-                    float outmax = 5;
-                    float outmin = 1;
-                    
-                    // Reverse brightness... brighter in this case means lower weight
-                    brightness = (brightness - max) * -1;
-                    int weight = Math.round(outmin + (brightness - min) * (outmax - outmin) / (max - min));
-                    board[i][j] = weight;
+                    for (int i = 0; i < Size; i++)
+                    {
+                        for (int j = 0; j < Size; j++)
+                        {
+                            int weight;
+                            float[] hsb = new float[3];
+                            int p = image.getRGB(j, i);
+                            Color.RGBtoHSB((p>>16)&0xff, (p>>8)&0xff, p&0xff, hsb);
+                            float brightness = hsb[2];
+                            if (brightness < 0.05f)
+                            {
+                                weight = -1;
+                            }
+                            else 
+                            {
+                                float min = 0;
+                                float max = 1;
+                                float outmax = terrainMaxValue;
+                                float outmin = 1;
+
+                                // Reverse brightness... brighter in this case means lower weight
+                                brightness = (brightness - max) * -1;
+                                weight = Math.round(outmin + (brightness - min) * (outmax - outmin) / (max - min));
+                            }
+                            board[i][j] = weight;
+                        }
+                    }   
                 }
-            }   
-        }
+            }
+            catch (Exception ex)
+            {
+                // ...
+            }
+        }   
         else
         {
             for (int i = 0; i < Size; i++)
             {
                 for (int j = 0; j < Size; j++)
                 {
-                    int random = new Random().nextInt(terrainvariation);
+                    int random = new Random().nextInt(terrainMaxValue);
                     board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
                 }
             }
         }
-    }
-    
-    
-    
-    
-    
-    /**
-     * Add a obstacle to the board.
-     * 
-     * Add a obstacle to the board. 
-     * An exception is thrown if the obstacle would collide with another obstacle already placed.
-     * Obstacles cannot be placed next to each other, not even diagonally.
-     * Obstacles cannot be placed diagonally.
-     * x2 and y2 should be greater than x1 and y1 respectively
-     * 
-     * 
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @return True if the obstacle was successfully placed, False if another obstacle already occupies the cells
-     * @throws Exception 
-     */
-    public boolean AddObstacle(int x1, int y1, int x2, int y2) throws Exception 
-    {        
-        // No negative 4th dimension quantum obstacles allowed
-        if (x1 > x2 || y1 > y2)
-        {
-            throw new Exception("x1 and y1 must be smaller than x2 and y2");
-        }
-        
-        // Make sure the obstacle isnt diagonal
-        if (!(x1 == x2 | y1 == y2))
-        {
-            throw new Exception("Obstacles cannot be diagonally placed");  
-        }
-        
-        // Check adjecent cells, apparently obstacles are not allowed to touch, not even diagonally
-        if (ValidObstacleLocation(x1, y1, x2, y2)) {
-            return false;
-        }
-        
-        // Place the obstacle
-        if (x1 == x2)   // Vertical
-        {
-            for (int i = y1; i <= y2; i++)
-            {
-                board[i][x1] = -1;
-            } 
-        }
-        else    // Horizontal
-        {
-            for (int i = x1; i <= x2; i++)
-            {
-                board[y1][i] = -1;
-            } 
-        }        
-        return true;
-    }
-      
-    
-    /**
-     * Add a random obstacle to the board with the specified length
-     * 
-     * @param length
-     * @return True if successful
-     * @throws Exception
-     */
-    public boolean AddRandomObstacle(int length) throws Exception 
-    {
-        // Loop forever until a obstacle has successfully been placed... :p
-        while (true)
-        {
-            Random r = new Random();
-            int i = r.nextInt(this.getHeight() - length + 1);
-            int j = r.nextInt(this.getHeight()); 
-            
-            if (r.nextBoolean())    // Horizontal
-            {                
-                if (this.AddObstacle(i, j, i + length - 1, j))
-                {
-                    return true;                    
-                }
-            }
-            else    // Vertical
-            {
-                if (this.AddObstacle(j, i, j, i + length - 1))
-                {
-                    return true;
-                }
-            }
-        }               
-    }
-    
+    }   
     
 
     
@@ -302,43 +222,7 @@ public class Board
         }
         return true;
     }
-    
-    
-    /**
-     * Checks a obstacles surrounding cells to make sure no other obstacle occupies any of these cells
-     * Assumes x2 > x1 and y2 > y1, otherwise cockup ensured
-     * 
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
-     * @return 
-     */
-    private boolean ValidObstacleLocation(int x1, int y1, int x2, int y2) 
-    {
-        int topleft_x = x1;
-        int topleft_y = y1;
-        
-        int bottomright_x = x2;
-        int bottomright_y = y2;
-        
-        // Modified to allow obstacles to be placed next to each other
-//        int topleft_x = x1 <= 0 ? 0 : x1 - 1;
-//        int topleft_y = y1 <= 0 ? 0 : y1 - 1;
-//        
-//        int bottomright_x = x2 >= this.getHeight() - 1 ? this.getHeight() - 1 : x2 + 1;
-//        int bottomright_y = y2 >= this.getHeight() - 1 ? this.getHeight() - 1 : y2 + 1;
-              
-        for (int i = topleft_x; i <= bottomright_x; i++) {
-            for (int j = topleft_y; j <= bottomright_y; j++) {
-                if (board[j][i] == -1) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    
+      
     
     /**
      * Gets the neighbournode cells for specified coordinates. Obviously does not include out of bounds cells

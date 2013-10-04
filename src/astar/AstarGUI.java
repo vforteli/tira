@@ -9,12 +9,15 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.util.AbstractMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.filechooser.FileFilter;
 
 
 
@@ -25,8 +28,10 @@ import javax.swing.JPanel;
 public class AstarGUI extends javax.swing.JFrame
 {
     private Board board; 
+    private JPanel[][] cellmap;
     private Coordinates previousCoordinates;
     private Coordinates clickedCoordinates;
+    private File bitmapfile;
     
     /**
      * Creates new form AstarGUI
@@ -38,14 +43,12 @@ public class AstarGUI extends javax.swing.JFrame
         BoardSizeChoice.add("20");
         BoardSizeChoice.add("50");
         BoardSizeChoice.add("100");
-        
-        ObstaclePercentageChoice.add("10");
-        ObstaclePercentageChoice.add("20");
-        ObstaclePercentageChoice.add("30");
+        BoardSizeChoice.select("100");
         
         TerrainVariationChoice.add("1");
         TerrainVariationChoice.add("5");
         TerrainVariationChoice.add("10");
+        TerrainVariationChoice.select("10");
     }
 
     /**
@@ -61,29 +64,27 @@ public class AstarGUI extends javax.swing.JFrame
         NewGameFrame = new javax.swing.JFrame();
         BoardSizeChoice = new java.awt.Choice();
         label1 = new java.awt.Label();
-        label2 = new java.awt.Label();
-        ObstaclePercentageChoice = new java.awt.Choice();
         InitBoardButton = new java.awt.Button();
         label3 = new java.awt.Label();
         TerrainVariationChoice = new java.awt.Choice();
+        chooseFileButton = new java.awt.Button();
+        filenamelabel = new java.awt.Label();
         BoardPanel = new javax.swing.JPanel();
         ScoreLabel = new javax.swing.JLabel();
         HeuristicMultipliertextField = new java.awt.TextField();
         label5 = new java.awt.Label();
+        recalculatebutton = new java.awt.Button();
         MainMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         NewBoardButton = new javax.swing.JMenuItem();
 
         NewGameFrame.setTitle("Start game");
         NewGameFrame.setAlwaysOnTop(true);
-        NewGameFrame.setMinimumSize(new java.awt.Dimension(250, 200));
+        NewGameFrame.setMinimumSize(new java.awt.Dimension(300, 250));
         NewGameFrame.setResizable(false);
 
         label1.setAlignment(java.awt.Label.RIGHT);
         label1.setText("Size");
-
-        label2.setAlignment(java.awt.Label.RIGHT);
-        label2.setText("Obstacle %");
 
         InitBoardButton.setActionCommand("StartGameButton");
         InitBoardButton.setLabel("Start");
@@ -97,6 +98,15 @@ public class AstarGUI extends javax.swing.JFrame
 
         label3.setText("Terrain variation");
 
+        chooseFileButton.setLabel("Choose bitmap");
+        chooseFileButton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                chooseFileButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout NewGameFrameLayout = new javax.swing.GroupLayout(NewGameFrame.getContentPane());
         NewGameFrame.getContentPane().setLayout(NewGameFrameLayout);
         NewGameFrameLayout.setHorizontalGroup(
@@ -105,16 +115,15 @@ public class AstarGUI extends javax.swing.JFrame
                 .addGap(17, 17, 17)
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(label2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
+                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                    .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                    .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(56, Short.MAX_VALUE))
+                    .addComponent(chooseFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(filenamelabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
         NewGameFrameLayout.setVerticalGroup(
             NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -125,15 +134,15 @@ public class AstarGUI extends javax.swing.JFrame
                     .addComponent(BoardSizeChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ObstaclePercentageChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(NewGameFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TerrainVariationChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chooseFileButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filenamelabel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(InitBoardButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -147,7 +156,7 @@ public class AstarGUI extends javax.swing.JFrame
         );
         BoardPanelLayout.setVerticalGroup(
             BoardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 425, Short.MAX_VALUE)
+            .addGap(0, 419, Short.MAX_VALUE)
         );
 
         ScoreLabel.setMaximumSize(new java.awt.Dimension(34, 14));
@@ -158,6 +167,15 @@ public class AstarGUI extends javax.swing.JFrame
         HeuristicMultipliertextField.setText("1");
 
         label5.setText("Heuristic multiplier");
+
+        recalculatebutton.setLabel("Redraw");
+        recalculatebutton.addActionListener(new java.awt.event.ActionListener()
+        {
+            public void actionPerformed(java.awt.event.ActionEvent evt)
+            {
+                recalculatebuttonActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -186,7 +204,9 @@ public class AstarGUI extends javax.swing.JFrame
                 .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(HeuristicMultipliertextField, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(300, Short.MAX_VALUE))
+                .addGap(1, 1, 1)
+                .addComponent(recalculatebutton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(240, Short.MAX_VALUE))
             .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -194,10 +214,14 @@ public class AstarGUI extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addComponent(BoardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HeuristicMultipliertextField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ScoreLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(HeuristicMultipliertextField, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ScoreLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(recalculatebutton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3))))
         );
 
         pack();
@@ -224,7 +248,8 @@ public class AstarGUI extends javax.swing.JFrame
                 return;
             }    
         }
-             
+        bitmapfile = null;
+        filenamelabel.setText("");
         NewGameFrame.setVisible(true);
     }//GEN-LAST:event_NewBoardButtonActionPerformed
 
@@ -235,10 +260,6 @@ public class AstarGUI extends javax.swing.JFrame
      */
     private void DrawBoard(int[][] cells, AbstractMap<Coordinates, Coordinates> path)
     { 
-        BoardPanel.removeAll();
-        BoardPanel.setLayout(new GridLayout(cells.length, cells.length, -1, -1));
-        BoardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-
         int x = 0; 
         int y = 0;
         for (int[] row : cells)
@@ -253,9 +274,8 @@ public class AstarGUI extends javax.swing.JFrame
                     highlight = true;
                 }
                 
-                JPanel cellpanel = DrawCell(c, cell, highlight);
-           
-                BoardPanel.add(cellpanel);
+                DrawCell(cellmap[x][y], c, cell, highlight);
+               
                 x++;
             }
             x = 0;
@@ -265,12 +285,65 @@ public class AstarGUI extends javax.swing.JFrame
         BoardPanel.revalidate();    // Forces panel redraw    
     }
     
-    
-    private JPanel DrawCell(Coordinates c, int cellweight, boolean highlight)
+    private void DrawCell(JPanel cellpanel, Coordinates c, int cellweight, boolean highlight)
     {      
+        if (cellweight == -1)         
+        {
+            cellpanel.setBackground(Color.black);
+        } 
+        else if(clickedCoordinates != null && clickedCoordinates.equals(c))
+        {
+            cellpanel.setBackground(Color.GREEN);
+        }
+        else if (previousCoordinates != null && previousCoordinates.equals(c))
+        {
+            cellpanel.setBackground(Color.RED);
+        }
+        else if (highlight == true)
+        {
+            cellpanel.setBackground(Color.ORANGE);
+        }
+        else
+        {   
+            float saturation = 0;
+            float brightness = CalculateBrightness(cellweight, board.getTerrainMaxValue());
+            if (board.closedset != null && board.closedset.containsKey(c))
+            {
+                saturation = 0.5f;
+                brightness -= 0.1f;
+            }
+            cellpanel.setBackground(Color.getHSBColor(0.125f, saturation, brightness));
+        }
+    }
+    
+    
+    
+    private void CreateBoard(int height, int width)
+    {
+        BoardPanel.removeAll();
+        BoardPanel.setLayout(new GridLayout(board.getHeight(), board.getWidth(), -1, -1));
+        BoardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        cellmap = new JPanel[height][width];
+        
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+            
+                Coordinates c = new Coordinates(x, y);
+                JPanel cellpanel = CreateCell(c.toString());
+           
+                BoardPanel.add(cellpanel);
+                cellmap[x][y] = cellpanel;
+            }
+        }
+    }
+       
+    private JPanel CreateCell(String name)
+    {
         JPanel cellpanel = new JPanel();
         cellpanel.setEnabled(true);
-        cellpanel.setName(c.toString());
+        cellpanel.setName(name);
         cellpanel.setMinimumSize(new Dimension(1,1));
         cellpanel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
         
@@ -308,38 +381,11 @@ public class AstarGUI extends javax.swing.JFrame
             }
         });
         
-        
-        if (cellweight == -1)         
-        {
-            cellpanel.setBackground(Color.black);
-        } 
-        else if(clickedCoordinates != null && clickedCoordinates.equals(c))
-        {
-            cellpanel.setBackground(Color.GREEN);
-        }
-        else if (previousCoordinates != null && previousCoordinates.equals(c))
-        {
-            cellpanel.setBackground(Color.RED);
-        }
-        else if (highlight == true)
-        {
-            cellpanel.setBackground(Color.ORANGE);
-        }
-        else
-        {   
-            float saturation = 0;
-            float brightness = CalculateBrightness(cellweight);
-            if (board.closedset != null && board.closedset.containsKey(c))
-            {
-                saturation = 0.5f;
-                brightness -= 0.1f;
-            }
-            cellpanel.setBackground(Color.getHSBColor(0.125f, saturation, brightness));
-        }
-        
         return cellpanel;
     }
     
+    
+
     
     private void ClickBoard(Coordinates c)
     {
@@ -367,8 +413,58 @@ public class AstarGUI extends javax.swing.JFrame
     
     
     
+    private float CalculateBrightness(int value, int max)
+    {
+        float min = 1;
+        if (max == min)
+        {
+            return 1;
+        }
+        float outmax = 0.5f;
+        float outmin = 1;
+        float brightness = outmin + (value - min) * (outmax - outmin) / (max - min);
+        return brightness;
+    }
     
     
+    private void recalculatebuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_recalculatebuttonActionPerformed
+    {//GEN-HEADEREND:event_recalculatebuttonActionPerformed
+        // TODO add your handling code here:
+        if (previousCoordinates != null && clickedCoordinates != null)
+        {
+            
+            
+        }
+    }//GEN-LAST:event_recalculatebuttonActionPerformed
+
+    private void chooseFileButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_chooseFileButtonActionPerformed
+    {//GEN-HEADEREND:event_chooseFileButtonActionPerformed
+        final JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileFilter()
+            {
+                @Override
+                public boolean accept(File file)
+                {
+                    return (file.isDirectory()||file.getName().toLowerCase().endsWith(".bmp"));
+                }
+
+                @Override
+                public String getDescription()
+                {
+                    return "Bitmaps";
+                }
+            });
+
+            int returnVal = fc.showOpenDialog(NewGameFrame);
+            if (returnVal == JFileChooser.APPROVE_OPTION)
+            {
+                bitmapfile = fc.getSelectedFile();
+                filenamelabel.setText(bitmapfile.getName());
+                //This is where a real application would open the file.
+
+            }
+    }//GEN-LAST:event_chooseFileButtonActionPerformed
+
     /**
      * Handle start game clicks
      * @param evt 
@@ -376,39 +472,9 @@ public class AstarGUI extends javax.swing.JFrame
     private void InitBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_InitBoardButtonActionPerformed
     {//GEN-HEADEREND:event_InitBoardButtonActionPerformed
         NewGameFrame.dispose();
-        
-        board = new Board(Integer.parseInt(BoardSizeChoice.getSelectedItem()), Integer.parseInt(TerrainVariationChoice.getSelectedItem()));
-        
-        try 
-        {
-            board.AddRandomObstacle(5);
-            board.AddRandomObstacle(4);
-            board.AddRandomObstacle(3);
-            board.AddRandomObstacle(3);
-            board.AddRandomObstacle(2);
-            
-            int obstacles = Integer.parseInt(ObstaclePercentageChoice.getSelectedItem());
-            if (obstacles == 20 || obstacles == 30)
-            {
-                board.AddRandomObstacle(2);
-                board.AddRandomObstacle(3);
-            }
-            if (obstacles == 30)
-            {
-                board.AddRandomObstacle(8);
-                board.AddRandomObstacle(5);
-                board.AddRandomObstacle(5);
-                board.AddRandomObstacle(15);
-                board.AddRandomObstacle(15);
-                board.AddRandomObstacle(5);
-                board.AddRandomObstacle(1); // :p         
-            }
-        } 
-        catch (Exception ex) 
-        {
-            Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        board = new Board(Integer.parseInt(BoardSizeChoice.getSelectedItem()), Integer.parseInt(TerrainVariationChoice.getSelectedItem()), bitmapfile);
+
+        CreateBoard(board.getHeight(), board.getWidth());
         DrawBoard(board.GetBoard(), null);
     }//GEN-LAST:event_InitBoardButtonActionPerformed
 
@@ -433,16 +499,7 @@ public class AstarGUI extends javax.swing.JFrame
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex)
-        {
-            java.util.logging.Logger.getLogger(AstarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex)
-        {
-            java.util.logging.Logger.getLogger(AstarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex)
-        {
-            java.util.logging.Logger.getLogger(AstarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex)
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex)
         {
             java.util.logging.Logger.getLogger(AstarGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -465,23 +522,14 @@ public class AstarGUI extends javax.swing.JFrame
     private javax.swing.JMenuBar MainMenuBar;
     private javax.swing.JMenuItem NewBoardButton;
     private javax.swing.JFrame NewGameFrame;
-    private java.awt.Choice ObstaclePercentageChoice;
     private javax.swing.JLabel ScoreLabel;
     private java.awt.Choice TerrainVariationChoice;
+    private java.awt.Button chooseFileButton;
+    private java.awt.Label filenamelabel;
     private javax.swing.JMenu jMenu1;
     private java.awt.Label label1;
-    private java.awt.Label label2;
     private java.awt.Label label3;
     private java.awt.Label label5;
+    private java.awt.Button recalculatebutton;
     // End of variables declaration//GEN-END:variables
-
-    private float CalculateBrightness(int cell)
-    {
-        float min = 1;
-        float max = 5;
-        float outmax = 0.7f;
-        float outmin = 1;
-        float brightness = outmin + (cell - min) * (outmax - outmin) / (max - min);
-        return brightness;
-    }
 }

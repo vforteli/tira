@@ -104,9 +104,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     
     private void IncreaseSize()
     {
-        // Increase size! (thats what she said...)
-        System.out.println("Increase size, fill factor: " + (double)items / (double)array.length);
-        
+        // Increase size! (thats what she said...)        
         Item<K, V>[] newarray = new Item[array.length * 2];
         for (int i = 0; i < array.length; i++)
         {
@@ -120,7 +118,6 @@ public class MapHache<K, V> extends AbstractMap<K, V>
                 }
             }
         }
-        System.out.println("New size: " + newarray.length + ", fill factor: " + (double)items / (double)newarray.length);
         array = newarray;
     }
     

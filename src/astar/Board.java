@@ -47,6 +47,10 @@ public class Board
         return this.board[0].length;
     }
             
+    // Used for diagnostic stuff...
+    public Coordinates start;
+    public Coordinates end;
+    public Float pathweight;
     
     private int terrainMaxValue;
     public int getTerrainMaxValue()
@@ -142,7 +146,9 @@ public class Board
     
     public AbstractMap<Coordinates, Integer> closedset;  // Moved here for diagnostics...
     public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end, int tolerance)
-    {          
+    {      
+        this.start = start;
+        this.end = end;
         HybridHeap<Coordinates> openset = new HybridHeap();
         closedset = new MapHache(701);
         AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
@@ -192,14 +198,17 @@ public class Board
         return null;
     }
     
-    
     private AbstractMap<Coordinates, Coordinates> ReconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
     {
+        pathweight = 0f;
         MapHache<Coordinates, Coordinates> nodes = new MapHache(701);      
         while (camefrom.containsKey(coordinates))
         {
+            
             nodes.put(coordinates, coordinates);
+            Coordinates previous = coordinates;
             coordinates = camefrom.get(coordinates);
+            pathweight += CalculateWeight(previous, coordinates);
         }
         return nodes;
     }

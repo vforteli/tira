@@ -170,7 +170,7 @@ public class AstarGUI extends javax.swing.JFrame
         jToolBar1.add(NewBoard);
 
         label5.setAlignment(java.awt.Label.RIGHT);
-        label5.setText("Heuristic multiplier");
+        label5.setText("Heuristic *");
         jToolBar1.add(label5);
 
         HeuristicMultipliertextField.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -192,9 +192,12 @@ public class AstarGUI extends javax.swing.JFrame
         label2.setAlignment(java.awt.Label.RIGHT);
         label2.setText("Path length");
         jToolBar1.add(label2);
+
+        pathlengthlabel.setMinimumSize(new java.awt.Dimension(70, 20));
+        pathlengthlabel.setPreferredSize(new java.awt.Dimension(70, 20));
         jToolBar1.add(pathlengthlabel);
 
-        coordinatesLabel.setPreferredSize(new java.awt.Dimension(70, 20));
+        coordinatesLabel.setPreferredSize(new java.awt.Dimension(100, 20));
         jToolBar1.add(coordinatesLabel);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -221,7 +224,7 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(int[][] cells, PathInfo path)
+    private void DrawBoard(TerrainCell[][] cells, PathInfo path)
     {        
         for (int y = 0; y < cells.length; y++)
         {
@@ -244,9 +247,9 @@ public class AstarGUI extends javax.swing.JFrame
         }
     }
     
-    private void DrawCell(JPanel cellpanel, Coordinates c, int cellweight, boolean highlight, boolean visited)
+    private void DrawCell(JPanel cellpanel, Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
     {      
-        if (cellweight == -1)         
+        if (cell.terrainType == TerrainTypes.Impassible)         
         {
             cellpanel.setBackground(Color.black);
         } 
@@ -264,16 +267,28 @@ public class AstarGUI extends javax.swing.JFrame
         }
         else
         {   
-            float saturation = 0;
-            float brightness = CalculateBrightness(cellweight, board.getTerrainMinWeight(), board.getTerrainMaxWeight());
+            float hue = 0.125f;
+            if (cell.terrainType == TerrainTypes.Water)
+                hue = 0.58f;
+            
+            else if (cell.terrainType == TerrainTypes.Forest)
+                hue = 0.28f;
+            
+            float saturation = 0.6f;
+            float brightness = CalculateBrightness(cell.weight, board.getTerrainMinWeight(), board.getTerrainMaxWeight());
             if (visited)
             {
-                saturation = 0.5f;
-                brightness -= 0.1f;
+                saturation = 0.8f;
+                brightness -= 0.2f;
             }
-            cellpanel.setBackground(Color.getHSBColor(0.125f, saturation, brightness));
+            if (cell.terrainType == TerrainTypes.Road)
+                saturation = 0.2f;
+                     
+            cellpanel.setBackground(Color.getHSBColor(hue, saturation, brightness));
         }
     }
+    
+    
       
     private float CalculateBrightness(int value, int min, int max)
     {
@@ -353,7 +368,7 @@ public class AstarGUI extends javax.swing.JFrame
                 String weight = "";
                 if (board != null)
                 {
-                    weight = String.valueOf(board.getCellValue(c));
+                    weight = String.valueOf(board.getCellValue(c).weight);
                 }
                 coordinatesLabel.setText(c.x + ", " + c.y + " w: " + weight);
             }
@@ -400,6 +415,8 @@ public class AstarGUI extends javax.swing.JFrame
         {
             PathInfo path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
             DrawBoard(board.GetBoard(), path); 
+            if (path.pathlength != null)
+                pathlengthlabel.setText(path.pathlength.toString());
         }
     }//GEN-LAST:event_recalculatebuttonActionPerformed
 

@@ -25,13 +25,13 @@ public class Board
      * Get the board as a int array of arrays. Coordinates are yx.
      * @return int array of arrays
      */
-    public int[][] GetBoard() 
+    public TerrainCell[][] GetBoard() 
     {
         return this.board;        
     }
-    private int[][] board;
+    private TerrainCell[][] board;
     
-    public int getCellValue(Coordinates c)
+    public TerrainCell getCellValue(Coordinates c)
     {
         return this.board[c.y][c.x];
     }
@@ -76,7 +76,7 @@ public class Board
     {
         this.terrainMaxValue = terrainMaxWeight;
         this.terrainMinWeight = terrainMinWeight;
-        this.board = new int[Size][Size];
+        this.board = new TerrainCell[Size][Size];
         
         if (bitmap != null)
         {
@@ -97,15 +97,34 @@ public class Board
                         int pixel = image.getRGB(j, i);
                         Color.RGBtoHSB((pixel>>16)&0xff, (pixel>>8)&0xff, pixel&0xff, hsb);
                         float brightness = hsb[2];
+                        float hue = hsb[0];
+                        
+                        TerrainTypes type = TerrainTypes.Ground;
+                        
+                        if (hue > 0.50 && hue < 0.75)
+                            type = TerrainTypes.Water;
+                        
+                        else if (hue > 0.045 && hue < 0.13)
+                            type = TerrainTypes.Road;
+                        
+                        else if (hue > 0.22 && hue < 0.39)
+                            type = TerrainTypes.Forest;
+                        
+                        else if (hue < 0.025 || hue > 0.95)
+                            type = TerrainTypes.Dragon;
+                        
+                        if (brightness > 0.95)
+                            type = TerrainTypes.Road;
+                        
                         if (brightness < 0.05f) // Pretty close to black...
                         {
-                            board[i][j] = -1;    // -1 denotes a wall that cannot be traversed at all
+                            board[i][j] = new TerrainCell(-1, TerrainTypes.Impassible);    // -1 denotes a wall that cannot be traversed at all
                         }
                         else 
                         {
                             // Reverse brightness... brighter in this case means lower weight
                             brightness = Math.abs(brightness - inputmax);
-                            board[i][j] = Math.round(outputmin + (brightness - inputmin) * (outputmax - outputmin) / (inputmax - inputmin));
+                            board[i][j] = new TerrainCell(Math.round(outputmin + (brightness - inputmin) * (outputmax - outputmin) / (inputmax - inputmin)), type);
                         }
                     }
                 }
@@ -122,7 +141,7 @@ public class Board
                 for (int j = 0; j < Size; j++)
                 {
                     int random = new Random().nextInt(terrainMaxValue + 1);
-                    board[i][j] = random == 0 ? 1 : random; // yeye a bit biased...
+                    board[i][j] = new TerrainCell(random == 0 ? 1 : random, TerrainTypes.Ground); // yeye a bit biased...
                 }
             }
         }
@@ -146,8 +165,7 @@ public class Board
             
             if (current.equals(end))
                 return new PathInfo(ReconstructPath(current, camefrom), closedset, g_score.get(end));
-            
-                     
+                                 
             for (Coordinates neighbour : GetNeighbours(current))
             {                
                 float weight = CalculateWeight(current, neighbour);
@@ -228,8 +246,8 @@ public class Board
     
     private float CalculateWeight(Coordinates from, Coordinates to)
     {
-        float currentweight = getCellValue(from);
-        float weight = getCellValue(to);
+        float currentweight = getCellValue(from).weight;
+        float weight = getCellValue(to).weight;
         
         if (weight == -1)
             return weight;
@@ -252,4 +270,3 @@ public class Board
         return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) * multiplier;   // Euclidean 
     }
 }
-

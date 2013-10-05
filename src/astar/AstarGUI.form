@@ -180,7 +180,7 @@
         <Component class="java.awt.Label" name="label5">
           <Properties>
             <Property name="alignment" type="int" value="2"/>
-            <Property name="text" type="java.lang.String" value="Heuristic multiplier"/>
+            <Property name="text" type="java.lang.String" value="Heuristic *"/>
           </Properties>
         </Component>
         <Component class="java.awt.TextField" name="HeuristicMultipliertextField">
@@ -212,11 +212,19 @@
           </Properties>
         </Component>
         <Component class="java.awt.Label" name="pathlengthlabel">
+          <Properties>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[70, 20]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[70, 20]"/>
+            </Property>
+          </Properties>
         </Component>
         <Component class="java.awt.Label" name="coordinatesLabel">
           <Properties>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[70, 20]"/>
+              <Dimension value="[100, 20]"/>
             </Property>
           </Properties>
         </Component>

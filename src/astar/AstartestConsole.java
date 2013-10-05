@@ -84,22 +84,5 @@ public class AstartestConsole
     }
     
     
-    private static void PrintHeap(HybridHeap heap)
-    {
-        for (int i = 0; i < heap.tail; i++)
-        {
-            System.out.println(i + "\t" + heap.heap[i].key + "\t" + heap.heap[i].item + "\t" + heap.hashmap.get((Coordinates)heap.heap[i].item));
-        }
-        System.out.println();
-    }
-
-    private static void PrintInOrder(HybridHeap h)
-    {
-        while (!h.IsEmpty())
-        {
-            System.out.print(h.DeleteMin() + ", ");
-        }
-        System.out.println();
-        System.out.println();
-    }
+   
 }

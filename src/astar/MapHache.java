@@ -8,7 +8,9 @@ import java.util.AbstractMap;
 import java.util.Set;
 
 /**
- *
+ * Hash map aka MapHaché. Can increase in size, but not decrease...
+ * @param <K> 
+ * @param <V> 
  * @author verne_000
  */
 public class MapHache<K, V> extends AbstractMap<K, V>
@@ -17,6 +19,10 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     private long items = 0;
     
     
+    /**
+     * Create a new MapHaché with initial size
+     * @param initialSize
+     */
     public MapHache(int initialSize)
     {
         // Set size to closest prime number maybe?
@@ -137,6 +143,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         }
         return null;
     }
+    
     
     private int GetIndex(Object key, int modulo)
     {

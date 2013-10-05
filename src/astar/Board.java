@@ -129,7 +129,7 @@ public class Board
     }   
     
     
-    public Pathinfo FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
+    public PathInfoj FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
         HybridHeap<Coordinates> openset = new HybridHeap();
         AbstractMap<Coordinates, Integer> closedset = new MapHache(701);
@@ -145,7 +145,7 @@ public class Board
             closedset.put(current, 0);
             
             if (current.equals(end))
-                return new Pathinfo(ReconstructPath(current, camefrom), closedset, g_score.get(end));
+                return new PathInfoj(ReconstructPath(current, camefrom), closedset, g_score.get(end));
             
                      
             for (Coordinates neighbour : GetNeighbours(current))
@@ -176,7 +176,7 @@ public class Board
         }
         
         // If we get here, no path was found...
-        return null;
+        return new PathInfoj(null, closedset, null);
     }
     
     

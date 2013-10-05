@@ -221,38 +221,28 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(int[][] cells, Pathinfo path)
-    { 
-        int x = 0; 
-        int y = 0;
-        for (int[] row : cells)
+    private void DrawBoard(int[][] cells, PathInfoj path)
+    {        
+        for (int y = 0; y < cells.length; y++)
         {
-            for (int cell : row)
+            for (int x = 0; x < cells.length; x++)
             {
                 Coordinates c = new Coordinates(x, y);
                 boolean highlight = false;
                 boolean visited = false;
                 if (path != null)
                 {
-                    if (path.coordinates.containsKey(c))
+                    if (path.coordinates != null && path.coordinates.containsKey(c))
                         highlight = true;
                     
-                    if (path.closedset.containsKey(c))
+                    if (path.closedset != null && path.closedset.containsKey(c))
                         visited = true;
                 }
                 
-                DrawCell(cellmap[x][y], c, cell, highlight, visited);
-               
-                x++;
+                DrawCell(cellmap[x][y], c, cells[y][x], highlight, visited);
             }
-            x = 0;
-            y++;
         }
-        if (path != null)
-        {
-            pathlengthlabel.setText(path.pathlength.toString());
-        }
-        
+  
         BoardPanel.revalidate();    // Forces panel redraw    
     }
     
@@ -384,18 +374,20 @@ public class AstarGUI extends javax.swing.JFrame
     
     private void ClickBoard(Coordinates c, MouseEvent e)
     {
-        this.clickedCoordinates = c;
+        clickedCoordinates = c;
         
         if (board != null)
         {
-            Pathinfo path = null;
+            PathInfoj path = null;
             if (previousCoordinates != null)
             {
                 path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+                if (path.pathlength != null)
+                    pathlengthlabel.setText(path.pathlength.toString());
             }
             
             DrawBoard(board.GetBoard(), path); 
-            
+                        
             if (e.getButton() == 3 || previousCoordinates == null)
             {        
                 previousCoordinates = clickedCoordinates;
@@ -408,7 +400,7 @@ public class AstarGUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_recalculatebuttonActionPerformed
         if (board != null && previousCoordinates != null && clickedCoordinates != null)
         {
-            Pathinfo path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+            PathInfoj path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
             DrawBoard(board.GetBoard(), path); 
         }
     }//GEN-LAST:event_recalculatebuttonActionPerformed

@@ -7,16 +7,20 @@ package astar;
 import java.util.AbstractMap;
 
 /**
- *
+ * HybridHeap is a minimum heap indexed by a hash map
+ * @param <T> 
  * @author verne_000
  */
 public class HybridHeap<T>
 {
-    protected HeapItem[] heap;
-    protected int tail;
-    protected AbstractMap<T, Integer> hashmap;
+    private HeapItem[] heap;
+    private int tail;
+    private AbstractMap<T, Integer> hashmap;
     
     
+    /**
+     *
+     */
     public HybridHeap()
     {
         int initialSize = 1000;
@@ -27,12 +31,22 @@ public class HybridHeap<T>
     }
     
     
+    /**
+     *
+     * @param key
+     * @return
+     */
     public boolean containsKey(T key)
     {
         return hashmap.containsKey(key);
     }
     
     
+    /**
+     * Get the priority value by key.
+     * @param key
+     * @return Priority queue value if the key exists, else null.
+     */
     public Float getValue(T key)
     {
         Integer position = hashmap.get(key);
@@ -45,6 +59,12 @@ public class HybridHeap<T>
     }
     
    
+    /**
+     *
+     * @param value
+     * @param key
+     * @return
+     */
     public boolean DecreaseKey(float value, T key)
     {
         Integer index = hashmap.get(key);
@@ -62,6 +82,12 @@ public class HybridHeap<T>
     }
   
     
+    /**
+     *
+     * @param value
+     * @param key
+     * @return
+     */
     public boolean IncreaseKey(float value, T key)
     {
         Integer index = hashmap.get(key);
@@ -79,20 +105,25 @@ public class HybridHeap<T>
     }
     
       
-    public void Insert(float value, T coordinates)
+    /**
+     * Insert an item in the heap with the specified value
+     * @param value
+     * @param object
+     */
+    public void Insert(float value, T object)
     {    
-        if (hashmap.containsKey(coordinates))
+        if (hashmap.containsKey(object))
         {
             return;
             // Got the index to the old entry with the same key
-            //old = heap[hashmap.get(node.coordinates.toString())];       
+            //old = heap[hashmap.get(node.object.toString())];       
         }
         
-        HeapItem item = new HeapItem(value, coordinates);
+        HeapItem item = new HeapItem(value, object);
         
         heap[tail] = item;
         int index = BubbleUp(tail);
-        hashmap.put(coordinates, index);
+        hashmap.put(object, index);
         tail++;
         if (tail == heap.length)
         {
@@ -159,6 +190,10 @@ public class HybridHeap<T>
     }
     
     
+    /**
+     * Removes and returns the minimum item from the heap.
+     * @return
+     */
     public T DeleteMin()
     {
         if (tail > 0)
@@ -176,6 +211,10 @@ public class HybridHeap<T>
     }
     
     
+    /**
+     * Returns the minimum item from the heap, but does not remove it.
+     * @return
+     */
     public T Peek()
     {
         if (tail > 0)
@@ -189,6 +228,10 @@ public class HybridHeap<T>
     }  
     
     
+    /**
+     * Check if the heap is empty
+     * @return True if empty.
+     */
     public boolean IsEmpty()
     {
         return tail == 0;

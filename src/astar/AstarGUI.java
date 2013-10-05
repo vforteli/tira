@@ -221,7 +221,7 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(int[][] cells, PathInfoj path)
+    private void DrawBoard(int[][] cells, PathInfo path)
     {        
         for (int y = 0; y < cells.length; y++)
         {
@@ -378,7 +378,7 @@ public class AstarGUI extends javax.swing.JFrame
         
         if (board != null)
         {
-            PathInfoj path = null;
+            PathInfo path = null;
             if (previousCoordinates != null)
             {
                 path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
@@ -400,7 +400,7 @@ public class AstarGUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_recalculatebuttonActionPerformed
         if (board != null && previousCoordinates != null && clickedCoordinates != null)
         {
-            PathInfoj path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+            PathInfo path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
             DrawBoard(board.GetBoard(), path); 
         }
     }//GEN-LAST:event_recalculatebuttonActionPerformed

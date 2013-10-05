@@ -10,15 +10,15 @@ import java.util.AbstractMap;
  *
  * @author verne_000
  */
-public class PathInfoj
+public class PathInfo
 {
     /**
-     * PathInfoj encapsulates the results of a path search including some diagnostic info
+     * PathInfo encapsulates the results of a path search including some diagnostic info
      * @param coordinates
      * @param closedset
      * @param pathlength
      */
-    public PathInfoj(AbstractMap<Coordinates, Coordinates> coordinates, AbstractMap<Coordinates, Integer> closedset, Float pathlength)
+    public PathInfo(AbstractMap<Coordinates, Coordinates> coordinates, AbstractMap<Coordinates, Integer> closedset, Float pathlength)
     {
         this.coordinates = coordinates;
         this.closedset = closedset;

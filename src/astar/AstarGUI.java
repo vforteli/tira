@@ -242,8 +242,6 @@ public class AstarGUI extends javax.swing.JFrame
                 DrawCell(cellmap[x][y], c, cells[y][x], highlight, visited);
             }
         }
-  
-        BoardPanel.revalidate();    // Forces panel redraw    
     }
     
     private void DrawCell(JPanel cellpanel, Coordinates c, int cellweight, boolean highlight, boolean visited)
@@ -443,6 +441,8 @@ public class AstarGUI extends javax.swing.JFrame
         int terrainMaxValue = Integer.parseInt(terrainMaxWeight.getText());
         int terrainMinValue = Integer.parseInt(terrainMinWeight.getText());
         
+        clickedCoordinates = null;
+        previousCoordinates = null;
         board = new Board(size, terrainMinValue, terrainMaxValue, bitmapfile);
 
         CreateBoard(board.getHeight(), board.getWidth());

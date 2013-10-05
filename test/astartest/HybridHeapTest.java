@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class HybridHeapTest
 {
-    private HybridHeap h;
+    private HybridHeap<Integer, Coordinates> h;
     
     public HybridHeapTest()
     {

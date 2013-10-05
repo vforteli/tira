@@ -10,12 +10,23 @@ package astar;
  */
 public class HeapItem
 {
-    public HeapItem(float _key, Object _item)
+    /**
+     *
+     * @param _key
+     * @param _item
+     */
+    public HeapItem(Object _key, Object _item)
     {
         this.key = _key;
         this.item = _item;
     }
     
-    public float key;
+    /**
+     *
+     */
+    public Object key;
+    /**
+     *
+     */
     public Object item;
 }

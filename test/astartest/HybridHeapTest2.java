@@ -29,8 +29,8 @@ public class HybridHeapTest2
     @Test
     public void TestInsert()
     {
-        HybridHeap<String> heap = new HybridHeap<>();
-        heap.Insert(10, "first");
+        HybridHeap<Float, String> heap = new HybridHeap<>();
+        heap.Insert(10f, "first");
         
         String result = heap.Peek();
         String expected = "first";
@@ -40,10 +40,10 @@ public class HybridHeapTest2
     @Test
     public void TestDeleteMin()
     {
-        HybridHeap<String> heap = new HybridHeap<>();
-        heap.Insert(10, "first");
-        heap.Insert(5, "second");
-        heap.Insert(15, "third");
+        HybridHeap<Float, String> heap = new HybridHeap<>();
+        heap.Insert(10f, "first");
+        heap.Insert(5f, "second");
+        heap.Insert(15f, "third");
         String result = heap.DeleteMin();
         String expected = "second";
         assertEquals(expected, result);
@@ -52,10 +52,10 @@ public class HybridHeapTest2
     @Test
     public void TestDeleteMin2()
     {        
-        HybridHeap<String> heap = new HybridHeap<>();
-        heap.Insert(10, "first");
-        heap.Insert(5, "second");
-        heap.Insert(15, "third");
+        HybridHeap<Float, String> heap = new HybridHeap<>();
+        heap.Insert(10f, "first");
+        heap.Insert(5f, "second");
+        heap.Insert(15f, "third");
         heap.DeleteMin();
         heap.DeleteMin();
         String result = heap.DeleteMin();
@@ -67,7 +67,7 @@ public class HybridHeapTest2
     @Test
     public void TestDeleteMinEmpty()
     {        
-        HybridHeap<String> heap = new HybridHeap<>();
+        HybridHeap<Float, String> heap = new HybridHeap<>();
         String result = heap.DeleteMin();  
         assertNull(result);
     }
@@ -75,10 +75,10 @@ public class HybridHeapTest2
     @Test
     public void TestGetValue()
     {        
-        HybridHeap<String> heap = new HybridHeap<>();
-        heap.Insert(10, "first");
-        heap.Insert(5, "second");
-        heap.Insert(15, "third");
+        HybridHeap<Float, String> heap = new HybridHeap<>();
+        heap.Insert(10f, "first");
+        heap.Insert(5f, "second");
+        heap.Insert(15f, "third");
         Float result = heap.getValue("second");
         Float expected = 5f;
         assertEquals(expected, result);
@@ -87,10 +87,10 @@ public class HybridHeapTest2
     @Test
     public void TestGetValueFail()
     {        
-        HybridHeap<String> heap = new HybridHeap<>();
-        heap.Insert(10, "first");
-        heap.Insert(5, "second");
-        heap.Insert(15, "third");
+        HybridHeap<Float, String> heap = new HybridHeap<>();
+        heap.Insert(10f, "first");
+        heap.Insert(5f, "second");
+        heap.Insert(15f, "third");
         Float result = heap.getValue("sechhond");
         assertNull(result);
     }

@@ -131,7 +131,7 @@ public class Board
     
     public PathInfo FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
-        HybridHeap<Coordinates> openset = new HybridHeap();
+        HybridHeap<Float, Coordinates> openset = new HybridHeap();
         AbstractMap<Coordinates, Integer> closedset = new MapHache(701);
         AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
         AbstractMap<Coordinates, Float> g_score = new MapHache<>(701);

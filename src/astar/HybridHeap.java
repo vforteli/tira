@@ -8,10 +8,11 @@ import java.util.AbstractMap;
 
 /**
  * HybridHeap is a minimum heap indexed by a hash map
+ * @param <V> Must be numeric comparable type
  * @param <T> 
  * @author verne_000
  */
-public class HybridHeap<T>
+public class HybridHeap<V extends Number & Comparable<? super V>, T>
 {
     private HeapItem[] heap;
     private int tail;
@@ -47,13 +48,12 @@ public class HybridHeap<T>
      * @param key
      * @return Priority queue value if the key exists, else null.
      */
-    public Float getValue(T key)
+    public V getValue(T key)
     {
         Integer position = hashmap.get(key);
         if (position != null)
-        {
-            return heap[hashmap.get(key)].key;
-        }
+            return (V)heap[hashmap.get(key)].key;
+        
         else 
             return null;
     }
@@ -65,13 +65,14 @@ public class HybridHeap<T>
      * @param key
      * @return
      */
-    public boolean DecreaseKey(float value, T key)
+    public boolean DecreaseKey(V value, T key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
         {
             HeapItem item = heap[index];
-            if (value < item.key)
+            
+            if (value.compareTo((V)item.key) < 0)
             {
                 item.key = value;
                 BubbleUp(index);
@@ -88,13 +89,13 @@ public class HybridHeap<T>
      * @param key
      * @return
      */
-    public boolean IncreaseKey(float value, T key)
+    public boolean IncreaseKey(V value, T key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
         {
             HeapItem item = heap[index];
-            if (value > item.key)
+            if (value.compareTo((V)item.key) > 0)
             {
                 item.key = value;
                 BubbleDown(index);
@@ -110,7 +111,7 @@ public class HybridHeap<T>
      * @param value
      * @param object
      */
-    public void Insert(float value, T object)
+    public void Insert(V value, T object)
     {    
         if (hashmap.containsKey(object))
         {
@@ -138,7 +139,7 @@ public class HybridHeap<T>
         HeapItem last = heap[index];
         int parentindex = (index - 1) / 2;
         
-        while (index > 0 && heap[parentindex].key >= last.key)
+        while (index > 0 && ((V)heap[parentindex].key).compareTo((V)last.key) >= 0)
         {
             hashmap.put((T)heap[parentindex].item, index);
             heap[index] = heap[parentindex];
@@ -163,7 +164,7 @@ public class HybridHeap<T>
             int leftChildIndex = 2 * index + 1;
             int rightChildIndex = leftChildIndex + 1;
             
-            if (rightChildIndex < tail && heap[rightChildIndex].key < heap[leftChildIndex].key)
+            if (rightChildIndex < tail && ((V)heap[rightChildIndex].key).compareTo((V)heap[leftChildIndex].key) < 0)
             {
                 smallerNodeIndex = rightChildIndex;
             }
@@ -172,7 +173,7 @@ public class HybridHeap<T>
                 smallerNodeIndex = leftChildIndex;       
             }
             
-            if (node.key <= heap[smallerNodeIndex].key)
+            if (((V)node.key).compareTo((V)heap[smallerNodeIndex].key) <= 0)
             {
                 break;                
             }

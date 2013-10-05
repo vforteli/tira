@@ -50,25 +50,18 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         
         if (item != null)
         {
-            if (item._key.equals(key))
+            if (item.Key.equals(key))
             {
-                if (item.getNext() == null) // No list, just remove from array
-                {
-                    array[index] = null;   
-                }
-                else
-                {
-                    array[index] = item.getNext();
-                }
+                array[index] = item.getNext();  // Next item, or null...   
                 items--;
-                return (V)item._value;
+                return (V)item.Value;
             }
             
             while (item.getNext() != null)
             {
-                if (item.getNext()._key.equals(key))
+                if (item.getNext().Key.equals(key))
                 {
-                    V delete = (V)item.getNext()._value;
+                    V delete = (V)item.getNext().Value;
                     Item newnext = item.getNext().getNext();
                     item.setNext(newnext);
                     items--;
@@ -119,7 +112,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
                 Item item = array[i];                     
                 while (item != null)
                 {
-                    insert((K)item._key, (V)item._value, newarray);
+                    insert((K)item.Key, (V)item.Value, newarray);
                     item = item.getNext();
                 }
             }
@@ -130,14 +123,13 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     
     private V getKeyValue(K key)
     {
-        int index = GetIndex(key, array.length);
-        Item item = array[index];
+        Item item = array[GetIndex(key, array.length)];
                
         while (item != null)
         {
-            if (item._key.equals(key))
+            if (item.Key.equals(key))
             {
-                return (V)item._value; 
+                return (V)item.Value; 
             }
             item = item.getNext();
         }
@@ -160,14 +152,15 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         {
             targetarray[index] = new Item(key, value);
         }
-        else 
+        else // Add it to the linked list
         {
             while (item != null)
             {
-                if (item._key.equals(key))
+                // If the key already exists, it should be updated and the old returned
+                if (item.Key.equals(key))
                 {
-                    V previous = (V)item._value;
-                    item._value = value;
+                    V previous = (V)item.Value;
+                    item.Value = value;
                     return previous;
                 }
                 if (item.getNext() == null) // If we get here, the item has been put last in the linked list

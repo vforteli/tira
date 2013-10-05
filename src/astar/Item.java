@@ -15,11 +15,11 @@ public class Item<K, V>
     /**
      *
      */
-    public K _key;
+    public K Key;
     /**
      *
      */
-    public V _value;
+    public V Value;
     
     private Item _next;
     
@@ -30,8 +30,8 @@ public class Item<K, V>
      */
     public Item(K key, V value)
     {
-        _key = key;
-        _value = value;
+        Key = key;
+        Value = value;
     }
     
     /**

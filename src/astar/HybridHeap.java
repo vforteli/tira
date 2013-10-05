@@ -9,12 +9,12 @@ import java.util.AbstractMap;
 /**
  * HybridHeap is a minimum heap indexed by a hash map
  * @param <V> Must be numeric comparable type
- * @param <T> 
+ * @param <T> Whatever
  * @author verne_000
  */
 public class HybridHeap<V extends Number & Comparable<? super V>, T>
 {
-    private HeapItem[] heap;
+    private Item<V, T>[] heap;
     private int tail;
     private AbstractMap<T, Integer> hashmap;
     
@@ -26,7 +26,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     {
         int initialSize = 1000;
         // Hmm, what should the initial size be, and when should it grow/shrink?
-        heap = new HeapItem[initialSize];
+        heap = new Item[initialSize];
         hashmap = new MapHache<>(1701);
         tail = 0;
     }
@@ -52,10 +52,9 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     {
         Integer position = hashmap.get(key);
         if (position != null)
-            return (V)heap[hashmap.get(key)].key;
+            return heap[position].Key;
         
-        else 
-            return null;
+        return null;
     }
     
    
@@ -70,11 +69,10 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         Integer index = hashmap.get(key);
         if (index != null)
         {
-            HeapItem item = heap[index];
-            
-            if (value.compareTo((V)item.key) < 0)
+            Item<V, T> item = heap[index];
+            if (value.compareTo(item.Key) < 0)
             {
-                item.key = value;
+                item.Key = value;
                 BubbleUp(index);
                 return true;
             }
@@ -94,10 +92,10 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         Integer index = hashmap.get(key);
         if (index != null)
         {
-            HeapItem item = heap[index];
-            if (value.compareTo((V)item.key) > 0)
+            Item<V, T> item = heap[index];
+            if (value.compareTo(item.Key) > 0)
             {
-                item.key = value;
+                item.Key = value;
                 BubbleDown(index);
                 return true;
             }
@@ -120,12 +118,11 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
             //old = heap[hashmap.get(node.object.toString())];       
         }
         
-        HeapItem item = new HeapItem(value, object);
-        
-        heap[tail] = item;
+        heap[tail] = new Item(value, object);
         int index = BubbleUp(tail);
         hashmap.put(object, index);
         tail++;
+        
         if (tail == heap.length)
         {
             System.out.println("Kabooom! Increase size maybe...");
@@ -136,27 +133,26 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     
     private int BubbleUp(int index)
     {  
-        HeapItem last = heap[index];
+        Item<V, T> last = heap[index];
         int parentindex = (index - 1) / 2;
         
-        while (index > 0 && ((V)heap[parentindex].key).compareTo((V)last.key) >= 0)
+        while (index > 0 && heap[parentindex].Key.compareTo(last.Key) >= 0)
         {
-            hashmap.put((T)heap[parentindex].item, index);
+            hashmap.put(heap[parentindex].Value, index);
             heap[index] = heap[parentindex];
             index = parentindex;           
             parentindex = (index - 1) / 2;
         }
         
         heap[index] = last;
-        hashmap.put((T)last.item, index);
+        hashmap.put(last.Value, index);
         return index;
     }   
   
     
     private int BubbleDown(int index)
     {
-        // To do, add code to maintain the hashmap...
-        HeapItem node = heap[index];
+        Item<V, T> node = heap[index];
         
         while(index < tail / 2)
         {
@@ -164,7 +160,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
             int leftChildIndex = 2 * index + 1;
             int rightChildIndex = leftChildIndex + 1;
             
-            if (rightChildIndex < tail && ((V)heap[rightChildIndex].key).compareTo((V)heap[leftChildIndex].key) < 0)
+            if (rightChildIndex < tail && (heap[rightChildIndex].Key).compareTo(heap[leftChildIndex].Key) < 0)
             {
                 smallerNodeIndex = rightChildIndex;
             }
@@ -173,20 +169,20 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
                 smallerNodeIndex = leftChildIndex;       
             }
             
-            if (((V)node.key).compareTo((V)heap[smallerNodeIndex].key) <= 0)
+            if ((node.Key).compareTo(heap[smallerNodeIndex].Key) <= 0)
             {
                 break;                
             }
             
             // Swap
-            hashmap.put((T)heap[smallerNodeIndex].item, index);
+            hashmap.put(heap[smallerNodeIndex].Value, index);
             heap[index] = heap[smallerNodeIndex];
             index = smallerNodeIndex;
         }
         
         // Finally set the current node wherever it ends up...
         heap[index] = node; 
-        hashmap.put((T)node.item, index);
+        hashmap.put(node.Value, index);
         return index;
     }
     
@@ -199,14 +195,14 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     {
         if (tail > 0)
         {            
-            HeapItem root = heap[0];
+            Item<V, T> root = heap[0];
             heap[0] = heap[--tail];
             BubbleDown(0);
             
             // Dont forget to remove it from the hashmap as well, or cockup ensured
-            hashmap.remove(((T)root.item));   
+            hashmap.remove(root.Value);   
             
-            return (T)root.item;
+            return root.Value;
         }
         return null;
     }
@@ -220,9 +216,8 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     {
         if (tail > 0)
         {
-            // Get the root item, ie the lowest key
-            HeapItem root = heap[0];                
-            return (T)root.item;
+            // Get the root item, ie the lowest key              
+            return heap[0].Value;
         }
         return null;
         

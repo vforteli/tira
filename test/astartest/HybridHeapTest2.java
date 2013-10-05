@@ -4,7 +4,6 @@
  */
 package astartest;
 
-import astar.Coordinates;
 import astar.HybridHeap;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -242,13 +242,14 @@ public class AstarGUI extends javax.swing.JFrame
                         visited = true;
                 }
                 
-                DrawCell(cellmap[x][y], c, cells[y][x], highlight, visited);
+                DrawCell(c, cells[y][x], highlight, visited);
             }
         }
     }
     
-    private void DrawCell(JPanel cellpanel, Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
+    private void DrawCell(Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
     {      
+        JPanel cellpanel = cellmap[c.x][c.y];
         if (cell.terrainType == TerrainTypes.Impassible)         
         {
             cellpanel.setBackground(Color.black);
@@ -267,48 +268,15 @@ public class AstarGUI extends javax.swing.JFrame
         }
         else
         {   
-            float hue = 0.125f;
-            if (cell.terrainType == TerrainTypes.Water)
-                hue = 0.58f;
-            
-            else if (cell.terrainType == TerrainTypes.Forest)
-                hue = 0.28f;
-            
-            float saturation = 0.6f;
-            float brightness = CalculateBrightness(cell.weight, board.getTerrainMinWeight(), board.getTerrainMaxWeight());
-            if (visited)
-            {
-                saturation = 0.8f;
-                brightness -= 0.2f;
-            }
-            if (cell.terrainType == TerrainTypes.Road)
-                saturation = 0.2f;
-                     
-            cellpanel.setBackground(Color.getHSBColor(hue, saturation, brightness));
+            // Else try to figure out the color somehow...
+            cellpanel.setBackground(CalculateColor(cell, visited));
         }
-    }
-    
-    
-      
-    private float CalculateBrightness(int value, int min, int max)
-    {
-        if (max == min)
-        {
-            return 1;
-        }
-        float outmax = 0.3f;
-        float outmin = 1;
-        float brightness = outmin + (value - min) * (outmax - outmin) / (max - min);
-        return brightness;
-    }
-    
-    
-    
+    } 
     
     
     private void CreateBoard(int height, int width)
     {
-        // Only recreate the panels if the board size doesnt match  10x5 = 50... 5x10 = 50.. oh shit
+        // Only recreate the panels if the board size doesnt match. 10x5 = 50... 5x10 = 50.. oh shit
         if (BoardPanel.getComponentCount() != height * width)
         {
             if (BoardPanel.getComponentCount() != 0)
@@ -532,4 +500,39 @@ public class AstarGUI extends javax.swing.JFrame
     private java.awt.TextField terrainMaxWeight;
     private java.awt.TextField terrainMinWeight;
     // End of variables declaration//GEN-END:variables
+
+    
+    private Color CalculateColor(TerrainCell cell, boolean visited)
+    {
+        float hue = 0.125f;
+        if (cell.terrainType == TerrainTypes.Water)
+            hue = 0.58f;
+        
+        else if (cell.terrainType == TerrainTypes.Forest)
+            hue = 0.28f;
+        float saturation = 0.6f;
+        float brightness = CalculateBrightness(cell.weight, board.getTerrainMinWeight(), board.getTerrainMaxWeight());
+        if (visited)
+        {
+            saturation = 0.8f;
+            brightness -= 0.2f;
+        }
+        if (cell.terrainType == TerrainTypes.Road)
+            saturation = 0.2f;
+        Color color = Color.getHSBColor(hue, saturation, brightness);
+        return color;
+    }
+    
+    
+    private float CalculateBrightness(int value, int min, int max)
+    {
+        if (max == min)
+        {
+            return 1;
+        }
+        float outmax = 0.3f;
+        float outmin = 1;
+        float brightness = outmin + (value - min) * (outmax - outmin) / (max - min);
+        return brightness;
+    }
 }

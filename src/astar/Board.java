@@ -122,7 +122,7 @@ public class Board
                         }
                         else 
                         {
-                            // Reverse brightness... brighter in this case means lower weight
+                            // Reverse brightness... brighter in this case means lower toweight
                             brightness = Math.abs(brightness - inputmax);
                             board[i][j] = new TerrainCell(Math.round(outputmin + (brightness - inputmin) * (outputmax - outputmin) / (inputmax - inputmin)), type);
                         }
@@ -155,8 +155,9 @@ public class Board
         AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
         AbstractMap<Coordinates, Float> g_score = new MapHache<>(701);
         
+        // Distance from start is obviously 0... good place to start
         g_score.put(start, 0f);
-        openset.Insert(GetHDistance(start, end, heuristicMultiplier, this.terrainMinWeight), start);
+        openset.Insert(GetHDistance(start, end, heuristicMultiplier, terrainMinWeight), start);
 
         while (!openset.IsEmpty())
         {
@@ -173,27 +174,31 @@ public class Board
                 if (weight == -1)    // Wall...
                     continue;
                 
-                float tentative_gscore = g_score.get(current) + weight;
-                float tentative_fscore = tentative_gscore + GetHDistance(neighbour, end, heuristicMultiplier, this.terrainMinWeight);
+                float tentative_gscore = g_score.get(current) + weight;      
                 Float g_scoreneighbour = g_score.get(neighbour);
                            
-                if (closedset.containsKey(neighbour) && (g_scoreneighbour != null && g_scoreneighbour <= tentative_gscore))
+                // If this neighbour is already processed and the gscore through the current node is not lower, we can skip to the next
+                if (closedset.containsKey(neighbour) && g_scoreneighbour <= tentative_gscore)
                     continue;
                 
+                // If this is the first time at the neighbour, or the gscore through the current node is better, update stuff
                 if (g_scoreneighbour == null || tentative_gscore < g_scoreneighbour)
                 {
                     g_score.put(neighbour, tentative_gscore);
                     camefrom.put(neighbour, current);
                 }
                 
+                // If the neighbour node is seen for the first time, ie not open and not closed, put it in the openset
+                float tentative_fscore = tentative_gscore + GetHDistance(neighbour, end, heuristicMultiplier, terrainMinWeight);
                 if (!openset.containsKey(neighbour) && !closedset.containsKey(neighbour))
-                    openset.Insert(tentative_fscore, neighbour);             
-                else
-                    openset.DecreaseKey(tentative_fscore, neighbour);  // We can safely try to decrease the key, if the value is higher it wont change        
+                    openset.Insert(tentative_fscore, neighbour);      
+                
+                // We can safely try to decrease the key, if the value is higher or doesnt exist, nothing will happen        
+                openset.DecreaseKey(tentative_fscore, neighbour);  
             }
         }
         
-        // If we get here, no path was found...
+        // If we get here, no path was found... return stuff anyway to show pretty graphs
         return new PathInfo(null, closedset, null);
     }
     
@@ -216,18 +221,20 @@ public class Board
      * @param neighbour
      * @return 
      */
-    public Coordinates[] GetNeighbours(Coordinates c)
+    private Coordinates[] GetNeighbours(Coordinates c)
     {      
         int topleft_x = c.x <= 0 ? 0 : c.x - 1;
         int topleft_y = c.y <= 0 ? 0 : c.y - 1;
         
-        int bottomright_x = c.x >= this.getHeight() - 1 ? this.getHeight() - 1 : c.x + 1;
+        int bottomright_x = c.x >= this.getWidth()- 1 ? this.getWidth() - 1 : c.x + 1;
         int bottomright_y = c.y >= this.getHeight() - 1 ? this.getHeight() - 1 : c.y + 1;
         
         Coordinates[] coordinates = new Coordinates[8]; // Cant be more than 8 neighbours aye?
         int n = 0;
-        for (int i = topleft_x; i <= bottomright_x; i++) {
-            for (int j = topleft_y; j <= bottomright_y; j++) {
+        for (int i = topleft_x; i <= bottomright_x; i++) 
+        {
+            for (int j = topleft_y; j <= bottomright_y; j++) 
+            {
                 // Dont include self... daah
                 if (i == c.x && j == c.y)
                 {
@@ -246,19 +253,18 @@ public class Board
     
     private float CalculateWeight(Coordinates from, Coordinates to)
     {
-        float currentweight = getCellValue(from).weight;
-        float weight = getCellValue(to).weight;
+        float fromweight = getCellValue(from).weight;
+        float toweight = getCellValue(to).weight;
         
-        if (weight == -1)
-            return weight;
+        if (toweight == -1) // Wall.. again
+            return toweight;
         
         if (from.x != to.x && from.y != to.y)
         {
-            weight = (float)Math.sqrt(2 * Math.pow(weight, 2));
-            currentweight = (float)Math.sqrt(2 * Math.pow(currentweight, 2));
+            toweight = (float)Math.sqrt(2 * Math.pow(toweight, 2));
+            fromweight = (float)Math.sqrt(2 * Math.pow(fromweight, 2));
         }
-        weight = weight / 2 + currentweight / 2;
-        return weight;
+        return toweight / 2 + fromweight / 2;
     }
     
     
@@ -266,7 +272,6 @@ public class Board
     {
         int x = (from.x - to.x) * terrainMinWeight;
         int y = (from.y - to.y) * terrainMinWeight;
-        // return x + y;    // Manhattan.. remember the absolut stuff then..
-        return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) * multiplier;   // Euclidean 
+        return (float)Math.sqrt(x * x + y * y) * multiplier;   // Euclidean distance
     }
 }

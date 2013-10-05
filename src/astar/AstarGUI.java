@@ -10,7 +10,6 @@ import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.AbstractMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -232,13 +231,17 @@ public class AstarGUI extends javax.swing.JFrame
             {
                 Coordinates c = new Coordinates(x, y);
                 boolean highlight = false;
-                
-                if (path != null && path.coordinates.containsKey(c))
+                boolean visited = false;
+                if (path != null)
                 {
-                    highlight = true;
+                    if (path.coordinates.containsKey(c))
+                        highlight = true;
+                    
+                    if (path.closedset.containsKey(c))
+                        visited = true;
                 }
                 
-                DrawCell(cellmap[x][y], c, cell, highlight);
+                DrawCell(cellmap[x][y], c, cell, highlight, visited);
                
                 x++;
             }
@@ -253,7 +256,7 @@ public class AstarGUI extends javax.swing.JFrame
         BoardPanel.revalidate();    // Forces panel redraw    
     }
     
-    private void DrawCell(JPanel cellpanel, Coordinates c, int cellweight, boolean highlight)
+    private void DrawCell(JPanel cellpanel, Coordinates c, int cellweight, boolean highlight, boolean visited)
     {      
         if (cellweight == -1)         
         {
@@ -267,7 +270,6 @@ public class AstarGUI extends javax.swing.JFrame
         {
             cellpanel.setBackground(Color.green);
         }
-        
         else if (highlight == true)
         {
             cellpanel.setBackground(Color.ORANGE);
@@ -275,8 +277,8 @@ public class AstarGUI extends javax.swing.JFrame
         else
         {   
             float saturation = 0;
-            float brightness = CalculateBrightness(cellweight,board.getTerrainMinWeight(), board.getTerrainMaxWeight());
-            if (board.closedset != null && board.closedset.containsKey(c))
+            float brightness = CalculateBrightness(cellweight, board.getTerrainMinWeight(), board.getTerrainMaxWeight());
+            if (visited)
             {
                 saturation = 0.5f;
                 brightness -= 0.1f;
@@ -303,6 +305,7 @@ public class AstarGUI extends javax.swing.JFrame
     
     private void CreateBoard(int height, int width)
     {
+        // Only recreate the panels if the board size doesnt match  10x5 = 50... 5x10 = 50.. oh shit
         if (BoardPanel.getComponentCount() != height * width)
         {
             if (BoardPanel.getComponentCount() != 0)
@@ -381,43 +384,24 @@ public class AstarGUI extends javax.swing.JFrame
     
     private void ClickBoard(Coordinates c, MouseEvent e)
     {
-        Pathinfo path = null;
+        this.clickedCoordinates = c;
         
-        clickedCoordinates = c;
         if (board != null)
         {
-            if (e.getButton() == 3)
+            Pathinfo path = null;
+            if (previousCoordinates != null)
             {
-                if (previousCoordinates != null)
-                {
-                    path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
-                }
-                DrawBoard(board.GetBoard(), path); 
-                previousCoordinates = clickedCoordinates;
+                path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
             }
-            else
-            {
-                try
-                {
-                    if (previousCoordinates != null)
-                    {
-                        path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
-                    }        
-                    else 
-                    {
-                        previousCoordinates = clickedCoordinates;
-                    }
-
-                    DrawBoard(board.GetBoard(), path);                  
-                } 
-                catch (Exception ex)
-                {
-                    Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }        
+            
+            DrawBoard(board.GetBoard(), path); 
+            
+            if (e.getButton() == 3 || previousCoordinates == null)
+            {        
+                previousCoordinates = clickedCoordinates;
             }
         }
     }  
-    
     
     
     private void recalculatebuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_recalculatebuttonActionPerformed
@@ -473,6 +457,7 @@ public class AstarGUI extends javax.swing.JFrame
         DrawBoard(board.GetBoard(), null);
     }//GEN-LAST:event_InitBoardButtonActionPerformed
 
+    
     private void NewBoardActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_NewBoardActionPerformed
     {//GEN-HEADEREND:event_NewBoardActionPerformed
         bitmapfile = null;

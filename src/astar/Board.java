@@ -31,8 +31,10 @@ public class Board
     }
     private int[][] board;
     
-    
-    public AbstractMap<Coordinates, Integer> closedset;
+    public int getCellValue(Coordinates c)
+    {
+        return this.board[c.y][c.x];
+    }
     
     /**
      * Height of the board. Currently only supports square boards so width is redundant...
@@ -61,6 +63,8 @@ public class Board
     {
         return terrainMinWeight;
     }
+    
+   
     
     
     /**
@@ -128,12 +132,12 @@ public class Board
     public Pathinfo FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
         HybridHeap<Coordinates> openset = new HybridHeap();
-        closedset = new MapHache(701);
+        AbstractMap<Coordinates, Integer> closedset = new MapHache(701);
         AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
         AbstractMap<Coordinates, Float> g_score = new MapHache<>(701);
         
         g_score.put(start, 0f);
-        openset.Insert(Heuristic.GetDistance(start, end, heuristicMultiplier, this.terrainMinWeight), start);
+        openset.Insert(GetHDistance(start, end, heuristicMultiplier, this.terrainMinWeight), start);
 
         while (!openset.IsEmpty())
         {
@@ -141,7 +145,7 @@ public class Board
             closedset.put(current, 0);
             
             if (current.equals(end))
-                return new Pathinfo(ReconstructPath(current, camefrom), null, g_score.get(end));
+                return new Pathinfo(ReconstructPath(current, camefrom), closedset, g_score.get(end));
             
                      
             for (Coordinates neighbour : GetNeighbours(current))
@@ -152,7 +156,7 @@ public class Board
                     continue;
                 
                 float tentative_gscore = g_score.get(current) + weight;
-                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end, heuristicMultiplier, this.terrainMinWeight);
+                float tentative_fscore = tentative_gscore + GetHDistance(neighbour, end, heuristicMultiplier, this.terrainMinWeight);
                 Float g_scoreneighbour = g_score.get(neighbour);
                            
                 if (closedset.containsKey(neighbour) && (g_scoreneighbour != null && g_scoreneighbour <= tentative_gscore))
@@ -186,25 +190,7 @@ public class Board
         }      
         return nodes;
     }
-    
-    
-    
-    
-    /**
-     * Checks if the specified coordinates are valid on the board, ie not out of bounds
-     * 
-     * @param x
-     * @param y
-     * @return True if valid coordinates
-     */
-    private boolean isValidCoordinates(Coordinates c) 
-    {
-        if ((c.x > this.getWidth() | c.x < 0) | (c.y > this.getHeight() | c.y < 0))
-        {
-            return false;
-        }
-        return true;
-    }
+   
       
     
     /**
@@ -240,12 +226,6 @@ public class Board
     }
     
     
-    public int getCellValue(Coordinates c)
-    {
-        return this.board[c.y][c.x];
-    }
-
-    
     private float CalculateWeight(Coordinates from, Coordinates to)
     {
         float currentweight = getCellValue(from);
@@ -261,6 +241,15 @@ public class Board
         }
         weight = weight / 2 + currentweight / 2;
         return weight;
+    }
+    
+    
+    private float GetHDistance(Coordinates from, Coordinates to, int multiplier, int terrainMinWeight)
+    {
+        int x = (from.x - to.x) * terrainMinWeight;
+        int y = (from.y - to.y) * terrainMinWeight;
+        // return x + y;    // Manhattan.. remember the absolut stuff then..
+        return (float)Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)) * multiplier;   // Euclidean 
     }
 }
 

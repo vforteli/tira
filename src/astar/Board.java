@@ -11,6 +11,7 @@ package astar;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Random; 
 import javax.imageio.ImageIO;
@@ -122,16 +123,16 @@ public class Board
                         }
                         else 
                         {
-                            // Reverse brightness... brighter in this case means lower toweight
+                            // Reverse brightness... brighter in this case means lower weight
                             brightness = Math.abs(brightness - inputmax);
-                            board[i][j] = new TerrainCell(Math.round(outputmin + (brightness - inputmin) * (outputmax - outputmin) / (inputmax - inputmin)), type);
+                            board[i][j] = new TerrainCell(Math.round(AstarMath.ConvertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type);
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // ... current best practise.
+                // ... current best practice.
             }
         }   
         else

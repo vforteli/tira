@@ -505,11 +505,12 @@ public class AstarGUI extends javax.swing.JFrame
     private Color CalculateColor(TerrainCell cell, boolean visited)
     {
         float hue = 0.125f;
+        
         if (cell.terrainType == TerrainTypes.Water)
             hue = 0.58f;
-        
         else if (cell.terrainType == TerrainTypes.Forest)
             hue = 0.28f;
+        
         float saturation = 0.6f;
         float brightness = CalculateBrightness(cell.weight, board.getTerrainMinWeight(), board.getTerrainMaxWeight());
         if (visited)
@@ -527,12 +528,10 @@ public class AstarGUI extends javax.swing.JFrame
     private float CalculateBrightness(int value, int min, int max)
     {
         if (max == min)
-        {
             return 1;
-        }
+        
         float outmax = 0.3f;
         float outmin = 1;
-        float brightness = outmin + (value - min) * (outmax - outmin) / (max - min);
-        return brightness;
+        return AstarMath.ConvertRange(min, max, outmin, outmax, (float)value);
     }
 }

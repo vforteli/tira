@@ -33,7 +33,6 @@ public class Board
     
     
     public AbstractMap<Coordinates, Integer> closedset;
-    private AbstractMap<Coordinates, Float> g_score;
     
     /**
      * Height of the board. Currently only supports square boards so width is redundant...
@@ -49,9 +48,7 @@ public class Board
         // - Old Chinese saying
         return this.board[0].length;
     }
-            
-    // Used for diagnostic stuff...
-    public Float pathweight;
+
     
     private int terrainMaxValue;
     public int getTerrainMaxWeight()
@@ -128,12 +125,12 @@ public class Board
     }   
     
     
-    public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
+    public Pathinfo FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
         HybridHeap<Coordinates> openset = new HybridHeap();
         closedset = new MapHache(701);
         AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
-        g_score = new MapHache<>(701);
+        AbstractMap<Coordinates, Float> g_score = new MapHache<>(701);
         
         g_score.put(start, 0f);
         openset.Insert(Heuristic.GetDistance(start, end, heuristicMultiplier, this.terrainMinWeight), start);
@@ -144,7 +141,8 @@ public class Board
             closedset.put(current, 0);
             
             if (current.equals(end))
-                return ReconstructPath(current, camefrom);
+                return new Pathinfo(ReconstructPath(current, camefrom), null, g_score.get(end));
+            
                      
             for (Coordinates neighbour : GetNeighbours(current))
             {                
@@ -177,17 +175,15 @@ public class Board
         return null;
     }
     
+    
     private AbstractMap<Coordinates, Coordinates> ReconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
     {
-        pathweight = g_score.get(coordinates);  // This is the total weight to the end
-        
         MapHache<Coordinates, Coordinates> nodes = new MapHache(701);      
         while (camefrom.containsKey(coordinates))
         {          
             nodes.put(coordinates, coordinates);
             coordinates = camefrom.get(coordinates);
-        }
-        
+        }      
         return nodes;
     }
     

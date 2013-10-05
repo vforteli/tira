@@ -12,14 +12,14 @@ import java.util.AbstractMap;
  */
 public class Pathinfo
 {
-    public Pathinfo(AbstractMap<Coordinates, Coordinates> path, AbstractMap<Coordinates, Integer> closedset, Float pathlength)
+    public Pathinfo(AbstractMap<Coordinates, Coordinates> coordinates, AbstractMap<Coordinates, Integer> closedset, Float pathlength)
     {
-        this.path = path;
+        this.coordinates = coordinates;
         this.closedset = closedset;
         this.pathlength = pathlength;
     }
     
     public AbstractMap<Coordinates, Integer> closedset;
-    public AbstractMap<Coordinates, Coordinates> path;
+    public AbstractMap<Coordinates, Coordinates> coordinates;
     public Float pathlength;
 }

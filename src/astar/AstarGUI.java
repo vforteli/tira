@@ -30,8 +30,7 @@ public class AstarGUI extends javax.swing.JFrame
     private JPanel[][] cellmap;
     private Coordinates previousCoordinates;
     private Coordinates clickedCoordinates;
-    private File bitmapfile;
-    private AbstractMap<Coordinates, Coordinates> path;
+    private File bitmapfile; 
     
     /**
      * Creates new form AstarGUI
@@ -223,7 +222,7 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(int[][] cells, AbstractMap<Coordinates, Coordinates> path)
+    private void DrawBoard(int[][] cells, Pathinfo path)
     { 
         int x = 0; 
         int y = 0;
@@ -234,7 +233,7 @@ public class AstarGUI extends javax.swing.JFrame
                 Coordinates c = new Coordinates(x, y);
                 boolean highlight = false;
                 
-                if (path != null && path.containsKey(c))
+                if (path != null && path.coordinates.containsKey(c))
                 {
                     highlight = true;
                 }
@@ -246,9 +245,9 @@ public class AstarGUI extends javax.swing.JFrame
             x = 0;
             y++;
         }
-        if (board.pathweight != null)
+        if (path != null)
         {
-            pathlengthlabel.setText(board.pathweight.toString());
+            pathlengthlabel.setText(path.pathlength.toString());
         }
         
         BoardPanel.revalidate();    // Forces panel redraw    
@@ -382,6 +381,8 @@ public class AstarGUI extends javax.swing.JFrame
     
     private void ClickBoard(Coordinates c, MouseEvent e)
     {
+        Pathinfo path = null;
+        
         clickedCoordinates = c;
         if (board != null)
         {
@@ -423,7 +424,7 @@ public class AstarGUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_recalculatebuttonActionPerformed
         if (board != null && previousCoordinates != null && clickedCoordinates != null)
         {
-            path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+            Pathinfo path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
             DrawBoard(board.GetBoard(), path); 
         }
     }//GEN-LAST:event_recalculatebuttonActionPerformed

@@ -39,11 +39,6 @@ public class AstarGUI extends javax.swing.JFrame
     public AstarGUI()
     {
         initComponents();
-        
-        BoardSizeChoice.add("20");
-        BoardSizeChoice.add("50");
-        BoardSizeChoice.add("100");
-        BoardSizeChoice.select("100");
     }
 
     /**
@@ -57,7 +52,6 @@ public class AstarGUI extends javax.swing.JFrame
     {
 
         NewBoardFrame = new javax.swing.JFrame();
-        BoardSizeChoice = new java.awt.Choice();
         InitBoardButton = new java.awt.Button();
         label3 = new java.awt.Label();
         chooseFileButton = new java.awt.Button();
@@ -65,7 +59,6 @@ public class AstarGUI extends javax.swing.JFrame
         terrainMaxWeight = new java.awt.TextField();
         terrainMinWeight = new java.awt.TextField();
         label4 = new java.awt.Label();
-        label6 = new java.awt.Label();
         BoardPanel = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         NewBoard = new java.awt.Button();
@@ -110,9 +103,6 @@ public class AstarGUI extends javax.swing.JFrame
         label4.setAlignment(java.awt.Label.RIGHT);
         label4.setText("Terrain maximum weight");
 
-        label6.setAlignment(java.awt.Label.RIGHT);
-        label6.setText("Size");
-
         javax.swing.GroupLayout NewBoardFrameLayout = new javax.swing.GroupLayout(NewBoardFrame.getContentPane());
         NewBoardFrame.getContentPane().setLayout(NewBoardFrameLayout);
         NewBoardFrameLayout.setHorizontalGroup(
@@ -121,18 +111,15 @@ public class AstarGUI extends javax.swing.JFrame
                 .addGap(17, 17, 17)
                 .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(label4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(label6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(label3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(BoardSizeChoice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(InitBoardButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(filenamelabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(chooseFileButton, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE))
                     .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(terrainMaxWeight, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 45, Short.MAX_VALUE)
+                        .addComponent(terrainMaxWeight, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
                         .addComponent(terrainMinWeight, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -140,10 +127,6 @@ public class AstarGUI extends javax.swing.JFrame
             NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(NewBoardFrameLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(BoardSizeChoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, NewBoardFrameLayout.createSequentialGroup()
                         .addGroup(NewBoardFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -279,20 +262,13 @@ public class AstarGUI extends javax.swing.JFrame
         } 
         else if(clickedCoordinates != null && clickedCoordinates.equals(c))
         {
-            cellpanel.setBackground(Color.GREEN);
+            cellpanel.setBackground(Color.red);
         }
         else if(previousCoordinates != null && previousCoordinates.equals(c))
         {
-            cellpanel.setBackground(Color.red);
+            cellpanel.setBackground(Color.green);
         }
-        else if(board.end != null && board.end.equals(c))
-        {
-            cellpanel.setBackground(Color.GREEN);
-        }
-        else if (board.start != null && board.start.equals(c))
-        {
-            cellpanel.setBackground(Color.RED);
-        }
+        
         else if (highlight == true)
         {
             cellpanel.setBackground(Color.ORANGE);
@@ -309,26 +285,45 @@ public class AstarGUI extends javax.swing.JFrame
             cellpanel.setBackground(Color.getHSBColor(0.125f, saturation, brightness));
         }
     }
+      
+    private float CalculateBrightness(int value, int min, int max)
+    {
+        if (max == min)
+        {
+            return 1;
+        }
+        float outmax = 0.3f;
+        float outmin = 1;
+        float brightness = outmin + (value - min) * (outmax - outmin) / (max - min);
+        return brightness;
+    }
+    
+    
     
     
     
     private void CreateBoard(int height, int width)
     {
-        BoardPanel.removeAll();
-        BoardPanel.setLayout(new GridLayout(board.getHeight(), board.getWidth(), -1, -1));
-        BoardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        cellmap = new JPanel[height][width];
-        
-        for (int y = 0; y < height; y++)
+        if (BoardPanel.getComponentCount() != height * width)
         {
-            for (int x = 0; x < width; x++)
+            if (BoardPanel.getComponentCount() != 0)
             {
-            
-                Coordinates c = new Coordinates(x, y);
-                JPanel cellpanel = CreateCell(c.toString());
-           
-                BoardPanel.add(cellpanel);
-                cellmap[x][y] = cellpanel;
+                BoardPanel.removeAll();
+            }
+            BoardPanel.setLayout(new GridLayout(board.getHeight(), board.getWidth(), -1, -1));
+            BoardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            cellmap = new JPanel[height][width];
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
+                {
+                    Coordinates c = new Coordinates(x, y);
+                    JPanel cellpanel = CreateCell(c.toString());
+
+                    BoardPanel.add(cellpanel);
+                    cellmap[x][y] = cellpanel;
+                }
             }
         }
     }
@@ -382,18 +377,7 @@ public class AstarGUI extends javax.swing.JFrame
         
         return cellpanel;
     }
-    
-    private float CalculateBrightness(int value, int min, int max)
-    {
-        if (max == min)
-        {
-            return 1;
-        }
-        float outmax = 0.3f;
-        float outmin = 1;
-        float brightness = outmin + (value - min) * (outmax - outmin) / (max - min);
-        return brightness;
-    }
+  
 
     
     private void ClickBoard(Coordinates c, MouseEvent e)
@@ -403,8 +387,12 @@ public class AstarGUI extends javax.swing.JFrame
         {
             if (e.getButton() == 3)
             {
+                if (previousCoordinates != null)
+                {
+                    path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+                }
+                DrawBoard(board.GetBoard(), path); 
                 previousCoordinates = clickedCoordinates;
-                DrawBoard(board.GetBoard(), null);   
             }
             else
             {
@@ -414,6 +402,10 @@ public class AstarGUI extends javax.swing.JFrame
                     {
                         path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
                     }        
+                    else 
+                    {
+                        previousCoordinates = clickedCoordinates;
+                    }
 
                     DrawBoard(board.GetBoard(), path);                  
                 } 
@@ -429,9 +421,9 @@ public class AstarGUI extends javax.swing.JFrame
     
     private void recalculatebuttonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_recalculatebuttonActionPerformed
     {//GEN-HEADEREND:event_recalculatebuttonActionPerformed
-        if (board != null && board.start != null && board.end != null)
+        if (board != null && previousCoordinates != null && clickedCoordinates != null)
         {
-            path = board.FindPath(board.start, board.end, Integer.parseInt(HeuristicMultipliertextField.getText()));
+            path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
             DrawBoard(board.GetBoard(), path); 
         }
     }//GEN-LAST:event_recalculatebuttonActionPerformed
@@ -460,8 +452,6 @@ public class AstarGUI extends javax.swing.JFrame
         {
             bitmapfile = fc.getSelectedFile();
             filenamelabel.setText(bitmapfile.getName());
-            //This is where a real application would open the file.
-
         }
     }//GEN-LAST:event_chooseFileButtonActionPerformed
 
@@ -472,7 +462,7 @@ public class AstarGUI extends javax.swing.JFrame
     private void InitBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_InitBoardButtonActionPerformed
     {//GEN-HEADEREND:event_InitBoardButtonActionPerformed
         NewBoardFrame.dispose();
-        int size = Integer.parseInt(BoardSizeChoice.getSelectedItem());
+        int size = 100;
         int terrainMaxValue = Integer.parseInt(terrainMaxWeight.getText());
         int terrainMinValue = Integer.parseInt(terrainMinWeight.getText());
         
@@ -530,7 +520,6 @@ public class AstarGUI extends javax.swing.JFrame
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel BoardPanel;
-    private java.awt.Choice BoardSizeChoice;
     private java.awt.TextField HeuristicMultipliertextField;
     private java.awt.Button InitBoardButton;
     private java.awt.Button NewBoard;
@@ -543,7 +532,6 @@ public class AstarGUI extends javax.swing.JFrame
     private java.awt.Label label3;
     private java.awt.Label label4;
     private java.awt.Label label5;
-    private java.awt.Label label6;
     private java.awt.Label pathlengthlabel;
     private java.awt.Button recalculatebutton;
     private java.awt.TextField terrainMaxWeight;

@@ -19,15 +19,11 @@
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="label4" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="label6" alignment="1" max="32767" attributes="0"/>
-                          <Component id="label3" alignment="1" max="32767" attributes="0"/>
-                      </Group>
+                      <Component id="label3" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="BoardSizeChoice" max="32767" attributes="0"/>
                           <Component id="InitBoardButton" alignment="0" max="32767" attributes="0"/>
                           <Component id="filenamelabel" alignment="1" max="32767" attributes="0"/>
                           <Component id="chooseFileButton" alignment="0" pref="171" max="32767" attributes="0"/>
@@ -44,12 +40,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="BoardSizeChoice" min="-2" max="-2" attributes="0"/>
-                      <Component id="label6" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
@@ -73,8 +64,6 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="java.awt.Choice" name="BoardSizeChoice">
-        </Component>
         <Component class="java.awt.Button" name="InitBoardButton">
           <Properties>
             <Property name="actionCommand" type="java.lang.String" value="StartGameButton"/>
@@ -114,12 +103,6 @@
           <Properties>
             <Property name="alignment" type="int" value="2"/>
             <Property name="text" type="java.lang.String" value="Terrain maximum weight"/>
-          </Properties>
-        </Component>
-        <Component class="java.awt.Label" name="label6">
-          <Properties>
-            <Property name="alignment" type="int" value="2"/>
-            <Property name="text" type="java.lang.String" value="Size"/>
           </Properties>
         </Component>
       </SubComponents>

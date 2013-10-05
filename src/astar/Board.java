@@ -32,6 +32,9 @@ public class Board
     private int[][] board;
     
     
+    public AbstractMap<Coordinates, Integer> closedset;
+    private AbstractMap<Coordinates, Float> g_score;
+    
     /**
      * Height of the board. Currently only supports square boards so width is redundant...
      * @return 
@@ -48,8 +51,6 @@ public class Board
     }
             
     // Used for diagnostic stuff...
-    public Coordinates start;
-    public Coordinates end;
     public Float pathweight;
     
     private int terrainMaxValue;
@@ -80,39 +81,37 @@ public class Board
         {
             try 
             { 
+                BufferedImage image = ImageIO.read(bitmap);
+                
                 float inputmin = 0;
                 float inputmax = 1;
                 float outputmin = this.terrainMinWeight;
                 float outputmax = this.terrainMaxValue;
-                            
-                BufferedImage image = ImageIO.read(bitmap);
-                
+                             
                 for (int i = 0; i < Size; i++)
                 {
                     for (int j = 0; j < Size; j++)
                     {
-                        int weight;
                         float[] hsb = new float[3];
                         int pixel = image.getRGB(j, i);
                         Color.RGBtoHSB((pixel>>16)&0xff, (pixel>>8)&0xff, pixel&0xff, hsb);
                         float brightness = hsb[2];
                         if (brightness < 0.05f) // Pretty close to black...
                         {
-                            weight = -1;    // -1 denotes a wall that cannot be traversed at all
+                            board[i][j] = -1;    // -1 denotes a wall that cannot be traversed at all
                         }
                         else 
                         {
                             // Reverse brightness... brighter in this case means lower weight
                             brightness = Math.abs(brightness - inputmax);
-                            weight = Math.round(outputmin + (brightness - inputmin) * (outputmax - outputmin) / (inputmax - inputmin));
+                            board[i][j] = Math.round(outputmin + (brightness - inputmin) * (outputmax - outputmin) / (inputmax - inputmin));
                         }
-                        board[i][j] = weight;
                     }
                 }
             }
             catch (Exception ex)
             {
-                // ...
+                // ... current best practise.
             }
         }   
         else
@@ -128,41 +127,16 @@ public class Board
         }
     }   
     
-
     
-    /**
-     * Click at the specified coordinates.
-     * 
-     * @param x
-     * @param y
-     * @return The value of the cell clicked
-     * @throws Exception 
-     */
-    public int Click(int x, int y) throws Exception 
-    {
-        Coordinates c = new Coordinates(x, y);
-        if (!this.isValidCoordinates(c))
-        {
-            throw new Exception("Invalid coordinates");
-        }
-        
-        return board[y][x];     
-    }
-    
-    
-    public AbstractMap<Coordinates, Integer> closedset;  // Moved here for diagnostics...
-    public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end, int tolerance)
+    public AbstractMap<Coordinates, Coordinates> FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
-        this.start = start;
-        this.end = end;
         HybridHeap<Coordinates> openset = new HybridHeap();
         closedset = new MapHache(701);
         AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
-        AbstractMap<Coordinates, Float> g_score = new MapHache<>(701);
+        g_score = new MapHache<>(701);
         
         g_score.put(start, 0f);
-             
-        openset.Insert(Heuristic.GetDistance(start, end, tolerance) * this.terrainMinWeight, start);
+        openset.Insert(Heuristic.GetDistance(start, end, heuristicMultiplier, this.terrainMinWeight), start);
 
         while (!openset.IsEmpty())
         {
@@ -180,9 +154,8 @@ public class Board
                     continue;
                 
                 float tentative_gscore = g_score.get(current) + weight;
-                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end, tolerance) * this.terrainMinWeight;
+                float tentative_fscore = tentative_gscore + Heuristic.GetDistance(neighbour, end, heuristicMultiplier, this.terrainMinWeight);
                 Float g_scoreneighbour = g_score.get(neighbour);
-                //System.out.println(currentnode.coordinates + " to " + neighbour + "\t, tentative g_score: " + tentative_gscore + "\t, f_score: " + tentative_fscore);
                            
                 if (closedset.containsKey(neighbour) && (g_scoreneighbour != null && g_scoreneighbour <= tentative_gscore))
                     continue;
@@ -206,16 +179,15 @@ public class Board
     
     private AbstractMap<Coordinates, Coordinates> ReconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
     {
-        pathweight = 0f;
+        pathweight = g_score.get(coordinates);  // This is the total weight to the end
+        
         MapHache<Coordinates, Coordinates> nodes = new MapHache(701);      
         while (camefrom.containsKey(coordinates))
-        {
-            
+        {          
             nodes.put(coordinates, coordinates);
-            Coordinates previous = coordinates;
             coordinates = camefrom.get(coordinates);
-            pathweight += CalculateWeight(previous, coordinates);
         }
+        
         return nodes;
     }
     

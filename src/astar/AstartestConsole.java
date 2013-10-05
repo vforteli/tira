@@ -10,6 +10,10 @@ package astar;
  */
 public class AstartestConsole
 {
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) 
     {
         MapHache<Coordinates, Integer> h = new MapHache(3);

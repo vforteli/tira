@@ -11,7 +11,6 @@ package astar;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Random; 
 import javax.imageio.ImageIO;

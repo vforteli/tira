@@ -421,6 +421,11 @@ public class AstarGUI extends javax.swing.JFrame
      */
     private void InitBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_InitBoardButtonActionPerformed
     {//GEN-HEADEREND:event_InitBoardButtonActionPerformed
+        if (bitmapfile == null)
+        {
+            return;
+        }
+        
         NewBoardFrame.dispose();
         int size = 100;
         int terrainMaxValue = Integer.parseInt(terrainMaxWeight.getText());
@@ -503,35 +508,16 @@ public class AstarGUI extends javax.swing.JFrame
 
     
     private Color CalculateColor(TerrainCell cell, boolean visited)
-    {
-        float hue = 0.125f;
+    {   
+        float hue = cell.hsbcolor[0];
+        float saturation = cell.hsbcolor[1];
+        float brightness = cell.hsbcolor[2];
         
-        if (cell.terrainType == TerrainTypes.Water)
-            hue = 0.58f;
-        else if (cell.terrainType == TerrainTypes.Forest)
-            hue = 0.28f;
-        
-        float saturation = 0.6f;
-        float brightness = CalculateBrightness(cell.weight, board.getTerrainMinWeight(), board.getTerrainMaxWeight());
         if (visited)
-        {
-            saturation = 0.8f;
             brightness -= 0.2f;
-        }
-        if (cell.terrainType == TerrainTypes.Road)
-            saturation = 0.2f;
+        
+
         Color color = Color.getHSBColor(hue, saturation, brightness);
         return color;
-    }
-    
-    
-    private float CalculateBrightness(int value, int min, int max)
-    {
-        if (max == min)
-            return 1;
-        
-        float outmax = 0.3f;
-        float outmin = 1;
-        return AstarMath.ConvertRange(min, max, outmin, outmax, (float)value);
     }
 }

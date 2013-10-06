@@ -12,7 +12,6 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.AbstractMap;
-import java.util.Random; 
 import javax.imageio.ImageIO;
 
 /**
@@ -98,19 +97,19 @@ public class Board
                         Color.RGBtoHSB((pixel>>16)&0xff, (pixel>>8)&0xff, pixel&0xff, hsb);
                         float brightness = hsb[2];
                         float hue = hsb[0];
-                        
+                         
                         TerrainTypes type = TerrainTypes.Ground;
                         
-                        if (hue > 0.50 && hue < 0.75)
+                        if (hue > 0.50 && hue < 0.75)   // Blueish
                             type = TerrainTypes.Water;
                         
-                        else if (hue > 0.045 && hue < 0.13)
+                        else if (hue > 0.045 && hue < 0.13) // Brownish
                             type = TerrainTypes.Road;
                         
-                        else if (hue > 0.22 && hue < 0.39)
+                        else if (hue > 0.22 && hue < 0.39)  // Greenish
                             type = TerrainTypes.Forest;
                         
-                        else if (hue < 0.025 || hue > 0.95)
+                        else if (hue < 0.025 || hue > 0.95) // Redish
                             type = TerrainTypes.Dragon;
                         
                         if (brightness > 0.95)
@@ -118,13 +117,14 @@ public class Board
                         
                         if (brightness < 0.05f) // Pretty close to black...
                         {
-                            board[i][j] = new TerrainCell(-1, TerrainTypes.Impassible);    // -1 denotes a wall that cannot be traversed at all
+                            board[i][j] = new TerrainCell(-1, TerrainTypes.Impassible, hsb);    // -1 denotes a wall that cannot be traversed at all
                         }
                         else 
                         {
                             // Reverse brightness... brighter in this case means lower weight
                             brightness = Math.abs(brightness - inputmax);
-                            board[i][j] = new TerrainCell(Math.round(AstarMath.ConvertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type);
+                            brightness = AstarMath.ConvertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
+                            board[i][j] = new TerrainCell(Math.round(AstarMath.ConvertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
                         }
                     }
                 }
@@ -134,17 +134,6 @@ public class Board
                 // ... current best practice.
             }
         }   
-        else
-        {
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    int random = new Random().nextInt(terrainMaxValue + 1);
-                    board[i][j] = new TerrainCell(random == 0 ? 1 : random, TerrainTypes.Ground); // yeye a bit biased...
-                }
-            }
-        }
     }   
     
     

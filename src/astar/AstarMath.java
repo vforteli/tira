@@ -21,6 +21,7 @@ public class AstarMath
      */
     public static float ConvertRange(float inputmin, float inputmax, float outputmin, float outputmax, float value)
     {
-        return outputmin + (Float.valueOf(value) - inputmin) * (outputmax - outputmin) / (inputmax - inputmin);
+        float out = outputmin + (Float.valueOf(value) - inputmin) * (outputmax - outputmin) / (inputmax - inputmin);
+        return out > outputmax ? outputmax : out;
     }
 }

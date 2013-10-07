@@ -39,21 +39,12 @@ public class Coordinates
      * @param humanform
      * @return zero based x and y coordinates
      */
-    public static Coordinates ParseCoordinates(String humanform)
+    public static Coordinates parseCoordinates(String humanform)
     {
-        try
-        {
-            String[] foo = humanform.split(",");
-            int x = Integer.parseInt(foo[0]);
-            int y = Integer.parseInt(foo[1]);
-            
-            return new Coordinates(x, y);
-        }
-        catch (Exception ex)
-        {
-            // Just return null if parsing fails...
-            return null;
-        }        
+        String[] foo = humanform.split(",");
+        int x = Integer.parseInt(foo[0]);
+        int y = Integer.parseInt(foo[1]);
+        return new Coordinates(x, y);     
     }
      
     

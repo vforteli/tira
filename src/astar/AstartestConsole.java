@@ -19,15 +19,15 @@ public class AstartestConsole
     public static void main(String[] args) 
     {
         StopWatch sw = new StopWatch();
-        HybridHeap<Long, Long> heap = new HybridHeap<>();
+        MapHache<Long, Long> heap = new MapHache<>(2000);
         
         
-        int n = 50000;
+        int n = 200000;
         Random r = new Random();
         for (int i = 0; i < n; i++)
         {
             long value = r.nextLong(); 
-            heap.Insert(value, value);
+            heap.put(value, value);
         }
         
       
@@ -38,7 +38,7 @@ public class AstartestConsole
         for (int i = 0; i < 1000; i++)
         {
             long value = r.nextLong();
-            heap.Insert(value, value);
+            heap.put(value, value);
         }
         sw.stop();
         

@@ -40,13 +40,13 @@ public class HybridHeapTest
     public void setUp()
     {
         h = new HybridHeap();
-        h.Insert(30, new Coordinates(1,1));
-        h.Insert(10, new Coordinates(1,2));
-        h.Insert(40, new Coordinates(1,3));
-        h.Insert(110, new Coordinates(1,4));
-        h.Insert(80, new Coordinates(1,5));
-        h.Insert(20, new Coordinates(1,6));
-        h.Insert(50, new Coordinates(1,7));
+        h.insert(30, new Coordinates(1,1));
+        h.insert(10, new Coordinates(1,2));
+        h.insert(40, new Coordinates(1,3));
+        h.insert(110, new Coordinates(1,4));
+        h.insert(80, new Coordinates(1,5));
+        h.insert(20, new Coordinates(1,6));
+        h.insert(50, new Coordinates(1,7));
     }
     
     @After
@@ -63,8 +63,8 @@ public class HybridHeapTest
     @Test
     public void TestDecreaseKey()
     {
-        h.DecreaseKey(3, new Coordinates(1,4));
-        Coordinates result = (Coordinates)h.Peek();
+        h.decreaseKey(3, new Coordinates(1,4));
+        Coordinates result = (Coordinates)h.peek();
         Coordinates expected = new Coordinates(1, 4);
         assertEquals(expected, result);
     }
@@ -73,10 +73,10 @@ public class HybridHeapTest
     @Test
     public void TestDecreaseKeyInsert()
     {
-        h.DecreaseKey(3, new Coordinates(1,4));
-        h.Insert(2, new Coordinates(2, 1));
+        h.decreaseKey(3, new Coordinates(1,4));
+        h.insert(2, new Coordinates(2, 1));
         
-        Coordinates result = (Coordinates)h.Peek();
+        Coordinates result = (Coordinates)h.peek();
         Coordinates expected = new Coordinates(2, 1);
         assertEquals(expected, result);
     }
@@ -85,11 +85,11 @@ public class HybridHeapTest
      @Test
     public void TestDecreaseKeyInsertDecrease()
     {
-        h.DecreaseKey(3, new Coordinates(1,4));        
-        h.Insert(2, new Coordinates(2, 1));
-        h.DecreaseKey(1, new Coordinates(1,4));
+        h.decreaseKey(3, new Coordinates(1,4));        
+        h.insert(2, new Coordinates(2, 1));
+        h.decreaseKey(1, new Coordinates(1,4));
         
-        Coordinates result = (Coordinates)h.Peek();
+        Coordinates result = (Coordinates)h.peek();
         Coordinates expected = new Coordinates(1, 4);
         assertEquals(expected, result);
     }
@@ -101,8 +101,8 @@ public class HybridHeapTest
      @Test
     public void TestIncreaseKey()
     {
-        h.IncreaseKey(200, new Coordinates(1,2));
-        Coordinates result = (Coordinates)h.Peek();
+        h.increaseKey(200, new Coordinates(1,2));
+        Coordinates result = (Coordinates)h.peek();
         Coordinates expected = new Coordinates(1, 6);
         assertEquals(expected, result);
     }
@@ -111,10 +111,10 @@ public class HybridHeapTest
     @Test
     public void TestIncreaseKeyInsert()
     {
-        h.IncreaseKey(200, new Coordinates(1,2));
-        h.Insert(2, new Coordinates(2, 1));
+        h.increaseKey(200, new Coordinates(1,2));
+        h.insert(2, new Coordinates(2, 1));
         
-        Coordinates result = (Coordinates)h.Peek();
+        Coordinates result = (Coordinates)h.peek();
         Coordinates expected = new Coordinates(2, 1);
         assertEquals(expected, result);
     }
@@ -123,11 +123,11 @@ public class HybridHeapTest
     @Test
     public void TestIncreaseKeyInsertIncrease()
     {
-        h.IncreaseKey(200, new Coordinates(1,2));
-        h.Insert(2, new Coordinates(2, 1));
-        h.IncreaseKey(210, new Coordinates(2,1));
+        h.increaseKey(200, new Coordinates(1,2));
+        h.insert(2, new Coordinates(2, 1));
+        h.increaseKey(210, new Coordinates(2,1));
         
-        Coordinates result = (Coordinates)h.Peek();
+        Coordinates result = (Coordinates)h.peek();
         Coordinates expected = new Coordinates(1, 6);
         assertEquals(expected, result);
     }

@@ -24,12 +24,17 @@ public class Board
      * Get the board as a int array of arrays. Coordinates are yx.
      * @return int array of arrays
      */
-    public TerrainCell[][] GetBoard() 
+    public TerrainCell[][] getBoard() 
     {
         return this.board;        
     }
     private TerrainCell[][] board;
     
+    /**
+     *
+     * @param c
+     * @return
+     */
     public TerrainCell getCellValue(Coordinates c)
     {
         return this.board[c.y][c.x];
@@ -43,6 +48,10 @@ public class Board
     {
         return this.board.length;
     }
+    /**
+     *
+     * @return
+     */
     public int getWidth()
     {
         // There cannot be width without height.
@@ -52,12 +61,20 @@ public class Board
 
     
     private int terrainMaxValue;
+    /**
+     * Maximum terrain weight
+     * @return
+     */
     public int getTerrainMaxWeight()
     {
         return terrainMaxValue;
     }
     
     private int terrainMinWeight;
+    /**
+     * Minimum terrain weight
+     * @return
+     */
     public int getTerrainMinWeight()
     {
         return terrainMinWeight;
@@ -70,6 +87,9 @@ public class Board
      * Create a new board with specified size
      * 
      * @param Size Integer size of one side of the board
+     * @param terrainMinWeight 
+     * @param terrainMaxWeight 
+     * @param bitmap  
      */
     public Board(int Size, int terrainMinWeight, int terrainMaxWeight, File bitmap) 
     {
@@ -123,8 +143,8 @@ public class Board
                         {
                             // Reverse brightness... brighter in this case means lower weight
                             brightness = Math.abs(brightness - inputmax);
-                            //brightness = AstarMath.ConvertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
-                            board[i][j] = new TerrainCell(Math.round(AstarMath.ConvertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
+                            //brightness = AstarMath.convertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
+                            board[i][j] = new TerrainCell(Math.round(AstarMath.convertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
                         }
                     }
                 }
@@ -137,7 +157,14 @@ public class Board
     }   
     
     
-    public PathInfo FindPath(Coordinates start, Coordinates end, int heuristicMultiplier)
+    /**
+     *
+     * @param start
+     * @param end
+     * @param heuristicMultiplier
+     * @return
+     */
+    public PathInfo findPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
         HybridHeap<Float, Coordinates> openset = new HybridHeap();
         AbstractMap<Coordinates, Integer> closedset = new MapHache(701);
@@ -146,19 +173,19 @@ public class Board
         
         // Distance from start is obviously 0... good place to start
         g_score.put(start, 0f);
-        openset.Insert(GetHDistance(start, end, heuristicMultiplier, terrainMinWeight), start);
+        openset.insert(getHDistance(start, end, heuristicMultiplier, terrainMinWeight), start);
 
-        while (!openset.IsEmpty())
+        while (!openset.isEmpty())
         {
-            Coordinates current = openset.DeleteMin();
+            Coordinates current = openset.deleteMin();  // Get an open node with the lowest f_score, ie the one which looks best at the time
             closedset.put(current, 0);
             
-            if (current.equals(end))
-                return new PathInfo(ReconstructPath(current, camefrom), closedset, g_score.get(end));
+            if (current.equals(end))    // Yaayy! A path was found, and if A* works it should be the shortest one :p
+                return new PathInfo(reconstructPath(current, camefrom), closedset, g_score.get(end));
                                  
-            for (Coordinates neighbour : GetNeighbours(current))
+            for (Coordinates neighbour : getNeighbours(current))
             {                
-                float weight = CalculateWeight(current, neighbour);
+                float weight = calculateWeight(current, neighbour);
                 
                 if (weight == -1)    // Wall...
                     continue;
@@ -178,12 +205,12 @@ public class Board
                 }
                 
                 // If the neighbour node is seen for the first time, ie not open and not closed, put it in the openset
-                float tentative_fscore = tentative_gscore + GetHDistance(neighbour, end, heuristicMultiplier, terrainMinWeight);
+                float tentative_fscore = tentative_gscore + getHDistance(neighbour, end, heuristicMultiplier, terrainMinWeight);
                 if (!openset.containsKey(neighbour) && !closedset.containsKey(neighbour))
-                    openset.Insert(tentative_fscore, neighbour);      
+                    openset.insert(tentative_fscore, neighbour);      
                 
                 // We can safely try to decrease the key, if the value is higher or doesnt exist, nothing will happen        
-                openset.DecreaseKey(tentative_fscore, neighbour);  
+                openset.decreaseKey(tentative_fscore, neighbour);  
             }
         }
         
@@ -192,7 +219,7 @@ public class Board
     }
     
     
-    private AbstractMap<Coordinates, Coordinates> ReconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
+    private AbstractMap<Coordinates, Coordinates> reconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
     {
         MapHache<Coordinates, Coordinates> nodes = new MapHache(701);      
         while (camefrom.containsKey(coordinates))
@@ -210,7 +237,7 @@ public class Board
      * @param neighbour
      * @return 
      */
-    private Coordinates[] GetNeighbours(Coordinates c)
+    private Coordinates[] getNeighbours(Coordinates c)
     {      
         int topleft_x = c.x <= 0 ? 0 : c.x - 1;
         int topleft_y = c.y <= 0 ? 0 : c.y - 1;
@@ -240,7 +267,7 @@ public class Board
     }
     
     
-    private float CalculateWeight(Coordinates from, Coordinates to)
+    private float calculateWeight(Coordinates from, Coordinates to)
     {
         float fromweight = getCellValue(from).weight;
         float toweight = getCellValue(to).weight;
@@ -257,7 +284,7 @@ public class Board
     }
     
     
-    private float GetHDistance(Coordinates from, Coordinates to, int multiplier, int terrainMinWeight)
+    private float getHDistance(Coordinates from, Coordinates to, int multiplier, int terrainMinWeight)
     {
         int x = (from.x - to.x) * terrainMinWeight;
         int y = (from.y - to.y) * terrainMinWeight;

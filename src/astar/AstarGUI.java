@@ -224,7 +224,7 @@ public class AstarGUI extends javax.swing.JFrame
      * Draw the board to screen
      * @param cells 
      */
-    private void DrawBoard(TerrainCell[][] cells, PathInfo path)
+    private void drawBoard(TerrainCell[][] cells, PathInfo path)
     {        
         for (int y = 0; y < cells.length; y++)
         {
@@ -242,12 +242,12 @@ public class AstarGUI extends javax.swing.JFrame
                         visited = true;
                 }
                 
-                DrawCell(c, cells[y][x], highlight, visited);
+                drawCell(c, cells[y][x], highlight, visited);
             }
         }
     }
     
-    private void DrawCell(Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
+    private void drawCell(Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
     {      
         JPanel cellpanel = cellmap[c.x][c.y];
         if (cell.terrainType == TerrainTypes.Impassible)    // Obstacle        
@@ -269,19 +269,19 @@ public class AstarGUI extends javax.swing.JFrame
         else
         {   
             // Else try to figure out the color somehow...
-            cellpanel.setBackground(CalculateColor(cell, visited));
+            cellpanel.setBackground(calculateColor(cell, visited));
         }
     } 
     
     
-    private void CreateBoard(int height, int width)
+    private void createBoard(int height, int width)
     {
         // Only recreate the panels if the board size doesnt match. 10x5 = 50... 5x10 = 50.. oh shit
         if (BoardPanel.getComponentCount() != height * width)
         {
             if (BoardPanel.getComponentCount() != 0)
             {
-                BoardPanel.removeAll();
+                BoardPanel.removeAll();     // Insanely slow...
             }
             BoardPanel.setLayout(new GridLayout(board.getHeight(), board.getWidth(), -1, -1));
             BoardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
@@ -293,7 +293,7 @@ public class AstarGUI extends javax.swing.JFrame
                 for (int x = 0; x < width; x++)
                 {
                     Coordinates c = new Coordinates(x, y);
-                    JPanel cellpanel = CreateCell(c.toString(), bordercolor);
+                    JPanel cellpanel = createCell(c, bordercolor);
 
                     BoardPanel.add(cellpanel);
                     cellmap[x][y] = cellpanel;
@@ -303,8 +303,9 @@ public class AstarGUI extends javax.swing.JFrame
     }
        
     
-    private JPanel CreateCell(String name, Color bordercolor)
+    private JPanel createCell(Coordinates c, Color bordercolor)
     {
+        String name = c.toString();
         JPanel cellpanel = new JPanel();
         cellpanel.setName(name);
         cellpanel.setMinimumSize(new Dimension(1,1));
@@ -317,11 +318,11 @@ public class AstarGUI extends javax.swing.JFrame
             public void mousePressed(MouseEvent e) 
             {  
                 JPanel cell =(JPanel)e.getSource();
-                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
+                Coordinates c = Coordinates.parseCoordinates(cell.getName());
                 
                 try
                 {
-                    ClickBoard(c, e);
+                    clickBoard(c, e);
                 } 
                 catch (Exception ex)
                 {
@@ -333,7 +334,7 @@ public class AstarGUI extends javax.swing.JFrame
             public void mouseEntered(MouseEvent e) 
             {
                 JPanel cell =(JPanel)e.getSource();
-                Coordinates c = Coordinates.ParseCoordinates(cell.getName());
+                Coordinates c = Coordinates.parseCoordinates(cell.getName());
                 String weight = "";
                 if (board != null)
                 {
@@ -354,7 +355,7 @@ public class AstarGUI extends javax.swing.JFrame
   
 
     
-    private void ClickBoard(Coordinates c, MouseEvent e)
+    private void clickBoard(Coordinates c, MouseEvent e)
     {
         clickedCoordinates = c;
         
@@ -363,12 +364,12 @@ public class AstarGUI extends javax.swing.JFrame
             PathInfo path = null;
             if (previousCoordinates != null)
             {
-                path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+                path = board.findPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
                 if (path.pathlength != null)
                     pathlengthlabel.setText(path.pathlength.toString());
             }
             
-            DrawBoard(board.GetBoard(), path); 
+            drawBoard(board.getBoard(), path); 
                         
             if (e.getButton() == 3 || previousCoordinates == null)
             {        
@@ -382,8 +383,8 @@ public class AstarGUI extends javax.swing.JFrame
     {//GEN-HEADEREND:event_recalculatebuttonActionPerformed
         if (board != null && previousCoordinates != null && clickedCoordinates != null)
         {
-            PathInfo path = board.FindPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
-            DrawBoard(board.GetBoard(), path); 
+            PathInfo path = board.findPath(previousCoordinates, clickedCoordinates, Integer.parseInt(HeuristicMultipliertextField.getText()));
+            drawBoard(board.getBoard(), path); 
             if (path.pathlength != null)
                 pathlengthlabel.setText(path.pathlength.toString());
         }
@@ -437,8 +438,8 @@ public class AstarGUI extends javax.swing.JFrame
         previousCoordinates = null;
         board = new Board(size, terrainMinValue, terrainMaxValue, bitmapfile);
 
-        CreateBoard(board.getHeight(), board.getWidth());
-        DrawBoard(board.GetBoard(), null);
+        createBoard(board.getHeight(), board.getWidth());
+        drawBoard(board.getBoard(), null);
     }//GEN-LAST:event_InitBoardButtonActionPerformed
 
     
@@ -510,7 +511,7 @@ public class AstarGUI extends javax.swing.JFrame
     // End of variables declaration//GEN-END:variables
 
     
-    private Color CalculateColor(TerrainCell cell, boolean visited)
+    private Color calculateColor(TerrainCell cell, boolean visited)
     {   
         float hue = cell.hsbcolor[0];
         float saturation = cell.hsbcolor[1];

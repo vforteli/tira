@@ -63,7 +63,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
      * @param key
      * @return
      */
-    public boolean DecreaseKey(V value, T key)
+    public boolean decreaseKey(V value, T key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
@@ -72,7 +72,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
             if (value.compareTo(item.Key) < 0)
             {
                 item.Key = value;
-                BubbleUp(index);
+                bubbleUp(index);
                 return true;
             }
         }
@@ -86,7 +86,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
      * @param key
      * @return
      */
-    public boolean IncreaseKey(V value, T key)
+    public boolean increaseKey(V value, T key)
     {
         Integer index = hashmap.get(key);
         if (index != null)
@@ -95,7 +95,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
             if (value.compareTo(item.Key) > 0)
             {
                 item.Key = value;
-                BubbleDown(index);
+                bubbleDown(index);
                 return true;
             }
         }
@@ -104,11 +104,11 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     
       
     /**
-     * Insert an item in the heap with the specified value
+     * insert an item in the heap with the specified value
      * @param value
      * @param object
      */
-    public void Insert(V value, T object)
+    public void insert(V value, T object)
     {    
         if (hashmap.containsKey(object))
         {
@@ -118,19 +118,19 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         }
         
         heap[tail] = new Item(value, object);
-        int index = BubbleUp(tail);
+        int index = bubbleUp(tail);
         hashmap.put(object, index);
         tail++;
         
         if (tail == heap.length)
         {
             System.out.println("Kabooom! Increase size maybe...");
-            IncreaseSize();
+            increaseSize();
         }
     }
     
     
-    private void IncreaseSize()
+    private void increaseSize()
     {
         Item<V, T>[] newheap = new Item[heap.length * 2];        
         System.arraycopy(heap, 0, newheap, 0, heap.length);
@@ -138,7 +138,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     }
  
     
-    private int BubbleUp(int index)
+    private int bubbleUp(int index)
     {  
         Item<V, T> last = heap[index];
         int parentindex = (index - 1) / 2;
@@ -157,7 +157,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     }   
   
     
-    private int BubbleDown(int index)
+    private int bubbleDown(int index)
     {
         Item<V, T> node = heap[index];
         
@@ -198,13 +198,13 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
      * Removes and returns the minimum item from the heap.
      * @return
      */
-    public T DeleteMin()
+    public T deleteMin()
     {
         if (tail > 0)
         {            
             Item<V, T> root = heap[0];
             heap[0] = heap[--tail];
-            BubbleDown(0);
+            bubbleDown(0);
             
             // Dont forget to remove it from the hashmap as well, or cockup ensured
             hashmap.remove(root.Value);   
@@ -219,7 +219,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
      * Returns the minimum item from the heap, but does not remove it.
      * @return
      */
-    public T Peek()
+    public T peek()
     {
         if (tail > 0)
         {
@@ -235,7 +235,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
      * Check if the heap is empty
      * @return True if empty.
      */
-    public boolean IsEmpty()
+    public boolean isEmpty()
     {
         return tail == 0;
     }

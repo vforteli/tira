@@ -19,7 +19,7 @@ public class AstarMath
      * @param value
      * @return
      */
-    public static float ConvertRange(float inputmin, float inputmax, float outputmin, float outputmax, float value)
+    public static float convertRange(float inputmin, float inputmax, float outputmin, float outputmax, float value)
     {
         float out = outputmin + (Float.valueOf(value) - inputmin) * (outputmax - outputmin) / (inputmax - inputmin);
         return out > outputmax ? outputmax : out;

@@ -35,7 +35,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     {
         if ((float)items / (float)array.length > 0.75)
         {
-            IncreaseSize();
+            increaseSize();
         }
         
         return insert(key, value, array);
@@ -45,7 +45,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     @Override
     public V remove(Object key)
     {
-        int index = GetIndex(key, array.length);
+        int index = getIndex(key, array.length);
         Item item = array[index];
         
         if (item != null)
@@ -101,7 +101,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     }
 
     
-    private void IncreaseSize()
+    private void increaseSize()
     {
         // Increase size! (thats what she said...)        
         Item<K, V>[] newarray = new Item[array.length * 2];
@@ -123,7 +123,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     
     private V getKeyValue(K key)
     {
-        Item item = array[GetIndex(key, array.length)];
+        Item item = array[getIndex(key, array.length)];
                
         while (item != null)
         {
@@ -137,7 +137,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     }
     
     
-    private int GetIndex(Object key, int modulo)
+    private int getIndex(Object key, int modulo)
     {
         return Math.abs(key.hashCode() % modulo);
     }
@@ -145,7 +145,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
     
     private V insert(K key, V value, Item<K, V>[] targetarray)
     {
-        int index = GetIndex(key, targetarray.length);
+        int index = getIndex(key, targetarray.length);
         Item item = targetarray[index];
         
         if (item == null)   // This is an empty slot, so the item can be added directly in the array

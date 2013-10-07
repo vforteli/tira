@@ -10,11 +10,32 @@ package astar;
  */
 public enum TerrainTypes
 {
+    /**
+     *
+     */
     Forest,
+    /**
+     *
+     */
     Water,
+    /**
+     *
+     */
     Hill,
+    /**
+     *
+     */
     Road,
+    /**
+     *
+     */
     Impassible,
+    /**
+     *
+     */
     Dragon,
+    /**
+     *
+     */
     Ground
 }

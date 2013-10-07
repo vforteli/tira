@@ -15,20 +15,30 @@ public class StopWatch {
   private boolean running = false;
 
 
-  public void start() {
+    /**
+     *
+     */
+    public void start() {
     this.startTime = System.nanoTime();
     this.running = true;
   }
 
 
-  public void stop() {
+    /**
+     *
+     */
+    public void stop() {
     this.stopTime = System.nanoTime();
     this.running = false;
   }
 
 
   //elaspsed time in milliseconds
-  public long getElapsedTime() {
+    /**
+     *
+     * @return
+     */
+    public long getElapsedTime() {
     long elapsed;
     if (running) {
       elapsed = (System.nanoTime()- startTime);

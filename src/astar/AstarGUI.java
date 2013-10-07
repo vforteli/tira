@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -26,10 +27,10 @@ import javax.swing.filechooser.FileFilter;
  */
 public class AstarGUI extends javax.swing.JFrame
 {
-    private Board board; 
+    private transient Board board; 
     private JPanel[][] cellmap;
-    private Coordinates previousCoordinates;
-    private Coordinates clickedCoordinates;
+    private transient Coordinates previousCoordinates;
+    private transient Coordinates clickedCoordinates;
     private File bitmapfile; 
     
     /**
@@ -312,46 +313,7 @@ public class AstarGUI extends javax.swing.JFrame
         cellpanel.setName(name);
         cellpanel.setMinimumSize(new Dimension(1,1));
         cellpanel.setBorder(BorderFactory.createLineBorder(bordercolor, 1));
-        
-        // This is probably insane... but whatever
-        cellpanel.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mousePressed(MouseEvent e) 
-            {  
-                JPanel cell =(JPanel)e.getSource();
-                Coordinates c = Coordinates.parseCoordinates(cell.getName());
-                
-                try
-                {
-                    clickBoard(c, e);
-                } 
-                catch (Exception ex)
-                {
-                    Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-            
-            @Override
-            public void mouseEntered(MouseEvent e) 
-            {
-                JPanel cell =(JPanel)e.getSource();
-                Coordinates c = Coordinates.parseCoordinates(cell.getName());
-                String weight = "";
-                if (board != null)
-                {
-                    weight = String.valueOf(board.getCellValue(c).weight);
-                }
-                coordinatesLabel.setText(c.x + ", " + c.y + " w: " + weight);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e)
-            {
-                coordinatesLabel.setText("");
-            }
-        });
-        
+        cellpanel.addMouseListener(new BoardClickMouseAdapter());   // This is probably insane... but whatever     
         return cellpanel;
     }
   
@@ -396,20 +358,7 @@ public class AstarGUI extends javax.swing.JFrame
     private void chooseFileButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_chooseFileButtonActionPerformed
     {//GEN-HEADEREND:event_chooseFileButtonActionPerformed
         JFileChooser fc = new JFileChooser();
-        fc.setFileFilter(new FileFilter()
-            {
-                @Override
-                public boolean accept(File file)
-                {
-                    return (file.isDirectory()||file.getName().toLowerCase().endsWith(".bmp"));
-                }
-
-                @Override
-                public String getDescription()
-                {
-                    return "Bitmaps";
-                }
-            });
+        fc.setFileFilter(new BitmapFileFilter());
 
         int returnVal = fc.showOpenDialog(newBoardFrame);
         if (returnVal == JFileChooser.APPROVE_OPTION)
@@ -531,5 +480,65 @@ public class AstarGUI extends javax.swing.JFrame
         brightness = brightness < 0 ? 0 : brightness;
         Color color = Color.getHSBColor(hue, saturation, brightness);
         return color;
+    }
+
+    /**
+     * Filters files to only bmps files
+     */
+    private static class BitmapFileFilter extends FileFilter
+    {
+        @Override
+        public boolean accept(File file)
+        {
+            return (file.isDirectory()||file.getName().toLowerCase(Locale.ENGLISH).endsWith(".bmp"));
+        }
+
+        @Override
+        public String getDescription()
+        {
+            return "Bitmaps";
+        }
+    }
+
+    
+    /**
+     * Class which handles cell mouse events
+     */
+    private class BoardClickMouseAdapter extends MouseAdapter
+    {
+        @Override
+        public void mousePressed(MouseEvent e) 
+        {  
+            JPanel cell =(JPanel)e.getSource();
+            Coordinates c = Coordinates.parseCoordinates(cell.getName());
+            
+            try
+            {
+                clickBoard(c, e);
+            } 
+            catch (Exception ex)
+            {
+                Logger.getLogger(AstarGUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) 
+        {
+            JPanel cell =(JPanel)e.getSource();
+            Coordinates c = Coordinates.parseCoordinates(cell.getName());
+            String weight = "";
+            if (board != null)
+            {
+                weight = String.valueOf(board.getCellValue(c).weight);
+            }
+            coordinatesLabel.setText(c.x + ", " + c.y + " w: " + weight);
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e)
+        {
+            coordinatesLabel.setText("");
+        }
     }
 }

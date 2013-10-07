@@ -82,7 +82,8 @@ public class Board
      * @param Size Integer size of one side of the board
      * @param terrainMinWeight 
      * @param terrainMaxWeight 
-     * @param bitmap  
+     * @param bitmap
+     * @throws IOException  
      */
     public Board(int Size, int terrainMinWeight, int terrainMaxWeight, File bitmap) throws IOException 
     {

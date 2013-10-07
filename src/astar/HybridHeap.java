@@ -24,7 +24,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
      */
     public HybridHeap()
     {
-        int initialSize = 10000000;
+        int initialSize = 1000;
         heap = new Item[initialSize];
         hashmap = new MapHache<>(initialSize);
         tail = 0;

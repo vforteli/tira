@@ -24,10 +24,9 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
      */
     public HybridHeap()
     {
-        int initialSize = 1000;
-        // Hmm, what should the initial size be, and when should it grow/shrink?
+        int initialSize = 10000000;
         heap = new Item[initialSize];
-        hashmap = new MapHache<>(1701);
+        hashmap = new MapHache<>(initialSize);
         tail = 0;
     }
     
@@ -126,8 +125,16 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         if (tail == heap.length)
         {
             System.out.println("Kabooom! Increase size maybe...");
-            // increase the array size...            
+            IncreaseSize();
         }
+    }
+    
+    
+    private void IncreaseSize()
+    {
+        Item<V, T>[] newheap = new Item[heap.length * 2];        
+        System.arraycopy(heap, 0, newheap, 0, heap.length);
+        heap = newheap;
     }
  
     

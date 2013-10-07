@@ -123,7 +123,7 @@ public class Board
                         {
                             // Reverse brightness... brighter in this case means lower weight
                             brightness = Math.abs(brightness - inputmax);
-                            brightness = AstarMath.ConvertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
+                            //brightness = AstarMath.ConvertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
                             board[i][j] = new TerrainCell(Math.round(AstarMath.ConvertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
                         }
                     }

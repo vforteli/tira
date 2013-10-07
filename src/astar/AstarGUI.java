@@ -250,19 +250,19 @@ public class AstarGUI extends javax.swing.JFrame
     private void DrawCell(Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
     {      
         JPanel cellpanel = cellmap[c.x][c.y];
-        if (cell.terrainType == TerrainTypes.Impassible)         
+        if (cell.terrainType == TerrainTypes.Impassible)    // Obstacle        
         {
             cellpanel.setBackground(Color.black);
         } 
-        else if(clickedCoordinates != null && clickedCoordinates.equals(c))
+        else if(clickedCoordinates != null && clickedCoordinates.equals(c)) // End
         {
             cellpanel.setBackground(Color.red);
         }
-        else if(previousCoordinates != null && previousCoordinates.equals(c))
+        else if(previousCoordinates != null && previousCoordinates.equals(c))   // Start
         {
             cellpanel.setBackground(Color.green);
         }
-        else if (highlight == true)
+        else if (highlight == true)     // Path
         {
             cellpanel.setBackground(Color.ORANGE);
         }
@@ -285,6 +285,7 @@ public class AstarGUI extends javax.swing.JFrame
             }
             BoardPanel.setLayout(new GridLayout(board.getHeight(), board.getWidth(), -1, -1));
             BoardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            Color bordercolor = new Color(0f,0f,0f, 0.3f);
             cellmap = new JPanel[height][width];
 
             for (int y = 0; y < height; y++)
@@ -292,7 +293,7 @@ public class AstarGUI extends javax.swing.JFrame
                 for (int x = 0; x < width; x++)
                 {
                     Coordinates c = new Coordinates(x, y);
-                    JPanel cellpanel = CreateCell(c.toString());
+                    JPanel cellpanel = CreateCell(c.toString(), bordercolor);
 
                     BoardPanel.add(cellpanel);
                     cellmap[x][y] = cellpanel;
@@ -301,16 +302,16 @@ public class AstarGUI extends javax.swing.JFrame
         }
     }
        
-    private JPanel CreateCell(String name)
+    
+    private JPanel CreateCell(String name, Color bordercolor)
     {
         JPanel cellpanel = new JPanel();
-        cellpanel.setEnabled(true);
         cellpanel.setName(name);
         cellpanel.setMinimumSize(new Dimension(1,1));
-        cellpanel.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+        cellpanel.setBorder(BorderFactory.createLineBorder(bordercolor, 1));
         
         // This is probably insane... but whatever
-        cellpanel.addMouseListener(new MouseAdapter() 
+        cellpanel.addMouseListener(new MouseAdapter()
         {
             @Override
             public void mousePressed(MouseEvent e) 
@@ -412,6 +413,7 @@ public class AstarGUI extends javax.swing.JFrame
         {
             bitmapfile = fc.getSelectedFile();
             filenamelabel.setText(bitmapfile.getName());
+            InitBoardButton.setEnabled(true);
         }
     }//GEN-LAST:event_chooseFileButtonActionPerformed
 
@@ -447,6 +449,7 @@ public class AstarGUI extends javax.swing.JFrame
         NewBoardFrame.pack();
         NewBoardFrame.setLocationRelativeTo(this);
         NewBoardFrame.setVisible(true);
+        InitBoardButton.setEnabled(false);
     }//GEN-LAST:event_NewBoardActionPerformed
 
     
@@ -516,7 +519,7 @@ public class AstarGUI extends javax.swing.JFrame
         if (visited)
             brightness -= 0.2f;
         
-
+        brightness = brightness < 0 ? 0 : brightness;
         Color color = Color.getHSBColor(hue, saturation, brightness);
         return color;
     }

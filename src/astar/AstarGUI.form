@@ -2,7 +2,7 @@
 
 <Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <NonVisualComponents>
-    <Container class="javax.swing.JFrame" name="NewBoardFrame">
+    <Container class="javax.swing.JFrame" name="newBoardFrame">
       <Properties>
         <Property name="title" type="java.lang.String" value="Start game"/>
         <Property name="alwaysOnTop" type="boolean" value="true"/>
@@ -24,7 +24,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="InitBoardButton" alignment="0" max="32767" attributes="0"/>
+                          <Component id="initBoardButton" alignment="0" max="32767" attributes="0"/>
                           <Component id="filenamelabel" alignment="1" max="32767" attributes="0"/>
                           <Component id="chooseFileButton" alignment="0" pref="171" max="32767" attributes="0"/>
                       </Group>
@@ -57,20 +57,20 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="filenamelabel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="InitBoardButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="initBoardButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="java.awt.Button" name="InitBoardButton">
+        <Component class="java.awt.Button" name="initBoardButton">
           <Properties>
             <Property name="actionCommand" type="java.lang.String" value="StartGameButton"/>
             <Property name="label" type="java.lang.String" value="Start"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="InitBoardButtonActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="initBoardButtonActionPerformed"/>
           </Events>
         </Component>
         <Component class="java.awt.Label" name="label3">
@@ -132,7 +132,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jToolBar1" alignment="0" pref="589" max="32767" attributes="0"/>
-          <Component id="BoardPanel" alignment="0" max="32767" attributes="0"/>
+          <Component id="boardPanel" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -140,13 +140,13 @@
           <Group type="102" alignment="1" attributes="0">
               <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="BoardPanel" max="32767" attributes="0"/>
+              <Component id="boardPanel" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="BoardPanel">
+    <Container class="javax.swing.JPanel" name="boardPanel">
 
       <Layout>
         <DimensionLayout dim="0">
@@ -169,12 +169,12 @@
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
       <SubComponents>
-        <Component class="java.awt.Button" name="NewBoard">
+        <Component class="java.awt.Button" name="newBoard">
           <Properties>
             <Property name="label" type="java.lang.String" value="New board"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NewBoardActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newBoardActionPerformed"/>
           </Events>
         </Component>
         <Component class="java.awt.Label" name="label5">
@@ -183,7 +183,7 @@
             <Property name="text" type="java.lang.String" value="Heuristic *"/>
           </Properties>
         </Component>
-        <Component class="java.awt.TextField" name="HeuristicMultipliertextField">
+        <Component class="java.awt.TextField" name="heuristicMultipliertextField">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Tahoma" size="11" style="0"/>

@@ -50,18 +50,18 @@ public class MapHache<K, V> extends AbstractMap<K, V>
         
         if (item != null)
         {
-            if (item.Key.equals(key))
+            if (item.key.equals(key))
             {
                 array[index] = item.getNext();  // Next item, or null...   
                 items--;
-                return (V)item.Value;
+                return (V)item.value;
             }
             
             while (item.getNext() != null)
             {
-                if (item.getNext().Key.equals(key))
+                if (item.getNext().key.equals(key))
                 {
-                    V delete = (V)item.getNext().Value;
+                    V delete = (V)item.getNext().value;
                     Item newnext = item.getNext().getNext();
                     item.setNext(newnext);
                     items--;
@@ -112,7 +112,7 @@ public class MapHache<K, V> extends AbstractMap<K, V>
                 Item item = array[i];                     
                 while (item != null)
                 {
-                    insert((K)item.Key, (V)item.Value, newarray);
+                    insert((K)item.key, (V)item.value, newarray);
                     item = item.getNext();
                 }
             }
@@ -127,9 +127,9 @@ public class MapHache<K, V> extends AbstractMap<K, V>
                
         while (item != null)
         {
-            if (item.Key.equals(key))
+            if (item.key.equals(key))
             {
-                return (V)item.Value; 
+                return (V)item.value; 
             }
             item = item.getNext();
         }
@@ -157,10 +157,10 @@ public class MapHache<K, V> extends AbstractMap<K, V>
             while (item != null)
             {
                 // If the key already exists, it should be updated and the old returned
-                if (item.Key.equals(key))
+                if (item.key.equals(key))
                 {
-                    V previous = (V)item.Value;
-                    item.Value = value;
+                    V previous = (V)item.value;
+                    item.value = value;
                     return previous;
                 }
                 if (item.getNext() == null) // If we get here, the item has been put last in the linked list

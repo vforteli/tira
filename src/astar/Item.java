@@ -15,11 +15,11 @@ public class Item<K, V>
     /**
      *
      */
-    public K Key;
+    public K key;
     /**
      *
      */
-    public V Value;
+    public V value;
     
     private Item _next;
     
@@ -30,12 +30,12 @@ public class Item<K, V>
      */
     public Item(K key, V value)
     {
-        Key = key;
-        Value = value;
+        this.key = key;
+        this.value = value;
     }
     
     /**
-     *
+     * Set the next item in a linked list of items
      * @param next
      */
     public void setNext(Item next)
@@ -44,7 +44,7 @@ public class Item<K, V>
     }
     
     /**
-     *
+     * Get the next item in the linked list, or null
      * @return
      */
     public Item getNext()

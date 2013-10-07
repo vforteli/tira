@@ -11,6 +11,7 @@ package astar;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.AbstractMap;
 import javax.imageio.ImageIO;
 
@@ -20,20 +21,12 @@ import javax.imageio.ImageIO;
  */
 public class Board 
 {       
-    /**
-     * Get the board as a int array of arrays. Coordinates are yx.
-     * @return int array of arrays
-     */
-    public TerrainCell[][] getBoard() 
-    {
-        return this.board;        
-    }
     private TerrainCell[][] board;
     
     /**
-     *
+     * Gets the Terrain cell at the specified coordinates
      * @param c
-     * @return
+     * @return TerrainCell
      */
     public TerrainCell getCellValue(Coordinates c)
     {
@@ -41,7 +34,7 @@ public class Board
     }
     
     /**
-     * Height of the board. Currently only supports square boards so width is redundant...
+     * Height of the board in cells. Currently only supports square boards so width is redundant...
      * @return 
      */
     public int getHeight()    
@@ -49,7 +42,7 @@ public class Board
         return this.board.length;
     }
     /**
-     *
+     * Width of the board in cells.
      * @return
      */
     public int getWidth()
@@ -91,7 +84,7 @@ public class Board
      * @param terrainMaxWeight 
      * @param bitmap  
      */
-    public Board(int Size, int terrainMinWeight, int terrainMaxWeight, File bitmap) 
+    public Board(int Size, int terrainMinWeight, int terrainMaxWeight, File bitmap) throws IOException 
     {
         this.terrainMaxValue = terrainMaxWeight;
         this.terrainMinWeight = terrainMinWeight;
@@ -99,70 +92,63 @@ public class Board
         
         if (bitmap != null)
         {
-            try 
-            { 
-                BufferedImage image = ImageIO.read(bitmap);
-                
-                float inputmin = 0;
-                float inputmax = 1;
-                float outputmin = this.terrainMinWeight;
-                float outputmax = this.terrainMaxValue;
-                             
-                for (int i = 0; i < Size; i++)
+            BufferedImage image = ImageIO.read(bitmap);
+
+            float inputmin = 0;
+            float inputmax = 1;
+            float outputmin = this.terrainMinWeight;
+            float outputmax = this.terrainMaxValue;
+
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
                 {
-                    for (int j = 0; j < Size; j++)
+                    float[] hsb = new float[3];
+                    int pixel = image.getRGB(j, i);
+                    Color.RGBtoHSB((pixel>>16)&0xff, (pixel>>8)&0xff, pixel&0xff, hsb);
+                    float brightness = hsb[2];
+                    float hue = hsb[0];
+
+                    TerrainTypes type = TerrainTypes.Ground;
+
+                    if (hue > 0.50 && hue < 0.75)   // Blueish
+                        type = TerrainTypes.Water;
+
+                    else if (hue > 0.045 && hue < 0.13) // Brownish
+                        type = TerrainTypes.Road;
+
+                    else if (hue > 0.22 && hue < 0.39)  // Greenish
+                        type = TerrainTypes.Forest;
+
+                    else if (hue < 0.025 || hue > 0.95) // Redish
+                        type = TerrainTypes.Dragon;
+
+                    if (brightness > 0.95)
+                        type = TerrainTypes.Road;
+
+                    if (brightness < 0.05f) // Pretty close to black...
                     {
-                        float[] hsb = new float[3];
-                        int pixel = image.getRGB(j, i);
-                        Color.RGBtoHSB((pixel>>16)&0xff, (pixel>>8)&0xff, pixel&0xff, hsb);
-                        float brightness = hsb[2];
-                        float hue = hsb[0];
-                         
-                        TerrainTypes type = TerrainTypes.Ground;
-                        
-                        if (hue > 0.50 && hue < 0.75)   // Blueish
-                            type = TerrainTypes.Water;
-                        
-                        else if (hue > 0.045 && hue < 0.13) // Brownish
-                            type = TerrainTypes.Road;
-                        
-                        else if (hue > 0.22 && hue < 0.39)  // Greenish
-                            type = TerrainTypes.Forest;
-                        
-                        else if (hue < 0.025 || hue > 0.95) // Redish
-                            type = TerrainTypes.Dragon;
-                        
-                        if (brightness > 0.95)
-                            type = TerrainTypes.Road;
-                        
-                        if (brightness < 0.05f) // Pretty close to black...
-                        {
-                            board[i][j] = new TerrainCell(-1, TerrainTypes.Impassible, hsb);    // -1 denotes a wall that cannot be traversed at all
-                        }
-                        else 
-                        {
-                            // Reverse brightness... brighter in this case means lower weight
-                            brightness = Math.abs(brightness - inputmax);
-                            //brightness = AstarMath.convertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
-                            board[i][j] = new TerrainCell(Math.round(AstarMath.convertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
-                        }
+                        board[i][j] = new TerrainCell(-1, TerrainTypes.Impassible, hsb);    // -1 denotes a wall that cannot be traversed at all
+                    }
+                    else 
+                    {
+                        // Reverse brightness... brighter in this case means lower weight
+                        brightness = Math.abs(brightness - inputmax);
+                        //brightness = AstarMath.convertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
+                        board[i][j] = new TerrainCell(Math.round(AstarMath.convertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                // ... current best practice.
             }
         }   
     }   
     
     
     /**
-     *
+     * Find a path from start to end coordinates
      * @param start
      * @param end
      * @param heuristicMultiplier
-     * @return
+     * @return PathInfo containing the path and path length if available, and the nodes visited
      */
     public PathInfo findPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
@@ -266,7 +252,13 @@ public class Board
         return returnarray;
     }
     
-    
+    /**
+     * Calculates the weight from one cell to a neighbour. The weight is from the middle of the first cell to the middle of the second cell
+     * Moving diagonally increases weight.
+     * @param from
+     * @param to
+     * @return 
+     */
     private float calculateWeight(Coordinates from, Coordinates to)
     {
         float fromweight = getCellValue(from).weight;
@@ -284,6 +276,15 @@ public class Board
     }
     
     
+    /**
+     * Heuristically calculate the total distance from one node to another.
+     * Currently uses euclidean distance with fixed adjustable weight
+     * @param from
+     * @param to
+     * @param multiplier Can be used to overestimate the distance, resulting in a possibly longer path, but fewer number of visited nodes
+     * @param terrainMinWeight Should be set to the minimum distance between two cells.
+     * @return 
+     */
     private float getHDistance(Coordinates from, Coordinates to, int multiplier, int terrainMinWeight)
     {
         int x = (from.x - to.x) * terrainMinWeight;

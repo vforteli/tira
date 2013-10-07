@@ -51,7 +51,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
     {
         Integer position = hashmap.get(key);
         if (position != null)
-            return heap[position].Key;
+            return heap[position].key;
         
         return null;
     }
@@ -69,9 +69,9 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         if (index != null)
         {
             Item<V, T> item = heap[index];
-            if (value.compareTo(item.Key) < 0)
+            if (value.compareTo(item.key) < 0)
             {
-                item.Key = value;
+                item.key = value;
                 bubbleUp(index);
                 return true;
             }
@@ -92,9 +92,9 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         if (index != null)
         {
             Item<V, T> item = heap[index];
-            if (value.compareTo(item.Key) > 0)
+            if (value.compareTo(item.key) > 0)
             {
-                item.Key = value;
+                item.key = value;
                 bubbleDown(index);
                 return true;
             }
@@ -143,16 +143,16 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         Item<V, T> last = heap[index];
         int parentindex = (index - 1) / 2;
         
-        while (index > 0 && heap[parentindex].Key.compareTo(last.Key) >= 0)
+        while (index > 0 && heap[parentindex].key.compareTo(last.key) >= 0)
         {
-            hashmap.put(heap[parentindex].Value, index);
+            hashmap.put(heap[parentindex].value, index);
             heap[index] = heap[parentindex];
             index = parentindex;           
             parentindex = (index - 1) / 2;
         }
         
         heap[index] = last;
-        hashmap.put(last.Value, index);
+        hashmap.put(last.value, index);
         return index;
     }   
   
@@ -167,7 +167,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
             int leftChildIndex = 2 * index + 1;
             int rightChildIndex = leftChildIndex + 1;
             
-            if (rightChildIndex < tail && (heap[rightChildIndex].Key).compareTo(heap[leftChildIndex].Key) < 0)
+            if (rightChildIndex < tail && (heap[rightChildIndex].key).compareTo(heap[leftChildIndex].key) < 0)
             {
                 smallerNodeIndex = rightChildIndex;
             }
@@ -176,20 +176,20 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
                 smallerNodeIndex = leftChildIndex;       
             }
             
-            if ((node.Key).compareTo(heap[smallerNodeIndex].Key) <= 0)
+            if ((node.key).compareTo(heap[smallerNodeIndex].key) <= 0)
             {
                 break;                
             }
             
             // Swap
-            hashmap.put(heap[smallerNodeIndex].Value, index);
+            hashmap.put(heap[smallerNodeIndex].value, index);
             heap[index] = heap[smallerNodeIndex];
             index = smallerNodeIndex;
         }
         
         // Finally set the current node wherever it ends up...
         heap[index] = node; 
-        hashmap.put(node.Value, index);
+        hashmap.put(node.value, index);
         return index;
     }
     
@@ -207,9 +207,9 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
             bubbleDown(0);
             
             // Dont forget to remove it from the hashmap as well, or cockup ensured
-            hashmap.remove(root.Value);   
+            hashmap.remove(root.value);   
             
-            return root.Value;
+            return root.value;
         }
         return null;
     }
@@ -224,7 +224,7 @@ public class HybridHeap<V extends Number & Comparable<? super V>, T>
         if (tail > 0)
         {
             // Get the root item, ie the lowest key              
-            return heap[0].Value;
+            return heap[0].value;
         }
         return null;
         

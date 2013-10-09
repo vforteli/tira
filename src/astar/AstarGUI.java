@@ -9,11 +9,13 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
@@ -389,7 +391,7 @@ public class AstarGUI extends javax.swing.JFrame
         previousCoordinates = null;
         try
         {
-            board = new Board(size, terrainMinValue, terrainMaxValue, bitmapfile);
+            board = new Board(size, terrainMinValue, terrainMaxValue, ImageIO.read(bitmapfile));
             createBoard(board.getHeight(), board.getWidth());
             drawBoard(null);
         } 

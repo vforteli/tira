@@ -10,10 +10,8 @@ package astar;
  */
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.AbstractMap;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -85,16 +83,14 @@ public class Board
      * @param bitmap
      * @throws IOException  
      */
-    public Board(int Size, int terrainMinWeight, int terrainMaxWeight, File bitmap) throws IOException 
+    public Board(int Size, int terrainMinWeight, int terrainMaxWeight, BufferedImage image)
     {
         this.terrainMaxValue = terrainMaxWeight;
         this.terrainMinWeight = terrainMinWeight;
         this.board = new TerrainCell[Size][Size];
         
-        if (bitmap != null)
+        if (image != null)
         {
-            BufferedImage image = ImageIO.read(bitmap);
-
             float inputmin = 0;
             float inputmax = 1;
             float outputmin = this.terrainMinWeight;
@@ -110,31 +106,15 @@ public class Board
                     float brightness = hsb[2];
                     float hue = hsb[0];
 
-                    TerrainTypes type = TerrainTypes.Ground;
-
-                    if (hue > 0.50 && hue < 0.75)   // Blueish
-                        type = TerrainTypes.Water;
-
-                    else if (hue > 0.045 && hue < 0.13) // Brownish
-                        type = TerrainTypes.Road;
-
-                    else if (hue > 0.22 && hue < 0.39)  // Greenish
-                        type = TerrainTypes.Forest;
-
-                    else if (hue < 0.025 || hue > 0.95) // Redish
-                        type = TerrainTypes.Dragon;
-
-                    if (brightness > 0.95)
-                        type = TerrainTypes.Road;
-
-                    if (brightness < 0.05f) // Pretty close to black...
+                    TerrainTypes type = getTerrainTypeForColor(hue, brightness);
+                    if (type ==  TerrainTypes.Impassible) // Pretty close to black...
                     {
-                        board[i][j] = new TerrainCell(-1, TerrainTypes.Impassible, hsb);    // -1 denotes a wall that cannot be traversed at all
+                        board[i][j] = new TerrainCell(-1, type, hsb);    // -1 denotes a wall that cannot be traversed at all
                     }
                     else 
                     {
-                        // Reverse brightness... brighter in this case means lower weight
-                        brightness = Math.abs(brightness - inputmax);
+                        // Higher brightness means lower weight, therefore brightness has to be reversed
+                        brightness = Math.abs(brightness - 1);
                         //brightness = AstarMath.convertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
                         board[i][j] = new TerrainCell(Math.round(AstarMath.convertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
                     }
@@ -153,10 +133,11 @@ public class Board
      */
     public PathInfo findPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
+        int initialsize = 1000;
         HybridHeap<Float, Coordinates> openset = new HybridHeap();
-        AbstractMap<Coordinates, Integer> closedset = new MapHache(701);
-        AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(701);
-        AbstractMap<Coordinates, Float> g_score = new MapHache<>(701);
+        AbstractMap<Coordinates, Integer> closedset = new MapHache(initialsize);
+        AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(initialsize);
+        AbstractMap<Coordinates, Float> g_score = new MapHache<>(initialsize);
         
         // Distance from start is obviously 0... good place to start
         g_score.put(start, 0f);
@@ -291,5 +272,30 @@ public class Board
         int x = (from.x - to.x) * terrainMinWeight;
         int y = (from.y - to.y) * terrainMinWeight;
         return (float)Math.sqrt(x * x + y * y) * multiplier;   // Euclidean distance
+    }
+
+    private TerrainTypes getTerrainTypeForColor(float hue, float brightness)
+    {
+        TerrainTypes type = TerrainTypes.Ground;
+        
+        if (hue > 0.50 && hue < 0.75)   // Blueish
+            type = TerrainTypes.Water;
+
+        else if (hue > 0.045 && hue < 0.13) // Brownish
+            type = TerrainTypes.Road;
+
+        else if (hue > 0.22 && hue < 0.39)  // Greenish
+            type = TerrainTypes.Forest;
+
+        else if (hue < 0.025 || hue > 0.95) // Redish
+            type = TerrainTypes.Dragon;
+        
+        if (brightness > 0.95)  // Pretty close to white...
+            type = TerrainTypes.Road;
+        
+        if (brightness < 0.05f) // Pretty close to black...
+            type = TerrainTypes.Impassible;
+                    
+        return type;
     }
 }

@@ -134,8 +134,8 @@ public class Board
     public PathInfo findPath(Coordinates start, Coordinates end, int heuristicMultiplier)
     {      
         int initialsize = 1000;
-        HybridHeap<Float, Coordinates> openset = new HybridHeap();
-        AbstractMap<Coordinates, Integer> closedset = new MapHache(initialsize);
+        HybridHeap<Float, Coordinates> openset = new HybridHeap<>();
+        AbstractMap<Coordinates, Integer> closedset = new MapHache<>(initialsize);
         AbstractMap<Coordinates, Coordinates> camefrom = new MapHache<>(initialsize);
         AbstractMap<Coordinates, Float> g_score = new MapHache<>(initialsize);
         
@@ -189,7 +189,7 @@ public class Board
     
     private AbstractMap<Coordinates, Coordinates> reconstructPath(Coordinates coordinates, AbstractMap<Coordinates, Coordinates> camefrom)
     {
-        MapHache<Coordinates, Coordinates> nodes = new MapHache(701);      
+        MapHache<Coordinates, Coordinates> nodes = new MapHache<>(701);      
         while (camefrom.containsKey(coordinates))
         {          
             nodes.put(coordinates, coordinates);

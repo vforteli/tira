@@ -12,6 +12,7 @@ import java.util.AbstractMap;
  * @param <T> Whatever
  * @author verne_000
  */
+@SuppressWarnings({"unchecked"})    // Java and generics and arrays dont go well together...
 public class HybridHeap<V extends Number & Comparable<? super V>, T>
 {
     private Item<V, T>[] heap;

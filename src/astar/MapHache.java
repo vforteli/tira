@@ -13,6 +13,7 @@ import java.util.Set;
  * @param <V> 
  * @author verne_000
  */
+@SuppressWarnings({"unchecked"})    // Java and generics and arrays dont go well together...
 public class MapHache<K, V> extends AbstractMap<K, V>
 {
     private Item<K, V>[] array;

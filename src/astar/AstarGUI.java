@@ -223,7 +223,7 @@ public class AstarGUI extends javax.swing.JFrame
     
     
     /**
-     * Draw the board to screen
+     * Draw the board to screen, insanely inefficient but oh well...
      * @param cells 
      */
     private void drawBoard(PathInfo path)
@@ -246,9 +246,7 @@ public class AstarGUI extends javax.swing.JFrame
                 
                 drawCell(c, board.getCellValue(c), highlight, visited);
             }
-            
-        }
-       
+        }     
     }
     
     private void drawCell(Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
@@ -337,10 +335,9 @@ public class AstarGUI extends javax.swing.JFrame
             
             drawBoard(path); 
                         
-            if (e.getButton() == 3 || previousCoordinates == null)
-            {        
+            if (e.getButton() == 3 || previousCoordinates == null)            
                 previousCoordinates = clickedCoordinates;
-            }
+            
         }
     }  
     

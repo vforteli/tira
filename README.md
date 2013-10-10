@@ -2,7 +2,7 @@ tira
 ====
 Miten ohjelma kääntyy:
 Riippuen hakemistosta
-javac -d <outputdir> -s src astar/*.java 
+javac -d outputdir -s src astar/*.java 
 
 Miten ohjelma ajetaan:
 java astar/AstarGUI

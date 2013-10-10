@@ -35,7 +35,7 @@ public class Board
      * Height of the board in cells. Currently only supports square boards so width is redundant...
      * @return 
      */
-    public int getHeight()    
+    public final int getHeight()    
     {
         return this.board.length;
     }
@@ -43,7 +43,7 @@ public class Board
      * Width of the board in cells.
      * @return
      */
-    public int getWidth()
+    public final int getWidth()
     {
         // There cannot be width without height.
         // - Old Chinese saying
@@ -83,25 +83,25 @@ public class Board
      * @param bitmap
      * @throws IOException  
      */
-    public Board(int Size, int terrainMinWeight, int terrainMaxWeight, BufferedImage image)
+    public Board(int terrainMinWeight, int terrainMaxWeight, BufferedImage image)
     {
         this.terrainMaxValue = terrainMaxWeight;
         this.terrainMinWeight = terrainMinWeight;
-        this.board = new TerrainCell[Size][Size];
         
         if (image != null)
         {
+            this.board = new TerrainCell[image.getHeight()][image.getWidth()];
             float inputmin = 0;
             float inputmax = 1;
             float outputmin = this.terrainMinWeight;
             float outputmax = this.terrainMaxValue;
 
-            for (int i = 0; i < Size; i++)
+            for (int y = 0; y < getHeight(); y++)
             {
-                for (int j = 0; j < Size; j++)
+                for (int x = 0; x < getWidth(); x++)
                 {
                     float[] hsb = new float[3];
-                    int pixel = image.getRGB(j, i);
+                    int pixel = image.getRGB(x, y);
                     Color.RGBtoHSB((pixel>>16)&0xff, (pixel>>8)&0xff, pixel&0xff, hsb);
                     float brightness = hsb[2];
                     float hue = hsb[0];
@@ -109,14 +109,14 @@ public class Board
                     TerrainTypes type = getTerrainTypeForColor(hue, brightness);
                     if (type ==  TerrainTypes.Impassible) // Pretty close to black...
                     {
-                        board[i][j] = new TerrainCell(-1, type, hsb);    // -1 denotes a wall that cannot be traversed at all
+                        board[y][x] = new TerrainCell(-1, type, hsb);    // -1 denotes a wall that cannot be traversed at all
                     }
                     else 
                     {
                         // Higher brightness means lower weight, therefore brightness has to be reversed
                         brightness = Math.abs(brightness - 1);
                         //brightness = AstarMath.convertRange(0f, 0.6f, 0f, 1f, brightness);  // Truncate the upper end. OTherwiser almost black is needed for maximum cell weight.. not pretty
-                        board[i][j] = new TerrainCell(Math.round(AstarMath.convertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
+                        board[y][x] = new TerrainCell(Math.round(AstarMath.convertRange(inputmin, inputmax, outputmin, outputmax, brightness)), type, hsb);
                     }
                 }
             }

@@ -9,7 +9,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -254,7 +253,7 @@ public class AstarGUI extends javax.swing.JFrame
     
     private void drawCell(Coordinates c, TerrainCell cell, boolean highlight, boolean visited)
     {      
-        JPanel cellpanel = cellmap[c.x][c.y];
+        JPanel cellpanel = cellmap[c.y][c.x];
         if (cell.terrainType == TerrainTypes.Impassible)    // Obstacle        
         {
             cellpanel.setBackground(Color.black);
@@ -288,7 +287,8 @@ public class AstarGUI extends javax.swing.JFrame
             {
                 boardPanel.removeAll();     // Insanely slow...
             }
-            boardPanel.setLayout(new GridLayout(board.getHeight(), board.getWidth(), -1, -1));
+       
+            boardPanel.setLayout(new GridLayout(height, width, -1, -1));
             boardPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
             Color bordercolor = new Color(0f,0f,0f, 0.3f);
             cellmap = new JPanel[height][width];
@@ -301,7 +301,7 @@ public class AstarGUI extends javax.swing.JFrame
                     JPanel cellpanel = createCell(c, bordercolor);
 
                     boardPanel.add(cellpanel);
-                    cellmap[x][y] = cellpanel;
+                    cellmap[y][x] = cellpanel;
                 }
             }
         }
@@ -378,12 +378,9 @@ public class AstarGUI extends javax.swing.JFrame
     private void initBoardButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_initBoardButtonActionPerformed
     {//GEN-HEADEREND:event_initBoardButtonActionPerformed
         if (bitmapfile == null)
-        {
             return;
-        }
-        
+          
         newBoardFrame.dispose();
-        int size = 100;
         int terrainMaxValue = Integer.parseInt(terrainMaxWeight.getText());
         int terrainMinValue = Integer.parseInt(terrainMinWeight.getText());
         
@@ -391,7 +388,7 @@ public class AstarGUI extends javax.swing.JFrame
         previousCoordinates = null;
         try
         {
-            board = new Board(size, terrainMinValue, terrainMaxValue, ImageIO.read(bitmapfile));
+            board = new Board(terrainMinValue, terrainMaxValue, ImageIO.read(bitmapfile));
             createBoard(board.getHeight(), board.getWidth());
             drawBoard(null);
         } 
@@ -470,6 +467,12 @@ public class AstarGUI extends javax.swing.JFrame
     // End of variables declaration//GEN-END:variables
 
     
+    /**
+     * Convert the hsb to rgb and highlight visited cells.. anything else?
+     * @param cell
+     * @param visited
+     * @return 
+     */
     private Color calculateColor(TerrainCell cell, boolean visited)
     {   
         float hue = cell.hsbcolor[0];
@@ -480,19 +483,18 @@ public class AstarGUI extends javax.swing.JFrame
             brightness -= 0.2f;
         
         brightness = brightness < 0 ? 0 : brightness;
-        Color color = Color.getHSBColor(hue, saturation, brightness);
-        return color;
+        return Color.getHSBColor(hue, saturation, brightness);     
     }
 
     /**
-     * Filters files to only bmps files
+     * Filters files to only bitmap files
      */
     private static class BitmapFileFilter extends FileFilter
     {
         @Override
         public boolean accept(File file)
         {
-            return (file.isDirectory()||file.getName().toLowerCase(Locale.ENGLISH).endsWith(".bmp"));
+            return (file.isDirectory() || file.getName().toLowerCase(Locale.ENGLISH).endsWith(".bmp"));
         }
 
         @Override
